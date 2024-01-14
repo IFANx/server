@@ -500,7 +500,8 @@ size_t Inet6::to_string(char *dst, size_t dstsize) const
       //
       // If it is not the last field, append closing ':'.
 
-      p += sprintf(p, "%x", ipv6_words[i]);
+//      p += sprintf(p, "%x", ipv6_words[i]);
+      p += snprintf(p, 3,"%x", ipv6_words[i]);;
 
       if (i + 1 != IN6_ADDR_NUM_WORDS)
       {

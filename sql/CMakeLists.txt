@@ -240,6 +240,9 @@ IF(TARGET pcre2)
   ADD_DEPENDENCIES(sql pcre2)
 ENDIF()
 
+include_directories(/opt/homebrew/Cellar/pcre2/10.42/include)
+
+
 FOREACH(se aria partition perfschema sql_sequence wsrep)
   # These engines are used directly in sql sources.
   IF(TARGET ${se})

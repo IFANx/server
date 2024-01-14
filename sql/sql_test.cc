@@ -666,19 +666,19 @@ Memory allocated by threads:             %s\n",
          llstr(tmp.local_memory_used, llbuff[9]));
 
 #elif defined(HAVE_MALLOC_ZONE)
-  malloc_statistics_t info;
-  char llbuff[4][22];
-
-  malloc_zone_statistics(nullptr, &info);
-  printf("\nMemory status:\n\
-Total allocated space:                   %s\n\
-Total free space:                        %s\n\
-Global memory allocated by server:       %s\n\
-Memory allocated by threads:             %s\n",
-         llstr(info.size_allocated, llbuff[0]),
-         llstr((info.size_allocated - info.size_in_use), llbuff[1]),
-         llstr(tmp.global_memory_used, llbuff[2]),
-         llstr(tmp.local_memory_used, llbuff[3]));
+//  malloc_statistics_t info;
+//  char llbuff[4][22];
+//
+//  malloc_zone_statistics(nullptr, &info);
+//  printf("\nMemory status:\n\
+//Total allocated space:                   %s\n\
+//Total free space:                        %s\n\
+//Global memory allocated by server:       %s\n\
+//Memory allocated by threads:             %s\n",
+//         llstr(info.size_allocated, llbuff[0]),
+//         llstr((info.size_allocated - info.size_in_use), llbuff[1]),
+//         llstr(tmp.global_memory_used, llbuff[2]),
+//         llstr(tmp.local_memory_used, llbuff[3]));
 #endif
 
 #ifdef HAVE_EVENT_SCHEDULER

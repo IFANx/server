@@ -2251,6 +2251,42 @@ static int default_my_dbug_sanity(void)
   return 0;
 }
 
+//#include <fstream>
+//#include <iostream>
+//
+//// xukang
+//bool canbeRec = false;
+//
+//// xukang
+///**
+// * functionName:实际上是保存的当前正在执行的函数的名称
+// *
+// * */
+//void appendFuncToFile(const char *functionName) {
+//
+//  //  使用追加写的方式将当前查询执行的函数名称添加到文件中(默认将所有的函数执行信息放在log.txt文件中,java文件通过从这个文件中将数据读出来并且将无关信息过滤掉，然后删除其中的内容)
+//  std::cout << "canBeRec" << canbeRec << std::endl;
+//  if (canbeRec == 1) {
+//    std::ofstream file("/Users/kkxu/Oray/log.txt", std::ios::app);
+//    if (file.is_open()) {
+//      file << functionName << std::endl;
+//      //    file.close();
+//    } else {
+//      std::cout << "Failed to open file." << std::endl;
+//      std::cerr << strerror(errno) << std::endl;
+//    }
+//  }
+//}
+//
+//  //xukang
+//  /**
+// * 在使用文件记录函数调用信息执行结束后，关闭文件
+// * */
+//void closeLogFile() {
+//  std::ofstream file("/Users/kkxu/Oray/log.txt");
+//  file.close();
+//}
+
 extern my_bool my_assert;
 ATTRIBUTE_COLD
 my_bool _db_my_assert(const char *file, int line, const char *msg)

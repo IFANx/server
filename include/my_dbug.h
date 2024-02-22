@@ -16,6 +16,7 @@
 
 #ifndef _my_dbug_h
 #define _my_dbug_h
+#include <stdbool.h>
 
 #ifndef _WIN32
 #include <signal.h>
@@ -65,10 +66,19 @@ ATTRIBUTE_COLD
 extern  my_bool _db_my_assert(const char *file, int line, const char *msg);
 extern  FILE *_db_fp_(void);
 extern void _db_flush_(void);
+
+// xukang
+extern void appendFuncToFile(const char *functionName);
+extern void printStackTrace();
+extern void closeLogFile();
+
 extern void dbug_swap_code_state(void **code_state_store);
 extern void dbug_free_code_state(void **code_state_store);
 extern  const char* _db_get_func_(void);
 extern int (*dbug_sanity)(void);
+
+// xukang
+extern bool canbeRec;
 
 #ifdef DBUG_TRACE
 #define DBUG_LEAVE do { \
@@ -91,6 +101,12 @@ extern int (*dbug_sanity)(void);
 #define DBUG_RETURN(a1) do {DBUG_LEAVE; return(a1);} while(0)
 #define DBUG_VOID_RETURN do {DBUG_LEAVE; return;} while(0)
 #endif
+
+// xukang
+#define APPENDFUNC appendFuncToFile(__PRETTY_FUNCTION__)
+#define CLOSELOGFILE closeLogFile()
+#define SETRECORDFLAG \
+  canbeRec = (thd->variables.option_bits & OPTION_PROFILING);
 
 #else
 #define DBUG_LEAVE

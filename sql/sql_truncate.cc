@@ -190,6 +190,7 @@ enum Sql_cmd_truncate_table::truncate_result
 Sql_cmd_truncate_table::handler_truncate(THD *thd, TABLE_LIST *table_ref,
                                          bool is_tmp_table)
 {
+    APPENDFUNC;
   int error= 0;
   uint flags= 0;
   TABLE *table;

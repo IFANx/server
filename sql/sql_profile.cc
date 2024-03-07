@@ -689,18 +689,11 @@ int PROFILING::fill_statistics_info(THD *thd_arg, TABLE_LIST *tables, Item *cond
   DBUG_RETURN(0);
 }
 
-// xukang
-extern void appendFuncToFile(const char *functionName);
-
-// xukang
-#define APPENDFUNC appendFuncToFile(__PRETTY_FUNCTION__)
-
-extern bool canbeRec;
-
 void PROFILING::reset()
 {
   enabled= (thd->variables.option_bits & OPTION_PROFILING) != 0;
   //xukang，这里是为了和enabled同步
   canbeRec = enabled;
+  APPENDFUNC;
 }
 #endif /* ENABLED_PROFILING */

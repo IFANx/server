@@ -340,3 +340,11 @@ public:
 
 #  endif /* ENABLED_PROFILING */
 #endif /* _SQL_PROFILE_H */
+
+// xukang
+extern void appendFuncToFile(const char *functionName);
+
+// xukang
+#define APPENDFUNC appendFuncToFile(__PRETTY_FUNCTION__)
+
+extern bool canbeRec;

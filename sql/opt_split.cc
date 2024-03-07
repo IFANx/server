@@ -234,6 +234,7 @@
 /* Info on a splitting field */
 struct SplM_field_info
 {
+
   /* Splitting field in the materialized table T */
   Field *mat_field;
   /* The item from the select list of the specification of T */
@@ -246,6 +247,7 @@ struct SplM_field_info
 /* Info on the splitting execution plan saved in SplM_opt_info::cache */
 struct SplM_plan_info
 {
+
   /* The cached splitting execution plan P */
   POSITION *best_positions;
   /* The cost of the above plan */
@@ -270,6 +272,7 @@ struct SplM_plan_info
 */
 class SplM_opt_info : public Sql_alloc
 {
+
 public:
   /* The join for the select specifying T */
   JOIN *join;
@@ -299,6 +302,7 @@ public:
 
 void TABLE::set_spl_opt_info(SplM_opt_info *spl_info)
 {
+  APPENDFUNC;
   if (spl_info)
     spl_info->join->spl_opt_info= spl_info;
   spl_opt_info= spl_info;
@@ -307,6 +311,7 @@ void TABLE::set_spl_opt_info(SplM_opt_info *spl_info)
 
 void TABLE::deny_splitting()
 {
+  APPENDFUNC;
   DBUG_ASSERT(spl_opt_info != NULL);
   spl_opt_info->join->spl_opt_info= NULL;
   spl_opt_info= NULL;
@@ -315,6 +320,7 @@ void TABLE::deny_splitting()
 
 double TABLE::get_materialization_cost()
 {
+  APPENDFUNC;
   DBUG_ASSERT(spl_opt_info != NULL);
   return spl_opt_info->unsplit_cost;
 }
@@ -323,6 +329,7 @@ double TABLE::get_materialization_cost()
 /* This structure is auxiliary and used only in the function that follows it */
 struct SplM_field_ext_info: public SplM_field_info
 {
+
   uint item_no;
   bool is_usable_for_ref_access;
 };
@@ -364,6 +371,7 @@ struct SplM_field_ext_info: public SplM_field_info
 
 bool JOIN::check_for_splittable_materialized()
 {
+  APPENDFUNC;
   ORDER *partition_list= 0;
   st_select_lex_unit *unit= select_lex->master_unit();
   TABLE_LIST *derived= unit->derived;
@@ -575,6 +583,7 @@ bool JOIN::check_for_splittable_materialized()
 
 void TABLE::add_splitting_info_for_key_field(KEY_FIELD *key_field)
 {
+  APPENDFUNC;
   DBUG_ASSERT(spl_opt_info != NULL);
   JOIN *join= spl_opt_info->join;
   Field *field= key_field->field;
@@ -644,6 +653,7 @@ static bool
 add_ext_keyuse_for_splitting(Dynamic_array<KEYUSE_EXT> *ext_keyuses,
                              KEY_FIELD *added_key_field, uint key, uint part)
 {
+  APPENDFUNC;
   KEYUSE_EXT keyuse_ext;
   Field *field= added_key_field->field;
 
@@ -675,6 +685,7 @@ add_ext_keyuse_for_splitting(Dynamic_array<KEYUSE_EXT> *ext_keyuses,
 static int
 sort_ext_keyuse(KEYUSE_EXT *a, KEYUSE_EXT *b)
 {
+  APPENDFUNC;
   if (a->table->tablenr != b->table->tablenr)
     return (int) (a->table->tablenr - b->table->tablenr);
   if (a->key != b->key)
@@ -686,6 +697,7 @@ sort_ext_keyuse(KEYUSE_EXT *a, KEYUSE_EXT *b)
 static void
 sort_ext_keyuses(Dynamic_array<KEYUSE_EXT> *keyuses)
 {
+  APPENDFUNC;
   KEYUSE_EXT *first_keyuse= &keyuses->at(0);
   my_qsort(first_keyuse, keyuses->elements(), sizeof(KEYUSE_EXT),
            (qsort_cmp) sort_ext_keyuse);
@@ -701,6 +713,7 @@ static bool
 add_ext_keyuses_for_splitting_field(Dynamic_array<KEYUSE_EXT> *ext_keyuses,
                                     KEY_FIELD *added_key_field)
 {
+  APPENDFUNC;
   Field *field= added_key_field->field;
   TABLE *table= field->table;
   for (uint key= 0; key < table->s->keys; key++)
@@ -732,6 +745,7 @@ add_ext_keyuses_for_splitting_field(Dynamic_array<KEYUSE_EXT> *ext_keyuses,
 static
 double spl_postjoin_oper_cost(THD *thd, double join_record_count, uint rec_len)
 {
+  APPENDFUNC;
   double cost;
   TMPTABLE_COSTS tmp_cost= get_tmp_table_costs(thd, join_record_count,
                                                rec_len, 0, 1);
@@ -774,6 +788,7 @@ double spl_postjoin_oper_cost(THD *thd, double join_record_count, uint rec_len)
 
 void JOIN::add_keyuses_for_splitting()
 {
+  APPENDFUNC;
   uint i;
   size_t idx;
   KEYUSE_EXT *keyuse_ext;
@@ -869,6 +884,7 @@ err:
 
 void JOIN_TAB::add_keyuses_for_splitting()
 {
+  APPENDFUNC;
   DBUG_ASSERT(table->spl_opt_info != NULL);
   SplM_opt_info *spl_opt_info= table->spl_opt_info;
   spl_opt_info->join->add_keyuses_for_splitting();
@@ -882,6 +898,7 @@ void JOIN_TAB::add_keyuses_for_splitting()
 
 SplM_plan_info *SplM_opt_info::find_plan(TABLE *table, uint key, uint parts)
 {
+  APPENDFUNC;
   List_iterator_fast<SplM_plan_info> li(plan_cache);
   SplM_plan_info *spl_plan;
   while ((spl_plan= li++))
@@ -906,6 +923,7 @@ void reset_validity_vars_for_keyuses(KEYUSE_EXT *key_keyuse_ext_start,
                                      table_map excluded_tables,
                                      bool validity_val)
 {
+  APPENDFUNC;
   KEYUSE_EXT *keyuse_ext= key_keyuse_ext_start;
   do
   {
@@ -963,6 +981,7 @@ SplM_plan_info * JOIN_TAB::choose_best_splitting(uint idx,
                                                  const POSITION *join_positions,
                                                  table_map *spl_pd_boundary)
 {
+  APPENDFUNC;
   SplM_opt_info *spl_opt_info= table->spl_opt_info;
   DBUG_ASSERT(spl_opt_info != NULL);
   JOIN *join= spl_opt_info->join;
@@ -1223,6 +1242,7 @@ SplM_plan_info * JOIN_TAB::choose_best_splitting(uint idx,
 
 bool JOIN::inject_best_splitting_cond(table_map excluded_tables)
 {
+  APPENDFUNC;
   Item *inj_cond= 0;
   List<Item> *inj_cond_list= &spl_opt_info->inj_cond_list;
   List_iterator<KEY_FIELD> li(spl_opt_info->added_key_fields);
@@ -1271,6 +1291,7 @@ bool JOIN::inject_best_splitting_cond(table_map excluded_tables)
 
 bool is_eq_cond_injected_for_split_opt(Item_func_eq *eq_item)
 {
+  APPENDFUNC;
   Item *left_item= eq_item->arguments()[0]->real_item();
   if (left_item->type() != Item::FIELD_ITEM)
     return false;
@@ -1315,6 +1336,7 @@ bool JOIN_TAB::fix_splitting(SplM_plan_info *spl_plan,
                              table_map excluded_tables,
                              bool is_const_table)
 {
+  APPENDFUNC;
   SplM_opt_info *spl_opt_info= table->spl_opt_info;
   DBUG_ASSERT(table->spl_opt_info != 0);
   JOIN *md_join= spl_opt_info->join;
@@ -1358,6 +1380,7 @@ bool JOIN_TAB::fix_splitting(SplM_plan_info *spl_plan,
 
 bool JOIN::fix_all_splittings_in_plan()
 {
+  APPENDFUNC;
   table_map prev_tables= 0;
   table_map all_tables= (table_map(1) << table_count) - 1;
   for (uint tablenr= 0; tablenr < table_count; tablenr++)
@@ -1409,6 +1432,7 @@ bool JOIN::fix_all_splittings_in_plan()
 
 bool JOIN::inject_splitting_cond_for_all_tables_with_split_opt()
 {
+  APPENDFUNC;
   table_map prev_tables= 0;
   table_map all_tables= (table_map(1) << table_count) - 1;
   for (uint tablenr= 0; tablenr < table_count; tablenr++)

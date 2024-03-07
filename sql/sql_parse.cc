@@ -393,6 +393,7 @@ const LEX_CSTRING command_name[257]={
 */
 inline bool all_tables_not_ok(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   Rpl_filter *rpl_filter= thd->system_thread_info.rpl_sql_info->rpl_filter;
   return rpl_filter->is_on() && tables && !thd->spcont &&
          !rpl_filter->tables_ok(thd->db.str, tables);
@@ -402,6 +403,7 @@ inline bool all_tables_not_ok(THD *thd, TABLE_LIST *tables)
 
 static bool some_non_temp_table_to_be_updated(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   for (TABLE_LIST *table= tables; table; table= table->next_global)
   {
     DBUG_ASSERT(table->db.str && table->table_name.str);
@@ -423,6 +425,7 @@ static bool some_non_temp_table_to_be_updated(THD *thd, TABLE_LIST *tables)
 */
 bool stmt_causes_implicit_commit(THD *thd, uint mask)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   bool skip= FALSE;
   DBUG_ENTER("stmt_causes_implicit_commit");
@@ -478,6 +481,7 @@ uint server_command_flags[COM_END+1];
 
 void init_update_queries(void)
 {
+  APPENDFUNC;
   /* Initialize the server command flags array. */
   memset(server_command_flags, 0, sizeof(server_command_flags));
 
@@ -897,12 +901,14 @@ void init_update_queries(void)
 
 bool sqlcom_can_generate_row_events(const THD *thd)
 {
+  APPENDFUNC;
   return (sql_command_flags[thd->lex->sql_command] &
           CF_CAN_GENERATE_ROW_EVENTS);
 }
  
 bool is_update_query(enum enum_sql_command command)
 {
+  APPENDFUNC;
   DBUG_ASSERT(command <= SQLCOM_END);
   return (sql_command_flags[command] & CF_CHANGES_DATA) != 0;
 }
@@ -914,6 +920,7 @@ bool is_update_query(enum enum_sql_command command)
 */
 bool is_log_table_write_query(enum enum_sql_command command)
 {
+  APPENDFUNC;
   DBUG_ASSERT(command <= SQLCOM_END);
   return (sql_command_flags[command] & CF_WRITE_LOGS_COMMAND) != 0;
 }
@@ -921,6 +928,7 @@ bool is_log_table_write_query(enum enum_sql_command command)
 void execute_init_command(THD *thd, LEX_STRING *init_command,
                           mysql_rwlock_t *var_lock)
 {
+  APPENDFUNC;
   Vio* save_vio;
   ulonglong save_client_capabilities;
 
@@ -959,6 +967,7 @@ void execute_init_command(THD *thd, LEX_STRING *init_command,
 
 static char *fgets_fn(char *buffer, size_t size, fgets_input_t input, int *error)
 {
+  APPENDFUNC;
   MYSQL_FILE *in= static_cast<MYSQL_FILE*> (input);
   char *line= mysql_file_fgets(buffer, (int)size, in);
   if (unlikely(error))
@@ -969,6 +978,7 @@ static char *fgets_fn(char *buffer, size_t size, fgets_input_t input, int *error
 
 int bootstrap(MYSQL_FILE *file)
 {
+  APPENDFUNC;
   int bootstrap_error= 0;
   DBUG_ENTER("handle_bootstrap");
 
@@ -1104,6 +1114,7 @@ int bootstrap(MYSQL_FILE *file)
 
 void free_items(Item *item)
 {
+  APPENDFUNC;
   Item *next;
   DBUG_ENTER("free_items");
   for (; item ; item=next)
@@ -1120,6 +1131,7 @@ void free_items(Item *item)
 */
 void cleanup_items(Item *item)
 {
+  APPENDFUNC;
   DBUG_ENTER("cleanup_items");  
   for (; item ; item=item->next)
     item->cleanup();
@@ -1129,6 +1141,7 @@ void cleanup_items(Item *item)
 #ifdef WITH_WSREP
 static bool wsrep_tables_accessible_when_detached(const TABLE_LIST *tables)
 {
+  APPENDFUNC;
   for (const TABLE_LIST *table= tables; table; table= table->next_global)
   {
     LEX_CSTRING db= table->db, tn= table->table_name;
@@ -1140,6 +1153,7 @@ static bool wsrep_tables_accessible_when_detached(const TABLE_LIST *tables)
 
 static bool wsrep_command_no_result(char command)
 {
+  APPENDFUNC;
   return (command == COM_STMT_FETCH            ||
           command == COM_STMT_SEND_LONG_DATA   ||
           command == COM_STMT_CLOSE);
@@ -1148,6 +1162,7 @@ static bool wsrep_command_no_result(char command)
 #ifndef EMBEDDED_LIBRARY
 static enum enum_server_command fetch_command(THD *thd, char *packet)
 {
+  APPENDFUNC;
   enum enum_server_command
     command= (enum enum_server_command) (uchar) packet[0];
   DBUG_ENTER("fetch_command");
@@ -1193,6 +1208,7 @@ static enum enum_server_command fetch_command(THD *thd, char *packet)
 
 dispatch_command_return do_command(THD *thd, bool blocking)
 {
+  APPENDFUNC;
   dispatch_command_return return_value;
   char *packet= 0;
   ulong packet_length;
@@ -1459,6 +1475,7 @@ out:
 
 static bool deny_updates_if_read_only_option(THD *thd, TABLE_LIST *all_tables)
 {
+  APPENDFUNC;
   DBUG_ENTER("deny_updates_if_read_only_option");
 
   if (!opt_readonly)
@@ -1506,6 +1523,7 @@ static bool deny_updates_if_read_only_option(THD *thd, TABLE_LIST *all_tables)
 #ifdef WITH_WSREP
 static void wsrep_copy_query(THD *thd)
 {
+  APPENDFUNC;
   thd->wsrep_retry_command   = thd->get_command();
   thd->wsrep_retry_query_len = thd->query_length();
   if (thd->wsrep_retry_query) {
@@ -1576,6 +1594,7 @@ public:
 dispatch_command_return dispatch_command(enum enum_server_command command, THD *thd,
 		      char* packet, uint packet_length, bool blocking)
 {
+  APPENDFUNC;
   NET *net= &thd->net;
   bool error= 0;
   bool do_end_of_statement= true;
@@ -2475,6 +2494,7 @@ resume:
 
 static bool slow_filter_masked(THD *thd, ulonglong mask)
 {
+  APPENDFUNC;
   return thd->variables.log_slow_filter && !(thd->variables.log_slow_filter & mask);
 }
 
@@ -2487,6 +2507,7 @@ static bool slow_filter_masked(THD *thd, ulonglong mask)
 
 void log_slow_statement(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("log_slow_statement");
 
   /*
@@ -2595,6 +2616,7 @@ end:
 int prepare_schema_table(THD *thd, LEX *lex, Table_ident *table_ident,
                          enum enum_schema_tables schema_table_idx)
 {
+  APPENDFUNC;
   SELECT_LEX *schema_select_lex= NULL;
   DBUG_ENTER("prepare_schema_table");
 
@@ -2697,6 +2719,7 @@ int prepare_schema_table(THD *thd, LEX *lex, Table_ident *table_ident,
 
 bool alloc_query(THD *thd, const char *packet, size_t packet_length)
 {
+  APPENDFUNC;
   char *query;
   /* Remove garbage at start and end of query */
   while (packet_length > 0 && my_isspace(thd->charset(), packet[0]))
@@ -2747,6 +2770,7 @@ bool alloc_query(THD *thd, const char *packet, size_t packet_length)
 
 bool sp_process_definer(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("sp_process_definer");
 
   LEX *lex= thd->lex;
@@ -2849,6 +2873,7 @@ bool sp_process_definer(THD *thd)
 static bool __attribute__ ((noinline))
 lock_tables_open_and_lock_tables(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   Lock_tables_prelocking_strategy lock_tables_prelocking_strategy;
   MDL_deadlock_and_lock_abort_error_handler deadlock_handler;
   MDL_savepoint mdl_savepoint= thd->mdl_context.mdl_savepoint();
@@ -2993,6 +3018,7 @@ err:
 
 static bool do_execute_sp(THD *thd, sp_head *sp)
 {
+  APPENDFUNC;
   /* bits that should be cleared in thd->server_status */
   uint bits_to_be_cleared= 0;
   ulonglong affected_rows;
@@ -3051,6 +3077,7 @@ static bool do_execute_sp(THD *thd, sp_head *sp)
 static int __attribute__ ((noinline))
 mysql_create_routine(THD *thd, LEX *lex)
 {
+  APPENDFUNC;
   DBUG_ASSERT(lex->sphead != 0);
   DBUG_ASSERT(lex->sphead->m_db.str); /* Must be initialized in the parser */
   DBUG_ASSERT(lower_case_table_names != 1 ||
@@ -3184,6 +3211,7 @@ wsrep_error_label:
 static bool prepare_db_action(THD *thd, privilege_t want_access,
                               const Lex_ident_db &dbname)
 {
+  APPENDFUNC;
   /*
     If in a slave thread :
     - CREATE DATABASE DB was certainly not preceded by USE DB.
@@ -3200,6 +3228,7 @@ static bool prepare_db_action(THD *thd, privilege_t want_access,
 
 bool Sql_cmd_call::execute(THD *thd)
 {
+  APPENDFUNC;
   TABLE_LIST *all_tables= thd->lex->query_tables;
   sp_head *sp;
   /*
@@ -3279,6 +3308,7 @@ bool Sql_cmd_call::execute(THD *thd)
 
 bool run_set_statement_if_requested(THD *thd, LEX *lex)
 {
+  APPENDFUNC;
   if (!lex->stmt_var_list.is_empty() && !thd->slave_thread)
   {
     Query_arena backup;
@@ -3429,6 +3459,7 @@ bool run_set_statement_if_requested(THD *thd, LEX *lex)
 int
 mysql_execute_command(THD *thd, bool is_called_from_prepared_stmt)
 {
+  APPENDFUNC;
   int res= 0;
   LEX  *lex= thd->lex;
   /* first SELECT_LEX (have special meaning for many of non-SELECTcommands) */
@@ -5983,6 +6014,7 @@ finish:
 
 static bool execute_sqlcom_select(THD *thd, TABLE_LIST *all_tables)
 {
+  APPENDFUNC;
   LEX	*lex= thd->lex;
   select_result *result=lex->result;
   bool res;
@@ -6113,6 +6145,7 @@ static bool execute_sqlcom_select(THD *thd, TABLE_LIST *all_tables)
 static bool __attribute__ ((noinline))
 execute_show_status(THD *thd, TABLE_LIST *all_tables)
 {
+  APPENDFUNC;
   bool res;
   system_status_var old_status_var= thd->status_var;
   thd->initial_status_var= &old_status_var;
@@ -6163,6 +6196,7 @@ static TABLE *find_temporary_table_for_rename(THD *thd,
                                               TABLE_LIST *first_table,
                                               TABLE_LIST *cur_table)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   TABLE *res= 0;
   bool found= 0;
@@ -6203,6 +6237,7 @@ static bool __attribute__ ((noinline))
 check_rename_table(THD *thd, TABLE_LIST *first_table,
                    TABLE_LIST *all_tables)
 {
+  APPENDFUNC;
   DBUG_ASSERT(first_table == all_tables && first_table != 0);
   TABLE_LIST *table;
   for (table= first_table; table; table= table->next_local->next_local)
@@ -6255,6 +6290,7 @@ check_rename_table(THD *thd, TABLE_LIST *first_table,
 #ifndef DBUG_OFF
 static bool __attribute__ ((noinline)) generate_incident_event(THD *thd)
 {
+  APPENDFUNC;
   if (mysql_bin_log.is_open())
   {
 
@@ -6276,6 +6312,7 @@ static bool __attribute__ ((noinline)) generate_incident_event(THD *thd)
 #else
 static bool generate_incident_event(THD *thd)
 {
+  APPENDFUNC;
   return 0;
 }
 #endif
@@ -6284,6 +6321,7 @@ static bool generate_incident_event(THD *thd)
 static int __attribute__ ((noinline))
 show_create_db(THD *thd, LEX *lex)
 {
+  APPENDFUNC;
   DBUG_EXECUTE_IF("4x_server_emul",
                   my_error(ER_UNKNOWN_ERROR, MYF(0)); return 1;);
 
@@ -6302,6 +6340,7 @@ show_create_db(THD *thd, LEX *lex)
 static bool __attribute__ ((noinline))
 alter_routine(THD *thd, LEX *lex)
 {
+  APPENDFUNC;
   int sp_result;
   const Sp_handler *sph= Sp_handler::handler(lex->sql_command);
   if (check_routine_access(thd, ALTER_PROC_ACL, &lex->spname->m_db,
@@ -6335,6 +6374,7 @@ alter_routine(THD *thd, LEX *lex)
 static bool __attribute__ ((noinline))
 drop_routine(THD *thd, LEX *lex)
 {
+  APPENDFUNC;
   int sp_result;
 #ifdef HAVE_DLOPEN
   if (lex->sql_command == SQLCOM_DROP_FUNCTION &&
@@ -6484,6 +6524,7 @@ check_access(THD *thd, privilege_t want_access,
              GRANT_INTERNAL_INFO *grant_internal_info,
              bool dont_check_global_grants, bool no_errors)
 {
+  APPENDFUNC;
 #ifdef NO_EMBEDDED_ACCESS_CHECKS
   if (save_priv)
     *save_priv= GLOBAL_ACLS;
@@ -6694,6 +6735,7 @@ check_access(THD *thd, privilege_t want_access,
 bool check_single_table_access(THD *thd, privilege_t privilege,
                                TABLE_LIST *tables, bool no_errors)
 {
+  APPENDFUNC;
   if (tables->derived)
     return 0;
 
@@ -6735,6 +6777,7 @@ bool check_single_table_access(THD *thd, privilege_t privilege,
 bool check_one_table_access(THD *thd, privilege_t privilege,
                             TABLE_LIST *all_tables)
 {
+  APPENDFUNC;
   if (check_single_table_access (thd,privilege,all_tables, FALSE))
     return 1;
 
@@ -6763,6 +6806,7 @@ bool check_one_table_access(THD *thd, privilege_t privilege,
 
 static bool check_show_access(THD *thd, TABLE_LIST *table)
 {
+  APPENDFUNC;
   /*
     This is a SHOW command using an INFORMATION_SCHEMA table.
     check_access() has not been called for 'table',
@@ -6890,6 +6934,7 @@ check_table_access(THD *thd, privilege_t requirements, TABLE_LIST *tables,
                    bool any_combination_of_privileges_will_do,
                    uint number, bool no_errors)
 {
+  APPENDFUNC;
   TABLE_LIST *org_tables= tables;
   TABLE_LIST *first_not_own_table= thd->lex->first_not_own_table();
   uint i= 0;
@@ -6953,6 +6998,7 @@ check_routine_access(THD *thd, privilege_t want_access, const LEX_CSTRING *db,
                      const LEX_CSTRING *name,
                      const Sp_handler *sph, bool no_errors)
 {
+  APPENDFUNC;
   TABLE_LIST tables[1];
   
   bzero((char *)tables, sizeof(TABLE_LIST));
@@ -7000,6 +7046,7 @@ check_routine_access(THD *thd, privilege_t want_access, const LEX_CSTRING *db,
 bool check_some_routine_access(THD *thd, const char *db, const char *name,
                                const Sp_handler *sph)
 {
+  APPENDFUNC;
   privilege_t save_priv(NO_ACL);
   /*
     The following test is just a shortcut for check_access() (to avoid
@@ -7035,6 +7082,7 @@ bool check_some_routine_access(THD *thd, const char *db, const char *name,
 
 bool check_some_access(THD *thd, privilege_t want_access, TABLE_LIST *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("check_some_access");
 
   for (ulonglong bit= 1; bit < (ulonglong) want_access ; bit<<= 1)
@@ -7075,6 +7123,7 @@ bool check_some_access(THD *thd, privilege_t want_access, TABLE_LIST *table)
 
 bool check_global_access(THD *thd, privilege_t want_access, bool no_errors)
 {
+  APPENDFUNC;
 #ifndef NO_EMBEDDED_ACCESS_CHECKS
   char command[128];
   if (thd->security_ctx->master_access & want_access)
@@ -7112,6 +7161,7 @@ bool check_fk_parent_table_access(THD *thd,
                                   Alter_info *alter_info,
                                   const LEX_CSTRING &create_db)
 {
+  APPENDFUNC;
   Key *key;
   List_iterator<Key> key_iterator(alter_info->key_list);
 
@@ -7218,6 +7268,7 @@ __attribute__((optimize("-O0")))
 #endif
 check_stack_overrun(THD *thd, long margin, uchar *buf __attribute__((unused)))
 {
+  APPENDFUNC;
   long stack_used;
   DBUG_ASSERT(thd == current_thd);
   if ((stack_used= available_stack_size(thd->thread_stack, &stack_used)) >=
@@ -7249,6 +7300,7 @@ check_stack_overrun(THD *thd, long margin, uchar *buf __attribute__((unused)))
 
 bool my_yyoverflow(short **yyss, YYSTYPE **yyvs, size_t *yystacksize)
 {
+  APPENDFUNC;
   Yacc_state *state= & current_thd->m_parser_state->m_yacc;
   size_t old_info=0;
   DBUG_ASSERT(state);
@@ -7297,6 +7349,7 @@ bool my_yyoverflow(short **yyss, YYSTYPE **yyvs, size_t *yystacksize)
 
 void THD::reset_for_next_command(bool do_clear_error)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::reset_for_next_command");
   DBUG_ASSERT(!spcont); /* not for substatements of routines */
   DBUG_ASSERT(!in_sub_stmt);
@@ -7410,6 +7463,7 @@ void THD::reset_for_next_command(bool do_clear_error)
 bool
 mysql_new_select(LEX *lex, bool move_down, SELECT_LEX *select_lex)
 {
+  APPENDFUNC;
   THD *thd= lex->thd;
   bool new_select= select_lex == NULL;
   int old_nest_level= lex->current_select->nest_level;
@@ -7505,6 +7559,7 @@ mysql_new_select(LEX *lex, bool move_down, SELECT_LEX *select_lex)
 
 void create_select_for_variable(THD *thd, LEX_CSTRING *var_name)
 {
+  APPENDFUNC;
   LEX *lex;
   Item *var;
   char buff[MAX_SYS_VAR_LENGTH*2+4+8], *end;
@@ -7529,6 +7584,7 @@ void create_select_for_variable(THD *thd, LEX_CSTRING *var_name)
 
 void mysql_init_delete(LEX *lex)
 {
+  APPENDFUNC;
   lex->init_select();
   lex->first_select_lex()->limit_params.clear();
   lex->unit.lim.clear();
@@ -7536,6 +7592,7 @@ void mysql_init_delete(LEX *lex)
 
 void mysql_init_multi_delete(LEX *lex)
 {
+  APPENDFUNC;
   lex->sql_command=  SQLCOM_DELETE_MULTI;
   lex->first_select_lex()->table_list.
     save_and_clear(&lex->auxiliary_table_list);
@@ -7549,6 +7606,7 @@ static void wsrep_prepare_for_autocommit_retry(THD* thd,
                                                uint length,
                                                Parser_state* parser_state)
 {
+  APPENDFUNC;
   thd->clear_error();
   close_thread_tables(thd);
   thd->wsrep_retry_counter++;            // grow
@@ -7598,6 +7656,7 @@ static void wsrep_prepare_for_autocommit_retry(THD* thd,
 static bool wsrep_mysql_parse(THD *thd, char *rawbuf, uint length,
                               Parser_state *parser_state)
 {
+  APPENDFUNC;
   bool is_autocommit=
     !thd->in_multi_stmt_transaction_mode()                  &&
     !thd->wsrep_applier;
@@ -7720,6 +7779,7 @@ static bool wsrep_mysql_parse(THD *thd, char *rawbuf, uint length,
 void mysql_parse(THD *thd, char *rawbuf, uint length,
                  Parser_state *parser_state)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysql_parse");
   DBUG_EXECUTE_IF("parser_debug", turn_parser_debug_on_MYSQLparse(););
   DBUG_EXECUTE_IF("parser_debug", turn_parser_debug_on_ORAparse(););
@@ -7854,6 +7914,7 @@ void mysql_parse(THD *thd, char *rawbuf, uint length,
 
 bool mysql_test_parse_for_slave(THD *thd, char *rawbuf, uint length)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   bool error= 0;
   DBUG_ENTER("mysql_test_parse_for_slave");
@@ -7878,6 +7939,7 @@ bool mysql_test_parse_for_slave(THD *thd, char *rawbuf, uint length)
 bool
 add_proc_to_list(THD* thd, Item *item)
 {
+  APPENDFUNC;
   ORDER *order;
   Item	**item_ptr;
 
@@ -7897,6 +7959,7 @@ add_proc_to_list(THD* thd, Item *item)
 
 bool add_to_list(THD *thd, SQL_I_List<ORDER> &list, Item *item,bool asc)
 {
+  APPENDFUNC;
   ORDER *order;
   DBUG_ENTER("add_to_list");
   if (unlikely(!(order = (ORDER *) thd->alloc(sizeof(ORDER)))))
@@ -7961,6 +8024,7 @@ TABLE_LIST *st_select_lex::add_table_to_list(THD *thd,
                                              List<String> *partition_names,
                                              LEX_STRING *option)
 {
+  APPENDFUNC;
   TABLE_LIST *ptr;
   TABLE_LIST *UNINIT_VAR(previous_table_ref); /* The table preceding the current one. */
   LEX_CSTRING alias_str;
@@ -8148,6 +8212,7 @@ TABLE_LIST *st_select_lex::add_table_to_list(THD *thd,
 
 bool st_select_lex::init_nested_join(THD *thd)
 {
+  APPENDFUNC;
   TABLE_LIST *ptr;
   NESTED_JOIN *nested_join;
   DBUG_ENTER("init_nested_join");
@@ -8185,6 +8250,7 @@ bool st_select_lex::init_nested_join(THD *thd)
 
 TABLE_LIST *st_select_lex::end_nested_join(THD *thd)
 {
+  APPENDFUNC;
   TABLE_LIST *ptr;
   NESTED_JOIN *nested_join;
   DBUG_ENTER("end_nested_join");
@@ -8228,6 +8294,7 @@ TABLE_LIST *st_select_lex::end_nested_join(THD *thd)
 
 TABLE_LIST *st_select_lex::nest_last_join(THD *thd)
 {
+  APPENDFUNC;
   TABLE_LIST *ptr;
   NESTED_JOIN *nested_join;
   List<TABLE_LIST> *embedded_list;
@@ -8294,6 +8361,7 @@ TABLE_LIST *st_select_lex::nest_last_join(THD *thd)
 
 void st_select_lex::add_joined_table(TABLE_LIST *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("add_joined_table");
   join_list->push_front(table, parent_lex->thd->mem_root);
   table->join_list= join_list;
@@ -8458,6 +8526,7 @@ bool st_select_lex::add_cross_joined_table(TABLE_LIST *left_op,
                                            TABLE_LIST *right_op,
                                            bool straight_fl)
 {
+  APPENDFUNC;
   DBUG_ENTER("add_cross_joined_table");
   THD *thd= parent_lex->thd;
   if (!(right_op->nested_join &&
@@ -8606,6 +8675,7 @@ bool st_select_lex::add_cross_joined_table(TABLE_LIST *left_op,
 
 TABLE_LIST *st_select_lex::convert_right_join()
 {
+  APPENDFUNC;
   TABLE_LIST *tab2= join_list->pop();
   TABLE_LIST *tab1= join_list->pop();
   DBUG_ENTER("convert_right_join");
@@ -8620,6 +8690,7 @@ TABLE_LIST *st_select_lex::convert_right_join()
 
 void st_select_lex::prepare_add_window_spec(THD *thd)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   save_group_list= group_list;
   save_order_list= order_list;
@@ -8638,6 +8709,7 @@ bool st_select_lex::add_window_def(THD *thd,
                                    SQL_I_List<ORDER> win_order_list,
                                    Window_frame *win_frame)
 {
+  APPENDFUNC;
   SQL_I_List<ORDER> *win_part_list_ptr=
     new (thd->mem_root) SQL_I_List<ORDER> (win_partition_list);
   SQL_I_List<ORDER> *win_order_list_ptr=
@@ -8666,6 +8738,7 @@ bool st_select_lex::add_window_spec(THD *thd,
                                     SQL_I_List<ORDER> win_order_list,
                                     Window_frame *win_frame)
 {
+  APPENDFUNC;
   SQL_I_List<ORDER> *win_part_list_ptr=
     new (thd->mem_root) SQL_I_List<ORDER> (win_partition_list);
   SQL_I_List<ORDER> *win_order_list_ptr=
@@ -8703,6 +8776,7 @@ bool st_select_lex::add_window_spec(THD *thd,
 void st_select_lex::set_lock_for_tables(thr_lock_type lock_type, bool for_update,
 					bool skip_locked_arg)
 {
+  APPENDFUNC;
   DBUG_ENTER("set_lock_for_tables");
   DBUG_PRINT("enter", ("lock_type: %d  for_update: %d  skip_locked %d",
                        lock_type, for_update, skip_locked));
@@ -8751,6 +8825,7 @@ void st_select_lex::set_lock_for_tables(thr_lock_type lock_type, bool for_update
 
 bool st_select_lex_unit::add_fake_select_lex(THD *thd_arg)
 {
+  APPENDFUNC;
   SELECT_LEX *first_sl= first_select();
   DBUG_ENTER("st_select_lex_unit::add_fake_select_lex");
   DBUG_ASSERT(!fake_select_lex);
@@ -8818,6 +8893,7 @@ bool
 push_new_name_resolution_context(THD *thd,
                                  TABLE_LIST *left_op, TABLE_LIST *right_op)
 {
+  APPENDFUNC;
   Name_resolution_context *on_context;
   if (!(on_context= new (thd->mem_root) Name_resolution_context))
     return TRUE;
@@ -8843,6 +8919,7 @@ push_new_name_resolution_context(THD *thd,
 
 Item *normalize_cond(THD *thd, Item *cond)
 {
+  APPENDFUNC;
   if (cond)
   {
     Item::Type type= cond->type();
@@ -8871,6 +8948,7 @@ Item *normalize_cond(THD *thd, Item *cond)
 
 void add_join_on(THD *thd, TABLE_LIST *b, Item *expr)
 {
+  APPENDFUNC;
   if (expr)
   {
     expr= normalize_cond(thd, expr);
@@ -8926,6 +9004,7 @@ void add_join_on(THD *thd, TABLE_LIST *b, Item *expr)
 void add_join_natural(TABLE_LIST *a, TABLE_LIST *b, List<String> *using_fields,
                       SELECT_LEX *lex)
 {
+  APPENDFUNC;
   b->natural_join= a;
   lex->prev_join_using= using_fields;
 }
@@ -8953,6 +9032,7 @@ struct find_thread_callback_arg
 
 static my_bool find_thread_callback(THD *thd, find_thread_callback_arg *arg)
 {
+  APPENDFUNC;
   if (arg->id == (arg->query_id ? thd->query_id : (longlong) thd->thread_id))
   {
     mysql_mutex_lock(&thd->LOCK_thd_kill);    // Lock from delete
@@ -8965,6 +9045,7 @@ static my_bool find_thread_callback(THD *thd, find_thread_callback_arg *arg)
 
 THD *find_thread_by_id(longlong id, bool query_id)
 {
+  APPENDFUNC;
   find_thread_callback_arg arg(id, query_id);
   server_threads.iterate(find_thread_callback, &arg);
   return arg.thd;
@@ -8983,6 +9064,7 @@ THD *find_thread_by_id(longlong id, bool query_id)
 uint
 kill_one_thread(THD *thd, my_thread_id id, killed_state kill_signal, killed_type type)
 {
+  APPENDFUNC;
   THD *tmp;
   uint error= (type == KILL_TYPE_QUERY ? ER_NO_SUCH_QUERY : ER_NO_SUCH_THREAD);
   DBUG_ENTER("kill_one_thread");
@@ -9077,6 +9159,7 @@ struct kill_threads_callback_arg
 
 static my_bool kill_threads_callback(THD *thd, kill_threads_callback_arg *arg)
 {
+  APPENDFUNC;
   if (thd->security_ctx->user)
   {
     /*
@@ -9108,6 +9191,7 @@ static my_bool kill_threads_callback(THD *thd, kill_threads_callback_arg *arg)
 static uint kill_threads_for_user(THD *thd, LEX_USER *user,
                                   killed_state kill_signal, ha_rows *rows)
 {
+  APPENDFUNC;
   kill_threads_callback_arg arg(thd, user);
   DBUG_ENTER("kill_threads_for_user");
 
@@ -9160,6 +9244,7 @@ static uint kill_threads_for_user(THD *thd, LEX_USER *user,
 static
 void sql_kill(THD *thd, my_thread_id id, killed_state state, killed_type type)
 {
+  APPENDFUNC;
   uint error;
   if (likely(!(error= kill_one_thread(thd, id, state, type))))
   {
@@ -9176,6 +9261,7 @@ void sql_kill(THD *thd, my_thread_id id, killed_state state, killed_type type)
 static void __attribute__ ((noinline))
 sql_kill_user(THD *thd, LEX_USER *user, killed_state state)
 {
+  APPENDFUNC;
   uint error;
   ha_rows rows;
   switch (error= kill_threads_for_user(thd, user, state, &rows))
@@ -9201,6 +9287,7 @@ sql_kill_user(THD *thd, LEX_USER *user, killed_state state)
 bool append_file_to_dir(THD *thd, const char **filename_ptr,
                         const LEX_CSTRING *table_name)
 {
+  APPENDFUNC;
   char buff[FN_REFLEN],*ptr, *end;
   if (!*filename_ptr)
     return 0;					// nothing to do
@@ -9226,36 +9313,42 @@ bool append_file_to_dir(THD *thd, const char **filename_ptr,
 
 Comp_creator *comp_eq_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&ne_creator:(Comp_creator *)&eq_creator;
 }
 
 
 Comp_creator *comp_ge_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&lt_creator:(Comp_creator *)&ge_creator;
 }
 
 
 Comp_creator *comp_gt_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&le_creator:(Comp_creator *)&gt_creator;
 }
 
 
 Comp_creator *comp_le_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&gt_creator:(Comp_creator *)&le_creator;
 }
 
 
 Comp_creator *comp_lt_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&ge_creator:(Comp_creator *)&lt_creator;
 }
 
 
 Comp_creator *comp_ne_creator(bool invert)
 {
+  APPENDFUNC;
   return invert?(Comp_creator *)&eq_creator:(Comp_creator *)&ne_creator;
 }
 
@@ -9276,6 +9369,7 @@ Item * all_any_subquery_creator(THD *thd, Item *left_expr,
 				bool all,
 				SELECT_LEX *select_lex)
 {
+  APPENDFUNC;
   if ((cmp == &comp_eq_creator) && !all)       //  = ANY <=> IN
     return new (thd->mem_root) Item_in_subselect(thd, left_expr, select_lex);
 
@@ -9308,6 +9402,7 @@ Item * all_any_subquery_creator(THD *thd, Item *left_expr,
 
 bool multi_update_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   LEX *lex= thd->lex;
   SELECT_LEX *select_lex= lex->first_select_lex();
@@ -9380,6 +9475,7 @@ bool multi_update_precheck(THD *thd, TABLE_LIST *tables)
 
 bool multi_delete_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   SELECT_LEX *select_lex= thd->lex->first_select_lex();
   TABLE_LIST *aux_tables= thd->lex->auxiliary_table_list.first;
   TABLE_LIST **save_query_tables_own_last= thd->lex->query_tables_own_last;
@@ -9446,6 +9542,7 @@ bool multi_delete_precheck(THD *thd, TABLE_LIST *tables)
 static TABLE_LIST *multi_delete_table_match(LEX *lex, TABLE_LIST *tbl,
                                             TABLE_LIST *tables)
 {
+  APPENDFUNC;
   TABLE_LIST *match= NULL;
   DBUG_ENTER("multi_delete_table_match");
 
@@ -9497,6 +9594,7 @@ static TABLE_LIST *multi_delete_table_match(LEX *lex, TABLE_LIST *tbl,
 
 bool multi_delete_set_locks_and_link_aux_tables(LEX *lex)
 {
+  APPENDFUNC;
   TABLE_LIST *tables= lex->first_select_lex()->table_list.first;
   TABLE_LIST *target_tbl;
   DBUG_ENTER("multi_delete_set_locks_and_link_aux_tables");
@@ -9538,6 +9636,7 @@ bool multi_delete_set_locks_and_link_aux_tables(LEX *lex)
 
 bool update_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   DBUG_ENTER("update_precheck");
   if (thd->lex->first_select_lex()->item_list.elements !=
       thd->lex->value_list.elements)
@@ -9563,6 +9662,7 @@ bool update_precheck(THD *thd, TABLE_LIST *tables)
 
 bool delete_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   DBUG_ENTER("delete_precheck");
   if (tables->vers_conditions.delete_history)
   {
@@ -9594,6 +9694,7 @@ bool delete_precheck(THD *thd, TABLE_LIST *tables)
 
 bool insert_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   DBUG_ENTER("insert_precheck");
 
@@ -9624,6 +9725,7 @@ bool insert_precheck(THD *thd, TABLE_LIST *tables)
 
 void create_table_set_open_action_and_adjust_tables(LEX *lex)
 {
+  APPENDFUNC;
   TABLE_LIST *create_table= lex->query_tables;
 
   if (lex->tmp_table())
@@ -9661,6 +9763,7 @@ void create_table_set_open_action_and_adjust_tables(LEX *lex)
 bool create_table_precheck(THD *thd, TABLE_LIST *tables,
                            TABLE_LIST *create_table)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   SELECT_LEX *select_lex= lex->first_select_lex();
   privilege_t want_priv{CREATE_ACL};
@@ -9770,6 +9873,7 @@ err:
 
 static bool lock_tables_precheck(THD *thd, TABLE_LIST *tables)
 {
+  APPENDFUNC;
   TABLE_LIST *first_not_own_table= thd->lex->first_not_own_table();
 
   for (TABLE_LIST *table= tables; table != first_not_own_table && table;
@@ -9799,6 +9903,7 @@ static bool lock_tables_precheck(THD *thd, TABLE_LIST *tables)
 
 Item *negate_expression(THD *thd, Item *expr)
 {
+  APPENDFUNC;
   Item *negated;
   if (expr->type() == Item::FUNC_ITEM &&
       ((Item_func *) expr)->functype() == Item_func::NOT_FUNC)
@@ -9831,6 +9936,7 @@ Item *negate_expression(THD *thd, Item *expr)
  
 void get_default_definer(THD *thd, LEX_USER *definer, bool role)
 {
+  APPENDFUNC;
   const Security_context *sctx= thd->security_ctx;
 
   if (role)
@@ -9862,6 +9968,7 @@ void get_default_definer(THD *thd, LEX_USER *definer, bool role)
 
 LEX_USER *create_default_definer(THD *thd, bool role)
 {
+  APPENDFUNC;
   LEX_USER *definer;
 
   if (unlikely(! (definer= (LEX_USER*) thd->alloc(sizeof(LEX_USER)))))
@@ -9895,6 +10002,7 @@ LEX_USER *create_default_definer(THD *thd, bool role)
 LEX_USER *create_definer(THD *thd, LEX_CSTRING *user_name,
                          LEX_CSTRING *host_name)
 {
+  APPENDFUNC;
   LEX_USER *definer;
 
   /* Create and initialize. */
@@ -9930,6 +10038,7 @@ LEX_USER *create_definer(THD *thd, LEX_CSTRING *user_name,
 bool check_string_byte_length(const LEX_CSTRING *str, uint err_msg,
                               size_t max_byte_length)
 {
+  APPENDFUNC;
   if (str->length <= max_byte_length)
     return FALSE;
 
@@ -9961,6 +10070,7 @@ bool check_string_char_length(const LEX_CSTRING *str, uint err_msg,
                               size_t max_char_length, CHARSET_INFO *cs,
                               bool no_error)
 {
+  APPENDFUNC;
   Well_formed_prefix prefix(cs, str->str, str->length, max_char_length);
   if (likely(!prefix.well_formed_error_pos() &&
              str->length == prefix.length()))
@@ -9979,6 +10089,7 @@ bool check_string_char_length(const LEX_CSTRING *str, uint err_msg,
 
 bool check_ident_length(const LEX_CSTRING *ident)
 {
+  APPENDFUNC;
   if (check_string_char_length(ident, 0, NAME_CHAR_LEN, system_charset_info, 1))
   {
     my_error(ER_TOO_LONG_IDENT, MYF(0), ident->str);
@@ -10003,6 +10114,7 @@ extern "C" {
 
 int path_starts_from_data_home_dir(const char *path)
 {
+  APPENDFUNC;
   size_t dir_len= strlen(path);
   DBUG_ENTER("path_starts_from_data_home_dir");
 
@@ -10049,6 +10161,7 @@ int path_starts_from_data_home_dir(const char *path)
 
 int test_if_data_home_dir(const char *dir)
 {
+  APPENDFUNC;
   char path[FN_REFLEN];
   DBUG_ENTER("test_if_data_home_dir");
 
@@ -10062,6 +10175,7 @@ int test_if_data_home_dir(const char *dir)
 
 int error_if_data_home_dir(const char *path, const char *what)
 {
+  APPENDFUNC;
   size_t dirlen;
   char   dirpath[FN_REFLEN];
   if (path)
@@ -10089,6 +10203,7 @@ int error_if_data_home_dir(const char *path, const char *what)
 
 bool check_host_name(LEX_CSTRING *str)
 {
+  APPENDFUNC;
   const char *name= str->str;
   const char *end= str->str + str->length;
   if (check_string_byte_length(str, ER_HOSTNAME, HOSTNAME_LENGTH))
@@ -10129,6 +10244,7 @@ extern int ORAparse(THD *thd);   // from yy_oracle.cc
 bool parse_sql(THD *thd, Parser_state *parser_state,
                Object_creation_ctx *creation_ctx, bool do_pfs_digest)
 {
+  APPENDFUNC;
   bool ret_value;
   DBUG_ENTER("parse_sql");
   DBUG_ASSERT(thd->m_parser_state == NULL);
@@ -10234,6 +10350,7 @@ bool parse_sql(THD *thd, Parser_state *parser_state,
 
 void LEX::mark_first_table_as_inserting()
 {
+  APPENDFUNC;
   TABLE_LIST *t= first_select_lex()->table_list.first;
   DBUG_ENTER("Query_tables_list::mark_tables_with_important_flags");
   DBUG_ASSERT(sql_command_flags[sql_command] & CF_INSERTS_DATA);

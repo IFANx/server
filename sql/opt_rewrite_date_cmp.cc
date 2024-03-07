@@ -36,6 +36,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
   thd(thd),
   result(item_func)
 {
+  APPENDFUNC;
   if (!check_cond_match_and_prepare(item_func))
     return;
 
@@ -61,6 +62,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
   thd(thd),
   result(item_func)
 {
+  APPENDFUNC;
   if (!check_cond_match_and_prepare(item_func))
     return;
   rewrite_le_gt_lt_ge();
@@ -72,6 +74,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
   thd(thd),
   result(item_func)
 {
+  APPENDFUNC;
   if (!check_cond_match_and_prepare(item_func))
     return;
   rewrite_le_gt_lt_ge();
@@ -83,6 +86,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
   thd(thd),
   result(item_func)
 {
+  APPENDFUNC;
   if (!check_cond_match_and_prepare(item_func))
     return;
   rewrite_le_gt_lt_ge();
@@ -94,6 +98,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
   thd(thd),
   result(item_func)
 {
+  APPENDFUNC;
   if (!check_cond_match_and_prepare(item_func))
     return;
   rewrite_le_gt_lt_ge();
@@ -103,6 +108,7 @@ Date_cmp_func_rewriter::Date_cmp_func_rewriter(THD* thd,
 bool Date_cmp_func_rewriter::check_cond_match_and_prepare(
     Item_bool_rowready_func2 *item_func)
 {
+  APPENDFUNC;
   if (thd->lex->is_ps_or_view_context_analysis())
   {
     DBUG_ASSERT(0);
@@ -168,6 +174,7 @@ Item_field *Date_cmp_func_rewriter::is_date_rounded_field(Item* item,
                                   const Type_handler *comparison_type,
                                   Item_func::Functype *out_func_type) const
 {
+  APPENDFUNC;
   if (item->type() != Item::FUNC_ITEM)
     return nullptr;
 
@@ -213,6 +220,7 @@ Item_field *Date_cmp_func_rewriter::is_date_rounded_field(Item* item,
 
 void Date_cmp_func_rewriter::rewrite_le_gt_lt_ge()
 {
+  APPENDFUNC;
   if (rewrite_func_type == Item_func::LE_FUNC ||
       rewrite_func_type == Item_func::GT_FUNC)
   {
@@ -235,6 +243,7 @@ void Date_cmp_func_rewriter::rewrite_le_gt_lt_ge()
 
 Item *Date_cmp_func_rewriter::create_start_bound()
 {
+  APPENDFUNC;
   Item_datetime *res;
   MYSQL_TIME const_arg_ts;
   memset(&const_arg_ts, 0, sizeof(const_arg_ts));
@@ -276,6 +285,7 @@ Item *Date_cmp_func_rewriter::create_start_bound()
 
 Item *Date_cmp_func_rewriter::create_end_bound()
 {
+  APPENDFUNC;
   Item_datetime *res;
   MYSQL_TIME const_arg_ts;
   memset(&const_arg_ts, 0, sizeof(const_arg_ts));
@@ -327,6 +337,7 @@ Item *Date_cmp_func_rewriter::create_end_bound()
 Item *Date_cmp_func_rewriter::create_cmp_func(Item_func::Functype func_type,
                                               Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   Item *res;
   switch (func_type) {
     case Item_func::GE_FUNC:
@@ -350,6 +361,7 @@ Item *Date_cmp_func_rewriter::create_cmp_func(Item_func::Functype func_type,
 
 void trace_date_item_rewrite(THD *thd, Item *new_item, Item *old_item)
 {
+  APPENDFUNC;
   if (new_item != old_item)
   {
     Json_writer_object trace_wrapper(thd);

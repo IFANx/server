@@ -39,6 +39,7 @@
 
 static uint compress_zlib(THD *thd, char *to, const char *from, uint length)
 {
+  APPENDFUNC;
   uint level= thd->variables.column_compression_zlib_level;
 
   /* Caller takes care of empty strings. */
@@ -81,6 +82,7 @@ static uint compress_zlib(THD *thd, char *to, const char *from, uint length)
 static int uncompress_zlib(String *to, const uchar *from, uint from_length,
                            uint field_length)
 {
+  APPENDFUNC;
   z_stream stream;
   uchar original_pack_length;
   int wbits;

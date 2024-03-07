@@ -30,9 +30,11 @@
 #include "sql_priv.h"
 #include "sql_crypt.h"
 #include "password.h"
+#include "sql_profile.h"
 
 void SQL_CRYPT::init(ulong *rand_nr)
 {
+  APPENDFUNC;
   uint i;
   my_rnd_init(&rand,rand_nr[0],rand_nr[1]);
 
@@ -55,6 +57,7 @@ void SQL_CRYPT::init(ulong *rand_nr)
 
 void SQL_CRYPT::encode(char *str,uint length)
 {
+  APPENDFUNC;
   for (uint i=0; i < length; i++)
   {
     shift^=(uint) (my_rnd(&rand)*255.0);
@@ -67,6 +70,7 @@ void SQL_CRYPT::encode(char *str,uint length)
 
 void SQL_CRYPT::decode(char *str,uint length)
 {
+  APPENDFUNC;
   for (uint i=0; i < length; i++)
   {
     shift^=(uint) (my_rnd(&rand)*255.0);

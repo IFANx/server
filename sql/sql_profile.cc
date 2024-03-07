@@ -53,6 +53,7 @@
 int fill_query_profile_statistics_info(THD *thd, TABLE_LIST *tables,
                                        Item *cond)
 {
+  APPENDFUNC;
 #if defined(ENABLED_PROFILING)
   return(thd->profiling.fill_statistics_info(thd, tables, cond));
 #else
@@ -143,6 +144,7 @@ int make_profile_table_for_show(THD *thd, ST_SCHEMA_TABLE *schema_table)
 #ifdef _WIN32
 static ULONGLONG FileTimeToQuadWord(FILETIME *ft)
 {
+  APPENDFUNC;
   // Overlay FILETIME onto a ULONGLONG.
   union {
     ULONGLONG qwTime;
@@ -157,6 +159,7 @@ static ULONGLONG FileTimeToQuadWord(FILETIME *ft)
 // Get time difference between to FILETIME objects in seconds.
 static double GetTimeDiffInSeconds(FILETIME *a, FILETIME *b)
 {
+  APPENDFUNC;
   return ((FileTimeToQuadWord(a) - FileTimeToQuadWord(b)) / 1e7);
 }
 #endif
@@ -165,6 +168,7 @@ PROF_MEASUREMENT::PROF_MEASUREMENT(QUERY_PROFILE *profile_arg, const char
                                    *status_arg)
   :profile(profile_arg)
 {
+  APPENDFUNC;
   collect();
   set_label(status_arg, NULL, NULL, 0);
 }
@@ -176,12 +180,14 @@ PROF_MEASUREMENT::PROF_MEASUREMENT(QUERY_PROFILE *profile_arg,
                                    unsigned int line_arg)
   :profile(profile_arg)
 {
+  APPENDFUNC;
   collect();
   set_label(status_arg, function_arg, file_arg, line_arg);
 }
 
 PROF_MEASUREMENT::~PROF_MEASUREMENT()
 {
+  APPENDFUNC;
   my_free(allocated_status_memory);
   status= function= file= NULL;
 }
@@ -190,6 +196,7 @@ void PROF_MEASUREMENT::set_label(const char *status_arg,
                                  const char *function_arg,
                                  const char *file_arg, unsigned int line_arg)
 {
+  APPENDFUNC;
   size_t sizes[3];                              /* 3 == status+function+file */
   char *cursor;
 
@@ -248,6 +255,7 @@ void PROF_MEASUREMENT::set_label(const char *status_arg,
 */
 void PROF_MEASUREMENT::collect()
 {
+  APPENDFUNC;
   time_usecs= my_interval_timer() / 1e3;  /* ns to us */
 #ifdef HAVE_GETRUSAGE
   getrusage(RUSAGE_SELF, &rusage);
@@ -266,6 +274,7 @@ void PROF_MEASUREMENT::collect()
 QUERY_PROFILE::QUERY_PROFILE(PROFILING *profiling_arg, const char *status_arg)
   :profiling(profiling_arg), profiling_query_id(0), query_source(NULL)
 {
+  APPENDFUNC;
   m_seq_counter= 1;
   PROF_MEASUREMENT *prof= new PROF_MEASUREMENT(this, status_arg);
   if (!prof)
@@ -278,6 +287,7 @@ QUERY_PROFILE::QUERY_PROFILE(PROFILING *profiling_arg, const char *status_arg)
 
 QUERY_PROFILE::~QUERY_PROFILE()
 {
+  APPENDFUNC;
   while (! entries.is_empty())
     delete entries.pop();
 
@@ -289,6 +299,7 @@ QUERY_PROFILE::~QUERY_PROFILE()
 */
 void QUERY_PROFILE::set_query_source(char *query_source_arg, size_t query_length_arg)
 {
+  APPENDFUNC;
   /* Truncate to avoid DoS attacks. */
   size_t length= MY_MIN(MAX_QUERY_LENGTH, query_length_arg);
 
@@ -301,6 +312,7 @@ void QUERY_PROFILE::new_status(const char *status_arg,
                                const char *function_arg, const char *file_arg,
                                unsigned int line_arg)
 {
+  APPENDFUNC;
   PROF_MEASUREMENT *prof;
   DBUG_ENTER("QUERY_PROFILE::status");
 
@@ -330,10 +342,12 @@ void QUERY_PROFILE::new_status(const char *status_arg,
 PROFILING::PROFILING()
   :profile_id_counter(1), current(NULL), last(NULL)
 {
+  APPENDFUNC;
 }
 
 PROFILING::~PROFILING()
 {
+  APPENDFUNC;
   restart();
 }
 
@@ -343,6 +357,7 @@ PROFILING::~PROFILING()
 
 void PROFILING::restart()
 {
+  APPENDFUNC;
   while (! history.is_empty())
     delete history.pop();
 
@@ -361,6 +376,7 @@ void PROFILING::restart()
 */
 void PROFILING::discard_current_query()
 {
+  APPENDFUNC;
   DBUG_ENTER("PROFILING::discard_current_profile");
 
   delete current;
@@ -376,6 +392,7 @@ void PROFILING::discard_current_query()
 */
 void PROFILING::finish_current_query_impl()
 {
+  APPENDFUNC;
   DBUG_ENTER("PROFILING::finish_current_profile");
   DBUG_ASSERT(current);
 
@@ -404,6 +421,7 @@ void PROFILING::finish_current_query_impl()
 
 bool PROFILING::show_profiles()
 {
+  APPENDFUNC;
   QUERY_PROFILE *prof;
   List<Item> field_list;
   MEM_ROOT *mem_root= thd->mem_root;
@@ -470,6 +488,7 @@ bool PROFILING::show_profiles()
 */
 int PROFILING::fill_statistics_info(THD *thd_arg, TABLE_LIST *tables, Item *cond)
 {
+  APPENDFUNC;
   DBUG_ENTER("PROFILING::fill_statistics_info");
   TABLE *table= tables->table;
   ulonglong row_number= 0;
@@ -691,6 +710,7 @@ int PROFILING::fill_statistics_info(THD *thd_arg, TABLE_LIST *tables, Item *cond
 
 void PROFILING::reset()
 {
+  APPENDFUNC;
   enabled= (thd->variables.option_bits & OPTION_PROFILING) != 0;
   //xukang，这里是为了和enabled同步
   canbeRec = enabled;

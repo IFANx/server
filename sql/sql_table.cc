@@ -142,6 +142,7 @@ write_bin_log_start_alter_rollback(THD *thd, uint64 &start_alter_id,
 static char* add_identifier(THD* thd, char *to_p, const char * end_p,
                             const char* name, size_t name_len)
 {
+  APPENDFUNC;
   uint res;
   uint errors;
   const char *conv_name, *conv_name_end;
@@ -259,6 +260,7 @@ uint explain_filename(THD* thd,
                       uint to_length,
                       enum_explain_filename_mode explain_mode)
 {
+  APPENDFUNC;
   char *to_p= to;
   char *end_p= to_p + to_length;
   const char *db_name= NULL;
@@ -431,6 +433,7 @@ uint explain_filename(THD* thd,
 uint filename_to_tablename(const char *from, char *to, size_t to_length, 
                            bool stay_quiet)
 {
+  APPENDFUNC;
   uint errors;
   size_t res;
   DBUG_ENTER("filename_to_tablename");
@@ -463,6 +466,7 @@ uint filename_to_tablename(const char *from, char *to, size_t to_length,
 
 bool check_mysql50_prefix(const char *name)
 {
+  APPENDFUNC;
   return (name[0] == '#' && 
          !strncmp(name, MYSQL50_TABLE_NAME_PREFIX,
                   MYSQL50_TABLE_NAME_PREFIX_LENGTH));
@@ -484,6 +488,7 @@ bool check_mysql50_prefix(const char *name)
 
 uint check_n_cut_mysql50_prefix(const char *from, char *to, size_t to_length)
 {
+  APPENDFUNC;
   if (check_mysql50_prefix(from))
     return (uint) (strmake(to, from + MYSQL50_TABLE_NAME_PREFIX_LENGTH,
                            to_length - 1) - to);
@@ -493,6 +498,7 @@ uint check_n_cut_mysql50_prefix(const char *from, char *to, size_t to_length)
 
 static bool check_if_frm_exists(char *path, const char *db, const char *table)
 {
+  APPENDFUNC;
   fn_format(path, table, db, reg_ext, MYF(0));
   return !access(path, F_OK);
 }
@@ -513,6 +519,7 @@ static bool check_if_frm_exists(char *path, const char *db, const char *table)
 
 uint tablename_to_filename(const char *from, char *to, size_t to_length)
 {
+  APPENDFUNC;
   uint errors, length;
   DBUG_ENTER("tablename_to_filename");
   DBUG_PRINT("enter", ("from '%s'", from));
@@ -582,6 +589,7 @@ uint tablename_to_filename(const char *from, char *to, size_t to_length)
 uint build_table_filename(char *buff, size_t bufflen, const char *db,
                           const char *table_name, const char *ext, uint flags)
 {
+  APPENDFUNC;
   char dbbuff[FN_REFLEN];
   char tbbuff[FN_REFLEN];
   DBUG_ENTER("build_table_filename");
@@ -647,6 +655,7 @@ uint build_table_filename(char *buff, size_t bufflen, const char *db,
 
 uint build_tmptable_filename(THD* thd, char *buff, size_t bufflen)
 {
+  APPENDFUNC;
   DBUG_ENTER("build_tmptable_filename");
 
   char *p= strnmov(buff, mysql_tmpdir, bufflen);
@@ -674,6 +683,7 @@ void build_lower_case_table_filename(char *buff, size_t bufflen,
                                      const LEX_CSTRING *table,
                                      uint flags)
 {
+  APPENDFUNC;
   DBUG_ASSERT(db->length <= SAFE_NAME_LEN && table->length <= SAFE_NAME_LEN);
   build_table_filename(buff, bufflen,
           IdentBufferCasedn<SAFE_NAME_LEN>(*db).to_lex_cstring().str,
@@ -701,6 +711,7 @@ uint build_table_shadow_filename(char *buff, size_t bufflen,
                                  ALTER_PARTITION_PARAM_TYPE *lpt,
                                  bool backup)
 {
+  APPENDFUNC;
   char tmp_name[FN_REFLEN];
   my_snprintf(tmp_name, sizeof (tmp_name), "%s-%s-%lx-%s", tmp_file_prefix,
               backup ? "backup" : "shadow",
@@ -744,6 +755,7 @@ uint build_table_shadow_filename(char *buff, size_t bufflen,
 */
 bool mysql_write_frm(ALTER_PARTITION_PARAM_TYPE *lpt, uint flags)
 {
+  APPENDFUNC;
   /*
     Prepare table to prepare for writing a new frm file where the
     partitions in add/drop state have temporarily changed their state
@@ -1017,6 +1029,7 @@ end:
 int write_bin_log(THD *thd, bool clear_error,
                   char const *query, ulong query_length, bool is_trans)
 {
+  APPENDFUNC;
   int error= 0;
   if (mysql_bin_log.is_open())
   {
@@ -1064,6 +1077,7 @@ int write_bin_log_with_if_exists(THD *thd, bool clear_error,
                                  bool is_trans, bool add_if_exists,
                                  bool commit_alter)
 {
+  APPENDFUNC;
   int result;
   ulonglong save_option_bits= thd->variables.option_bits;
   if (add_if_exists)
@@ -1114,6 +1128,7 @@ bool mysql_rm_table(THD *thd,TABLE_LIST *tables, bool if_exists,
                     bool drop_temporary, bool drop_sequence,
                     bool dont_log_query)
 {
+  APPENDFUNC;
   bool error;
   Drop_table_error_handler err_handler;
   TABLE_LIST *table;
@@ -1235,6 +1250,7 @@ bool mysql_rm_table(THD *thd,TABLE_LIST *tables, bool if_exists,
 static uint32 get_comment(THD *thd, uint32 comment_pos,
                           const char **comment_start)
 {
+  APPENDFUNC;
   /* We use uchar * here to make array indexing portable */
   const uchar *query= (uchar*) thd->query();
   const uchar *query_end= (uchar*) query + thd->query_length();
@@ -1309,6 +1325,7 @@ int mysql_rm_table_no_locks(THD *thd, TABLE_LIST *tables,
                             bool dont_log_query,
                             bool dont_free_locks)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   char path[FN_REFLEN + 1];
   LEX_CSTRING alias= null_clex_str;
@@ -1998,6 +2015,7 @@ bool log_drop_table(THD *thd, const LEX_CSTRING *db_name,
                     const LEX_CUSTRING *id,
                     bool temporary_table)
 {
+  APPENDFUNC;
   char buff[NAME_LEN*2 + 80];
   String query(buff, sizeof(buff), system_charset_info);
   bool error= 0;
@@ -2058,6 +2076,7 @@ bool quick_rm_table(THD *thd, handlerton *base, const LEX_CSTRING *db,
                     const LEX_CSTRING *table_name, uint flags,
                     const char *table_path)
 {
+  APPENDFUNC;
   char path[FN_REFLEN + 1];
   const size_t pathmax = sizeof(path) - 1 - reg_ext_length;
   int error= 0;
@@ -2110,6 +2129,7 @@ bool quick_rm_table(THD *thd, handlerton *base, const LEX_CSTRING *db,
 
 static int sort_keys(KEY *a, KEY *b)
 {
+  APPENDFUNC;
   ulong a_flags= a->flags, b_flags= b->flags;
   
   /*
@@ -2183,6 +2203,7 @@ bool check_duplicates_in_interval(const char *set_or_name,
                                   const char *name, const TYPELIB *typelib,
                                   CHARSET_INFO *cs, unsigned int *dup_val_count)
 {
+  APPENDFUNC;
   TYPELIB tmp= *typelib;
   const char **cur_value= typelib->type_names;
   unsigned int *cur_length= typelib->type_lengths;
@@ -2226,6 +2247,7 @@ bool Column_definition::
                                   const Charset_collation_map_st &map,
                                   const Column_derived_attributes *dattr)
 {
+  APPENDFUNC;
   CHARSET_INFO *tmp= charset_collation_attrs().
                        resolved_to_character_set(used, map, dattr->charset());
   if (!tmp)
@@ -2244,6 +2266,7 @@ bool Column_definition::prepare_stage2_blob(handler *file,
                                             ulonglong table_flags,
                                             uint field_flags)
 {
+  APPENDFUNC;
   if (table_flags & HA_NO_BLOBS)
   {
     my_error(ER_TABLE_CANT_HANDLE_BLOB, MYF(0), file->table_type());
@@ -2262,6 +2285,7 @@ bool Column_definition::prepare_stage2_typelib(const char *type_name,
                                                uint field_flags,
                                                uint *dup_val_count)
 {
+  APPENDFUNC;
   pack_flag= pack_length_to_packflag(pack_length) | field_flags;
   if (charset->state & MY_CS_BINSORT)
     pack_flag|= FIELDFLAG_BINARY;
@@ -2272,6 +2296,7 @@ bool Column_definition::prepare_stage2_typelib(const char *type_name,
 
 uint Column_definition::pack_flag_numeric() const
 {
+  APPENDFUNC;
   return (FIELDFLAG_NUMBER |
           (flags & UNSIGNED_FLAG ? 0 : FIELDFLAG_DECIMAL)  |
           (flags & ZEROFILL_FLAG ? FIELDFLAG_ZEROFILL : 0));
@@ -2280,6 +2305,7 @@ uint Column_definition::pack_flag_numeric() const
 
 bool Column_definition::prepare_stage2_varchar(ulonglong table_flags)
 {
+  APPENDFUNC;
   pack_flag= (charset->state & MY_CS_BINSORT) ? FIELDFLAG_BINARY : 0;
   return false;
 }
@@ -2300,6 +2326,7 @@ bool Column_definition::prepare_stage2_varchar(ulonglong table_flags)
 bool Column_definition::prepare_stage2(handler *file,
                                        ulonglong table_flags)
 {
+  APPENDFUNC;
   DBUG_ENTER("Column_definition::prepare_stage2");
 
   /*
@@ -2334,6 +2361,7 @@ bool Column_definition::prepare_stage2(handler *file,
 
 void promote_first_timestamp_column(List<Create_field> *column_definitions)
 {
+  APPENDFUNC;
   bool first= true;
   for (Create_field &column_definition : *column_definitions)
   {
@@ -2365,6 +2393,7 @@ void promote_first_timestamp_column(List<Create_field> *column_definitions)
 
 static bool key_cmp(const Key_part_spec &a, const Key_part_spec &b)
 {
+  APPENDFUNC;
   return a.length == b.length && a.asc == b.asc &&
          !lex_string_cmp(system_charset_info, &a.field_name, &b.field_name);
 }
@@ -2380,6 +2409,7 @@ static bool key_cmp(const Key_part_spec &a, const Key_part_spec &b)
 static void check_duplicate_key(THD *thd, const Key *key, const KEY *key_info,
                                 const List<Key> *key_list)
 {
+  APPENDFUNC;
   /*
     We only check for duplicate indexes if it is requested and the
     key is not auto-generated.
@@ -2421,6 +2451,7 @@ bool Column_definition::prepare_stage1_typelib(THD *thd,
                                                MEM_ROOT *mem_root,
                                                column_definition_type_t deftype)
 {
+  APPENDFUNC;
   /*
     Pass the last parameter to prepare_interval_field() as follows:
     - If we are preparing for an SP variable, we pass "false",
@@ -2455,6 +2486,7 @@ bool Column_definition::prepare_stage1_typelib(THD *thd,
 bool Column_definition::prepare_stage1_string(THD *thd,
                                               MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   create_length_to_internal_length_string();
   if (prepare_blob_field(thd))
     return true;
@@ -2479,6 +2511,7 @@ bool Column_definition::prepare_stage1_string(THD *thd,
 bool Column_definition::prepare_stage1_bit(THD *thd,
                                            MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   pack_flag= FIELDFLAG_NUMBER;
   create_length_to_internal_length_bit();
   return false;
@@ -2491,6 +2524,7 @@ bool Column_definition::prepare_stage1(THD *thd,
                                        const Column_derived_attributes
                                              *derived_attr)
 {
+  APPENDFUNC;
   // SP variables have no default_value
   DBUG_ASSERT(deftype == COLUMN_DEFINITION_TABLE_FIELD || !default_value);
 
@@ -2504,6 +2538,7 @@ bool Column_definition::prepare_stage1_convert_default(THD *thd,
                                                        MEM_ROOT *mem_root,
                                                        CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd->mem_root == mem_root);
   Item *item;
   if (!(item= default_value->expr->safe_charset_converter(thd, cs)))
@@ -2519,6 +2554,7 @@ bool Column_definition::prepare_stage1_convert_default(THD *thd,
 
 bool Column_definition::prepare_stage1_check_typelib_default()
 {
+  APPENDFUNC;
   StringBuffer<MAX_FIELD_WIDTH> str;
   String *def= default_value->expr->val_str(&str);
   bool not_found;
@@ -2569,6 +2605,7 @@ int mysql_add_invisible_field(THD *thd, List<Create_field> * field_list,
         const char *field_name, Type_handler *type_handler,
         field_visibility_t invisible, Item* default_value)
 {
+  APPENDFUNC;
   Create_field *fld= new(thd->mem_root)Create_field();
   const char *new_name= NULL;
   /* Get unique field name if invisible == INVISIBLE_FULL */
@@ -2604,6 +2641,7 @@ int mysql_add_invisible_field(THD *thd, List<Create_field> * field_list,
 #define LONG_HASH_FIELD_NAME_LENGTH 30
 static inline void make_long_hash_field_name(LEX_CSTRING *buf, uint num)
 {
+  APPENDFUNC;
   buf->length= my_snprintf((char *)buf->str,
           LONG_HASH_FIELD_NAME_LENGTH, "DB_ROW_HASH_%u", num);
 }
@@ -2618,6 +2656,7 @@ static inline void make_long_hash_field_name(LEX_CSTRING *buf, uint num)
 static Create_field * add_hash_field(THD * thd, List<Create_field> *create_list,
                                       KEY *key_info)
 {
+  APPENDFUNC;
   List_iterator<Create_field> it(*create_list);
   Create_field *dup_field, *cf= new (thd->mem_root) Create_field();
   cf->flags|= UNSIGNED_FLAG | LONG_UNIQUE_HASH_FIELD;
@@ -2654,6 +2693,7 @@ Key *
 mysql_add_invisible_index(THD *thd, List<Key> *key_list,
         LEX_CSTRING* field_name, enum Key::Keytype type)
 {
+  APPENDFUNC;
   Key *key= new (thd->mem_root) Key(type, &null_clex_str, HA_KEY_ALG_UNDEF,
                                     false, DDL_options(DDL_options::OPT_NONE));
   key->columns.push_back(new(thd->mem_root) Key_part_spec(field_name, 0, true),
@@ -2667,6 +2707,7 @@ bool Type_handler_string::Key_part_spec_init_ft(Key_part_spec *part,
                                                 const Column_definition &def)
                                                 const
 {
+  APPENDFUNC;
   /*
     Set length to 0. It's set to the real column width later for CHAR.
     It has to be the correct col width for CHAR, as its data are not
@@ -2681,6 +2722,7 @@ bool Type_handler_varchar::Key_part_spec_init_ft(Key_part_spec *part,
                                                  const Column_definition &def)
                                                  const
 {
+  APPENDFUNC;
   part->length= 0;
   return !Charset(def.charset).is_good_for_ft();
 }
@@ -2691,6 +2733,7 @@ Type_handler_blob_common::Key_part_spec_init_ft(Key_part_spec *part,
                                                 const Column_definition &def)
                                                 const
 {
+  APPENDFUNC;
   /*
     Set keyseg length to 1 for blobs.
     It's ignored in ft code: the data length is taken from the length prefix.
@@ -2705,6 +2748,7 @@ key_add_part_check_null(const handler *file, KEY *key_info,
                         const Column_definition *sql_field,
                         const Key_part_spec *column)
 {
+  APPENDFUNC;
   if (!(sql_field->flags & NOT_NULL_FLAG))
   {
     key_info->flags|= HA_NULL_PART_KEY;
@@ -2726,6 +2770,7 @@ static bool mysql_prepare_create_table_stage1(THD *thd,
                                               HA_CREATE_INFO *create_info,
                                               Alter_info *alter_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysql_prepare_create_table_stage1");
   const Column_derived_attributes dattr(create_info->default_table_charset);
   const Column_bulk_alter_attributes
@@ -2817,6 +2862,7 @@ mysql_prepare_create_table_finalize(THD *thd, HA_CREATE_INFO *create_info,
                                     handler *file, KEY **key_info_buffer,
                                     uint *key_count, int create_table_mode)
 {
+  APPENDFUNC;
   const char	*key_name;
   Create_field	*sql_field,*dup_field;
   uint		field,null_fields,max_key_length;
@@ -3857,6 +3903,7 @@ mysql_prepare_create_table(THD *thd, HA_CREATE_INFO *create_info,
                            handler *file, KEY **key_info_buffer,
                            uint *key_count, int create_table_mode)
 {
+  APPENDFUNC;
   return mysql_prepare_create_table_stage1(thd, create_info, alter_info) ||
          mysql_prepare_create_table_finalize(thd, create_info, alter_info,
                                              db_options, file, key_info_buffer,
@@ -3884,6 +3931,7 @@ mysql_prepare_create_table(THD *thd, HA_CREATE_INFO *create_info,
 bool validate_comment_length(THD *thd, LEX_CSTRING *comment, size_t max_len,
                              uint err_code, const char *name)
 {
+  APPENDFUNC;
   DBUG_ENTER("validate_comment_length");
   if (comment->length == 0)
     DBUG_RETURN(false);
@@ -3935,6 +3983,7 @@ bool validate_comment_length(THD *thd, LEX_CSTRING *comment, size_t max_len,
 
 bool Column_definition::prepare_blob_field(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("Column_definition::prepare_blob_field");
 
   if (length > MAX_FIELD_VARCHARLENGTH && !(flags & BLOB_FLAG))
@@ -3991,6 +4040,7 @@ bool Column_definition::prepare_blob_field(THD *thd)
 
 bool Column_definition::sp_prepare_create_field(THD *thd, MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   const Column_derived_attributes dattr(thd->variables.collation_database);
   return prepare_stage1(thd, mem_root,
                         COLUMN_DEFINITION_ROUTINE_LOCAL, &dattr) ||
@@ -4010,6 +4060,7 @@ bool Column_definition::sp_prepare_create_field(THD *thd, MEM_ROOT *mem_root)
 static int append_system_key_parts(THD *thd, HA_CREATE_INFO *create_info,
                                     Key *key)
 {
+  APPENDFUNC;
   const Lex_ident &row_start_field= create_info->vers_info.as_row.start;
   const Lex_ident &row_end_field= create_info->vers_info.as_row.end;
   DBUG_ASSERT(!create_info->versioned() || (row_start_field && row_end_field));
@@ -4074,6 +4125,7 @@ handler *mysql_create_frm_image(THD *thd, HA_CREATE_INFO *create_info,
                                 KEY **key_info, uint *key_count,
                                 LEX_CUSTRING *frm)
 {
+  APPENDFUNC;
   uint		db_options;
   handler       *file;
   DBUG_ENTER("mysql_create_frm_image");
@@ -4374,6 +4426,7 @@ int create_table_impl(THD *thd,
                       int create_table_mode, bool *is_trans, KEY **key_info,
                       uint *key_count, LEX_CUSTRING *frm)
 {
+  APPENDFUNC;
   LEX_CSTRING	*alias;
   handler	*file= 0;
   int		error= 1;
@@ -4720,6 +4773,7 @@ int mysql_create_table_no_lock(THD *thd,
                                Alter_info *alter_info, bool *is_trans,
                                int create_table_mode, TABLE_LIST *table_list)
 {
+  APPENDFUNC;
   KEY *not_used_1;
   uint not_used_2;
   int res;
@@ -4809,6 +4863,7 @@ int mysql_create_table_no_lock(THD *thd,
 */
 bool wsrep_check_sequence(THD* thd, const sequence_definition *seq)
 {
+  APPENDFUNC;
     enum legacy_db_type db_type;
 
     DBUG_ASSERT(WSREP(thd));
@@ -4862,6 +4917,7 @@ bool mysql_create_table(THD *thd, TABLE_LIST *create_table,
                         Table_specification_st *create_info,
                         Alter_info *alter_info)
 {
+  APPENDFUNC;
   TABLE_LIST *pos_in_locked_tables= 0;
   MDL_ticket *mdl_ticket= 0;
   DDL_LOG_STATE ddl_log_state_create, ddl_log_state_rm;
@@ -5041,6 +5097,7 @@ err:
 static int
 check_if_keyname_exists(const char *name, KEY *start, KEY *end)
 {
+  APPENDFUNC;
   uint i= 1;
   for (KEY *key=start; key != end ; key++, i++)
     if (!my_strcasecmp(system_charset_info, name, key->name.str))
@@ -5054,6 +5111,7 @@ check_if_keyname_exists(const char *name, KEY *start, KEY *end)
 static bool
 check_if_field_name_exists(const char *name, List<Create_field> * fields)
 {
+  APPENDFUNC;
   Create_field *fld;
   List_iterator<Create_field>it(*fields);
   while ((fld = it++))
@@ -5067,6 +5125,7 @@ check_if_field_name_exists(const char *name, List<Create_field> * fields)
 static char *
 make_unique_key_name(THD *thd, const char *field_name,KEY *start,KEY *end)
 {
+  APPENDFUNC;
   char buff[MAX_FIELD_NAME],*buff_end;
 
   if (!check_if_keyname_exists(field_name,start,end) &&
@@ -5097,6 +5156,7 @@ static bool make_unique_constraint_name(THD *thd, LEX_CSTRING *name,
                                         List<Virtual_column_info> *vcol,
                                         uint *nr)
 {
+  APPENDFUNC;
   char buff[MAX_FIELD_NAME], *end;
   List_iterator_fast<Virtual_column_info> it(*vcol);
   end=strmov(buff, own_name_base ? own_name_base : "CONSTRAINT_");
@@ -5137,6 +5197,7 @@ static const
 char * make_unique_invisible_field_name(THD *thd, const char *field_name,
                         List<Create_field> *fields)
 {
+  APPENDFUNC;
   if (!check_if_field_name_exists(field_name, fields))
     return field_name;
   char buff[MAX_FIELD_NAME], *buff_end;
@@ -5160,6 +5221,7 @@ char * make_unique_invisible_field_name(THD *thd, const char *field_name,
 
 bool operator!=(const MYSQL_TIME &lhs, const MYSQL_TIME &rhs)
 {
+  APPENDFUNC;
   return lhs.year != rhs.year || lhs.month != rhs.month || lhs.day != rhs.day ||
          lhs.hour != rhs.hour || lhs.minute != rhs.minute ||
          lhs.second_part != rhs.second_part || lhs.neg != rhs.neg ||
@@ -5191,6 +5253,7 @@ mysql_rename_table(handlerton *base, const LEX_CSTRING *old_db,
                    const LEX_CSTRING *old_name, const LEX_CSTRING *new_db,
                    const LEX_CSTRING *new_name, LEX_CUSTRING *id, uint flags)
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   char from[FN_REFLEN], to[FN_REFLEN], lc_from[FN_REFLEN], lc_to[FN_REFLEN];
   char *from_base= from, *to_base= to;
@@ -5322,6 +5385,7 @@ bool mysql_create_like_table(THD* thd, TABLE_LIST* table,
                              TABLE_LIST* src_table,
                              Table_specification_st *create_info)
 {
+  APPENDFUNC;
   Table_specification_st local_create_info;
   TABLE_LIST *pos_in_locked_tables= 0;
   Alter_info local_alter_info;
@@ -5713,6 +5777,7 @@ int mysql_discard_or_import_tablespace(THD *thd,
                                        TABLE_LIST *table_list,
                                        bool discard)
 {
+  APPENDFUNC;
   Alter_table_prelocking_strategy alter_prelocking_strategy;
   int error;
   DBUG_ENTER("mysql_discard_or_import_tablespace");
@@ -5792,6 +5857,7 @@ err:
 
 static bool is_candidate_key(KEY *key)
 {
+  APPENDFUNC;
   KEY_PART_INFO *key_part;
   KEY_PART_INFO *key_part_end= key->key_part + key->user_defined_key_parts;
 
@@ -5831,6 +5897,7 @@ static bool
 handle_if_exists_options(THD *thd, TABLE *table, Alter_info *alter_info,
                          Table_period_info *period_info)
 {
+  APPENDFUNC;
   Field **f_ptr;
   DBUG_ENTER("handle_if_exists_option");
 
@@ -6381,6 +6448,7 @@ static bool fix_constraints_names(THD *thd, List<Virtual_column_info>
                                   *check_constraint_list,
                                   const HA_CREATE_INFO *create_info)
 {
+  APPENDFUNC;
   List_iterator<Virtual_column_info> it((*check_constraint_list));
   Virtual_column_info *check;
   uint nr= 1;
@@ -6420,6 +6488,7 @@ static bool fix_constraints_names(THD *thd, List<Virtual_column_info>
 
 static int compare_uint(const uint *s, const uint *t)
 {
+  APPENDFUNC;
   return (*s < *t) ? -1 : ((*s > *t) ? 1 : 0);
 }
 
@@ -6453,6 +6522,7 @@ Compare_keys compare_keys_but_name(const KEY *table_key, const KEY *new_key,
                                    const KEY *const new_pk,
                                    const KEY *const old_pk)
 {
+  APPENDFUNC;
   if (table_key->algorithm != new_key->algorithm)
     return Compare_keys::NotEqual;
 
@@ -6539,6 +6609,7 @@ Compare_keys compare_keys_but_name(const KEY *table_key, const KEY *new_key,
 
 static KEY *find_key_ci(const char *key_name, KEY *key_start, KEY *key_end)
 {
+  APPENDFUNC;
   for (KEY *key = key_start; key < key_end; key++)
   {
     if (!my_strcasecmp(system_charset_info, key_name, key->name.str))
@@ -6593,6 +6664,7 @@ static KEY *find_key_ci(const char *key_name, KEY *key_start, KEY *key_end)
 static bool fill_alter_inplace_info(THD *thd, TABLE *table, bool varchar,
                                     Alter_inplace_info *ha_alter_info)
 {
+  APPENDFUNC;
   Field **f_ptr, *field;
   List_iterator_fast<Create_field> new_field_it;
   Create_field *new_field;
@@ -7109,6 +7181,7 @@ static bool fill_alter_inplace_info(THD *thd, TABLE *table, bool varchar,
 static void update_altered_table(const Alter_inplace_info &ha_alter_info,
                                  TABLE *altered_table)
 {
+  APPENDFUNC;
   uint field_idx, add_key_idx;
   KEY *key;
   KEY_PART_INFO *end, *key_part;
@@ -7155,6 +7228,7 @@ static void update_altered_table(const Alter_inplace_info &ha_alter_info,
 bool mysql_compare_tables(TABLE *table, Alter_info *alter_info,
                           HA_CREATE_INFO *create_info, bool *metadata_equal)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysql_compare_tables");
 
   uint changes= IS_EQUAL_NO;
@@ -7331,6 +7405,7 @@ static
 bool alter_table_manage_keys(TABLE *table, int indexes_were_disabled,
                              Alter_info::enum_enable_or_disable keys_onoff)
 {
+  APPENDFUNC;
   int error= 0;
   DBUG_ENTER("alter_table_manage_keys");
   DBUG_PRINT("enter", ("table=%p were_disabled=%d on_off=%d",
@@ -7386,6 +7461,7 @@ static bool is_inplace_alter_impossible(TABLE *table,
                                         HA_CREATE_INFO *create_info,
                                         const Alter_info *alter_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("is_inplace_alter_impossible");
 
   /* At the moment we can't handle altering temporary tables without a copy. */
@@ -7446,6 +7522,7 @@ static bool is_inplace_alter_impossible(TABLE *table,
 
 static bool notify_tabledef_changed(TABLE_LIST *table_list)
 {
+  APPENDFUNC;
   TABLE *table= table_list->table;
   DBUG_ENTER("notify_tabledef_changed");
 
@@ -7496,6 +7573,7 @@ static bool
 write_bin_log_start_alter_rollback(THD *thd, uint64 &start_alter_id,
                                    bool &partial_alter, bool if_exists)
 {
+  APPENDFUNC;
 #if defined(HAVE_REPLICATION)
   if (start_alter_id)
   {
@@ -7603,6 +7681,7 @@ static bool mysql_inplace_alter_table(THD *thd,
                                       bool &partial_alter,
                                       uint64 &start_alter_id, bool if_exists)
 {
+  APPENDFUNC;
   Open_table_context ot_ctx(thd, MYSQL_OPEN_REOPEN | MYSQL_OPEN_IGNORE_KILLED);
   handlerton *db_type= table->s->db_type();
   Alter_info *alter_info= ha_alter_info->alter_info;
@@ -7999,6 +8078,7 @@ err:
 static uint
 blob_length_by_type(enum_field_types type)
 {
+  APPENDFUNC;
   switch (type)
   {
   case MYSQL_TYPE_TINY_BLOB:
@@ -8019,6 +8099,7 @@ blob_length_by_type(enum_field_types type)
 static inline
 void append_drop_column(THD *thd, String *str, Field *field)
 {
+  APPENDFUNC;
   if (str->length())
     str->append(STRING_WITH_LEN(", "));
   str->append(STRING_WITH_LEN("DROP COLUMN "));
@@ -8030,6 +8111,7 @@ void append_drop_column(THD *thd, String *str, Field *field)
 static inline
 void rename_field_in_list(Create_field *field, List<const char> *field_list)
 {
+  APPENDFUNC;
   DBUG_ASSERT(field->change.str);
   List_iterator<const char> it(*field_list);
   while (const char *name= it++)
@@ -8091,6 +8173,7 @@ mysql_prepare_alter_table(THD *thd, TABLE *table,
                           Alter_info *alter_info,
                           Alter_table_ctx *alter_ctx)
 {
+  APPENDFUNC;
   /* New column definitions are added here */
   List<Create_field> new_create_list;
   /* System-invisible fields must be added last */
@@ -9190,6 +9273,7 @@ err:
 static Create_field *get_field_by_old_name(Alter_info *alter_info,
                                            const char *old_name)
 {
+  APPENDFUNC;
   List_iterator_fast<Create_field> new_field_it(alter_info->create_list);
   Create_field *new_field;
 
@@ -9239,6 +9323,7 @@ fk_check_column_changes(THD *thd, Alter_info *alter_info,
                         List<LEX_CSTRING> &fk_columns,
                         const char **bad_column_name)
 {
+  APPENDFUNC;
   List_iterator_fast<LEX_CSTRING> column_it(fk_columns);
   LEX_CSTRING *column;
 
@@ -9336,6 +9421,7 @@ static bool fk_prepare_copy_alter_table(THD *thd, TABLE *table,
                                         Alter_info *alter_info,
                                         Alter_table_ctx *alter_ctx)
 {
+  APPENDFUNC;
   List <FOREIGN_KEY_INFO> fk_parent_key_list;
   List <FOREIGN_KEY_INFO> fk_child_key_list;
   FOREIGN_KEY_INFO *f_key;
@@ -9560,6 +9646,7 @@ simple_tmp_rename_or_index_change(THD *thd, TABLE_LIST *table_list,
                                   Alter_info::enum_enable_or_disable keys_onoff,
                                   Alter_table_ctx *alter_ctx)
 {
+  APPENDFUNC;
   DBUG_ENTER("simple_tmp_rename_or_index_change");
 
   TABLE *table= table_list->table;
@@ -9631,6 +9718,7 @@ simple_rename_or_index_change(THD *thd, TABLE_LIST *table_list,
                               TRIGGER_RENAME_PARAM *trigger_param,
                               Alter_table_ctx *alter_ctx)
 {
+  APPENDFUNC;
   TABLE *table= table_list->table;
   MDL_ticket *mdl_ticket= table->mdl_ticket;
   DDL_LOG_STATE ddl_log_state;
@@ -9773,6 +9861,7 @@ simple_rename_or_index_change(THD *thd, TABLE_LIST *table_list,
 
 static void cleanup_table_after_inplace_alter_keep_files(TABLE *table)
 {
+  APPENDFUNC;
   TABLE_SHARE *share= table->s;
   closefrm(table);
   free_table_share(share);
@@ -9781,6 +9870,7 @@ static void cleanup_table_after_inplace_alter_keep_files(TABLE *table)
 
 static void cleanup_table_after_inplace_alter(TABLE *table)
 {
+  APPENDFUNC;
   table->file->ha_create_partitioning_metadata(table->s->normalized_path.str, 0,
                                                CHF_DELETE_FLAG);
   deletefrm(table->s->normalized_path.str);
@@ -9794,6 +9884,7 @@ static int create_table_for_inplace_alter(THD *thd,
                                           TABLE_SHARE *share,
                                           TABLE *table)
 {
+  APPENDFUNC;
   init_tmp_table_share(thd, share, alter_ctx.new_db.str, 0,
                        alter_ctx.new_name.str, alter_ctx.get_tmp_path());
   if (share->init_from_binary_frm_image(thd, true, frm->str, frm->length) ||
@@ -9822,6 +9913,7 @@ static int create_table_for_inplace_alter(THD *thd,
 
 static bool log_and_ok(THD *thd)
 {
+  APPENDFUNC;
   if (thd->slave_thread &&
       write_bin_log(thd, true, thd->query(), thd->query_length()))
     return(true);
@@ -9837,6 +9929,7 @@ static bool log_and_ok(THD *thd)
 */
 static bool wait_for_master(THD *thd)
 {
+  APPENDFUNC;
 #ifdef HAVE_REPLICATION
   start_alter_info* info= thd->rgi_slave->sa_info;
   Master_info *mi= thd->rgi_slave->rli->mi;
@@ -9889,6 +9982,7 @@ static bool wait_for_master(THD *thd)
 */
 static void alter_committed(THD *thd, start_alter_info* info, Master_info *mi)
 {
+  APPENDFUNC;
   start_alter_state tmp= info->state;
   mysql_mutex_lock(&mi->start_alter_lock);
   info->state= start_alter_state::COMPLETED;
@@ -9925,6 +10019,7 @@ static void alter_committed(THD *thd, start_alter_info* info, Master_info *mi)
 static int process_master_state(THD *thd, int alter_result,
                                 uint64 &start_alter_id, bool if_exists)
 {
+  APPENDFUNC;
 #ifdef HAVE_REPLICATION
   start_alter_info *info= thd->rgi_slave->sa_info;
   bool partial_alter= false;
@@ -9966,6 +10061,7 @@ static int process_master_state(THD *thd, int alter_result,
 */
 static uint64 get_start_alter_id(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ASSERT(!(thd->rgi_slave &&
                 (thd->rgi_slave->gtid_ev_flags_extra &
                  Gtid_log_event::FL_START_ALTER_E1)) ||
@@ -9981,6 +10077,7 @@ static
 bool online_alter_check_autoinc(const THD *thd, const Alter_info *alter_info,
                                 const TABLE *table)
 {
+  APPENDFUNC;
   /*
     We can't go online, if all of the following is presented:
     * Autoinc is added to existing field
@@ -10041,6 +10138,7 @@ const char *online_alter_check_supported(const THD *thd,
                                          const TABLE *table,
                                          const TABLE *new_table, bool *online)
 {
+  APPENDFUNC;
   DBUG_ASSERT(*online);
 
   *online= thd->locked_tables_mode != LTM_LOCK_TABLES && !table->s->tmp_table;
@@ -10170,6 +10268,7 @@ bool mysql_alter_table(THD *thd, const LEX_CSTRING *new_db,
                        uint order_num, ORDER *order, bool ignore,
                        bool if_exists)
 {
+  APPENDFUNC;
   bool engine_changed, error, frm_is_created= false, error_handler_pushed= false;
   bool no_ha_table= true;  /* We have not created table in storage engine yet */
   TABLE *table, *new_table= nullptr;
@@ -11806,6 +11905,7 @@ err_with_mdl:
 
 bool mysql_trans_prepare_alter_copy_data(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysql_trans_prepare_alter_copy_data");
   /*
     Turn off recovery logging since rollback of an alter table is to
@@ -11823,6 +11923,7 @@ bool mysql_trans_prepare_alter_copy_data(THD *thd)
 
 bool mysql_trans_commit_alter_copy_data(THD *thd)
 {
+  APPENDFUNC;
   bool error= FALSE;
   uint save_unsafe_rollback_flags;
   DBUG_ENTER("mysql_trans_commit_alter_copy_data");
@@ -11871,6 +11972,7 @@ static int online_alter_read_from_binlog(THD *thd, rpl_group_info *rgi,
                                          Cache_flip_event_log *log,
                                          ha_rows *found_rows)
 {
+  APPENDFUNC;
   int error= 0;
 
   IO_CACHE *log_file= log->flip();
@@ -11919,6 +12021,7 @@ copy_data_between_tables(THD *thd, TABLE *from, TABLE *to,
                          Alter_table_ctx *alter_ctx, bool online,
                          uint64 start_alter_id)
 {
+  APPENDFUNC;
   int error= 1;
   Copy_field *copy= NULL, *copy_end;
   ha_rows found_count= 0, delete_count= 0;
@@ -12436,6 +12539,7 @@ copy_data_between_tables(THD *thd, TABLE *from, TABLE *to,
 bool mysql_recreate_table(THD *thd, TABLE_LIST *table_list,
                           Recreate_info *recreate_info, bool table_copy)
 {
+  APPENDFUNC;
   Table_specification_st create_info;
   Alter_info alter_info;
   TABLE_LIST *next_table= table_list->next_global;
@@ -12480,6 +12584,7 @@ bool mysql_recreate_table(THD *thd, TABLE_LIST *table_list,
 
 void fill_checksum_table_metadata_fields(THD *thd, List<Item> *fields)
 {
+  APPENDFUNC;
   Item *item;
 
   item= new (thd->mem_root) Item_empty_string(thd, "Table", NAME_LEN*2);
@@ -12496,6 +12601,7 @@ void fill_checksum_table_metadata_fields(THD *thd, List<Item> *fields)
 bool mysql_checksum_table(THD *thd, TABLE_LIST *tables,
                           HA_CHECK_OPT *check_opt)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   List<Item> field_list;
   Protocol *protocol= thd->protocol;
@@ -12641,6 +12747,7 @@ err:
 bool check_engine(THD *thd, const char *db_name,
                   const char *table_name, HA_CREATE_INFO *create_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("check_engine");
   handlerton **new_engine= &create_info->db_type;
   handlerton *req_engine= *new_engine;
@@ -12699,6 +12806,7 @@ bool check_engine(THD *thd, const char *db_name,
 
 bool Sql_cmd_create_table_like::execute(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("Sql_cmd_create_table::execute");
   LEX *lex= thd->lex;
   SELECT_LEX *select_lex= lex->first_select_lex();
@@ -13068,6 +13176,7 @@ bool HA_CREATE_INFO::
              const Lex_table_charset_collation_attrs_st &convert_cscl,
              const Charset_collation_context &ctx)
 {
+  APPENDFUNC;
   /*
     If CONVERT TO clauses are specified only (without table default clauses),
     then we copy CONVERT TO clauses to default clauses, so e.g:

@@ -22,6 +22,7 @@
 bool
 Item_window_func::resolve_window_name(THD *thd)
 {
+  APPENDFUNC;
   if (window_spec)
   {
     /* The window name has been already resolved */
@@ -63,6 +64,7 @@ Item_window_func::resolve_window_name(THD *thd)
 void
 Item_window_func::update_used_tables()
 {
+  APPENDFUNC;
   used_tables_cache= 0;
   window_func()->update_used_tables();
   used_tables_cache|= window_func()->used_tables();
@@ -84,6 +86,7 @@ Item_window_func::update_used_tables()
 bool
 Item_window_func::fix_fields(THD *thd, Item **ref)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed() == 0);
 
   if (!thd->lex->current_select ||
@@ -166,6 +169,7 @@ Item_window_func::fix_fields(THD *thd, Item **ref)
 void Item_window_func::split_sum_func(THD *thd, Ref_ptr_array ref_pointer_array,
                                       List<Item> &fields, uint flags)
 {
+  APPENDFUNC;
   for (uint i=0; i < window_func()->argument_count(); i++)
   {
     Item **p_item= &window_func()->arguments()[i];
@@ -176,6 +180,7 @@ void Item_window_func::split_sum_func(THD *thd, Ref_ptr_array ref_pointer_array,
 
 bool Item_window_func::check_result_type_of_order_item()
 {
+  APPENDFUNC;
   switch (window_func()->sum_func()) {
   case Item_sum::PERCENTILE_CONT_FUNC:
   {
@@ -216,6 +221,7 @@ bool Item_window_func::check_result_type_of_order_item()
 
 void Item_sum_rank::setup_window_func(THD *thd, Window_spec *window_spec)
 {
+  APPENDFUNC;
   /* TODO: move this into Item_window_func? */
   peer_tracker = new Group_bound_tracker(thd, window_spec->order_list);
   peer_tracker->init();
@@ -224,6 +230,7 @@ void Item_sum_rank::setup_window_func(THD *thd, Window_spec *window_spec)
 
 void Item_sum_dense_rank::setup_window_func(THD *thd, Window_spec *window_spec)
 {
+  APPENDFUNC;
   /* TODO: consider moving this && Item_sum_rank's implementation */
   peer_tracker = new Group_bound_tracker(thd, window_spec->order_list);
   peer_tracker->init();
@@ -232,6 +239,7 @@ void Item_sum_dense_rank::setup_window_func(THD *thd, Window_spec *window_spec)
 
 void Item_sum_percentile_disc::setup_window_func(THD *thd, Window_spec *window_spec)
 {
+  APPENDFUNC;
   order_item= window_spec->order_list->first->item[0];
   if (!(value= order_item->get_cache(thd)))
     return;
@@ -241,6 +249,7 @@ void Item_sum_percentile_disc::setup_window_func(THD *thd, Window_spec *window_s
 
 void Item_sum_percentile_cont::setup_window_func(THD *thd, Window_spec *window_spec)
 {
+  APPENDFUNC;
   order_item= window_spec->order_list->first->item[0];
   /* TODO(varun): need to discuss and finalise what type should we
      return for percentile cont functions
@@ -257,6 +266,7 @@ void Item_sum_percentile_cont::setup_window_func(THD *thd, Window_spec *window_s
 }
 bool Item_sum_percentile_cont::fix_fields(THD *thd, Item **ref)
 {
+  APPENDFUNC;
   bool res;
   res= Item_sum_num::fix_fields(thd, ref);
   if (res)
@@ -276,6 +286,7 @@ bool Item_sum_percentile_cont::fix_fields(THD *thd, Item **ref)
 }
 bool Item_sum_percentile_disc::fix_fields(THD *thd, Item **ref)
 {
+  APPENDFUNC;
   bool res;
   res= Item_sum_num::fix_fields(thd, ref);
   if (res)
@@ -297,6 +308,7 @@ bool Item_sum_percentile_disc::fix_fields(THD *thd, Item **ref)
 
 bool Item_sum_dense_rank::add()
 {
+  APPENDFUNC;
   if (peer_tracker->check_if_next_group() || first_add)
   {
     first_add= false;
@@ -309,6 +321,7 @@ bool Item_sum_dense_rank::add()
 
 bool Item_sum_rank::add()
 {
+  APPENDFUNC;
   row_number++;
   if (peer_tracker->check_if_next_group())
   {
@@ -320,6 +333,7 @@ bool Item_sum_rank::add()
 
 bool Item_sum_percent_rank::add()
 {
+  APPENDFUNC;
   row_number++;
   if (peer_tracker->check_if_next_group())
   {
@@ -331,6 +345,7 @@ bool Item_sum_percent_rank::add()
 
 void Item_sum_percent_rank::setup_window_func(THD *thd, Window_spec *window_spec)
 {
+  APPENDFUNC;
   /* TODO: move this into Item_window_func? */
   peer_tracker = new Group_bound_tracker(thd, window_spec->order_list);
   peer_tracker->init();
@@ -340,6 +355,7 @@ void Item_sum_percent_rank::setup_window_func(THD *thd, Window_spec *window_spec
 
 bool Item_sum_hybrid_simple::fix_fields(THD *thd, Item **ref)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed() == 0);
 
   if (init_sum_func_check(thd))
@@ -370,6 +386,7 @@ bool Item_sum_hybrid_simple::fix_fields(THD *thd, Item **ref)
 
 bool Item_sum_hybrid_simple::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   set_maybe_null();
   null_value= true;
   return args[0]->type_handler()->Item_sum_hybrid_fix_length_and_dec(this);
@@ -378,6 +395,7 @@ bool Item_sum_hybrid_simple::fix_length_and_dec(THD *thd)
 
 bool Item_sum_hybrid_simple::add()
 {
+  APPENDFUNC;
   value->store(args[0]);
   value->cache_value();
   null_value= value->null_value;
@@ -386,6 +404,7 @@ bool Item_sum_hybrid_simple::add()
 
 void Item_sum_hybrid_simple::setup_hybrid(THD *thd, Item *item)
 {
+  APPENDFUNC;
   if (!(value= item->get_cache(thd)))
     return;
   value->setup(thd, item);
@@ -397,6 +416,7 @@ void Item_sum_hybrid_simple::setup_hybrid(THD *thd, Item *item)
 
 double Item_sum_hybrid_simple::val_real()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return 0.0;
@@ -408,6 +428,7 @@ double Item_sum_hybrid_simple::val_real()
 
 longlong Item_sum_hybrid_simple::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return 0;
@@ -419,6 +440,7 @@ longlong Item_sum_hybrid_simple::val_int()
 
 my_decimal *Item_sum_hybrid_simple::val_decimal(my_decimal *val)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return 0;
@@ -431,6 +453,7 @@ my_decimal *Item_sum_hybrid_simple::val_decimal(my_decimal *val)
 String *
 Item_sum_hybrid_simple::val_str(String *str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return 0;
@@ -442,6 +465,7 @@ Item_sum_hybrid_simple::val_str(String *str)
 
 bool Item_sum_hybrid_simple::val_native(THD *thd, Native *to)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return true;
@@ -450,6 +474,7 @@ bool Item_sum_hybrid_simple::val_native(THD *thd, Native *to)
 
 bool Item_sum_hybrid_simple::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (null_value)
     return true;
@@ -462,12 +487,14 @@ bool Item_sum_hybrid_simple::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t f
 Field *Item_sum_hybrid_simple::create_tmp_field(MEM_ROOT *root,
                                                 bool group, TABLE *table)
 {
+  APPENDFUNC;
   DBUG_ASSERT(0);
   return NULL;
 }
 
 void Item_sum_hybrid_simple::reset_field()
 {
+  APPENDFUNC;
   switch(result_type()) {
   case STRING_RESULT:
   {
@@ -547,11 +574,13 @@ void Item_sum_hybrid_simple::reset_field()
 
 void Item_sum_hybrid_simple::update_field()
 {
+  APPENDFUNC;
   DBUG_ASSERT(0);
 }
 
 void Item_window_func::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (only_single_element_order_list())
   {
     print_for_percentile_functions(str, query_type);
@@ -566,6 +595,7 @@ void Item_window_func::print(String *str, enum_query_type query_type)
 }
 void Item_window_func::print_for_percentile_functions(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   window_func()->print(str, query_type);
   str->append(STRING_WITH_LEN(" within group "));
   str->append('(');

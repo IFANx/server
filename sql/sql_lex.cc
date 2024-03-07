@@ -44,6 +44,7 @@
 
 void LEX::parse_error(uint err_number)
 {
+  APPENDFUNC;
   thd->parse_error(err_number);
 }
 
@@ -69,6 +70,7 @@ const LEX_CSTRING error_clex_str= {STRING_WITH_LEN("error")};
 
 int sp_expr_lex::case_stmt_action_expr()
 {
+  APPENDFUNC;
   int case_expr_id= spcont->register_case_expr();
   sp_instr_set_case_expr *i;
 
@@ -93,6 +95,7 @@ int sp_expr_lex::case_stmt_action_expr()
 
 int sp_expr_lex::case_stmt_action_when(bool simple)
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   sp_instr_jump_if_not *i;
   Item_case_expr *var;
@@ -139,6 +142,7 @@ int sp_expr_lex::case_stmt_action_when(bool simple)
 
 int LEX::case_stmt_action_then()
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   sp_instr_jump *i= new (thd->mem_root) sp_instr_jump(ip, spcont);
   if (!MY_TEST(i) || sphead->add_instr(i))
@@ -178,6 +182,7 @@ LEX::set_system_variable(enum enum_var_type var_type,
                          sys_var *sysvar, const Lex_ident_sys_st *base_name,
                          Item *val)
 {
+  APPENDFUNC;
   set_var *setvar;
 
   /* No AUTOCOMMIT from a stored function or trigger. */
@@ -212,6 +217,7 @@ LEX::set_system_variable(enum enum_var_type var_type,
 bool LEX::set_trigger_new_row(const LEX_CSTRING *name, Item *val,
                               const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   Item_trigger_field *trg_fld;
   sp_instr_set_trigger_field *sp_fld;
 
@@ -266,6 +272,7 @@ bool LEX::set_trigger_new_row(const LEX_CSTRING *name, Item *val,
 Item_splocal*
 LEX::create_item_for_sp_var(const Lex_ident_cli_st *cname, sp_variable *spvar)
 {
+  APPENDFUNC;
   const Sp_rcontext_handler *rh;
   Item_splocal *item;
   const char *start_in_q= cname->pos();
@@ -319,6 +326,7 @@ LEX::create_item_for_sp_var(const Lex_ident_cli_st *cname, sp_variable *spvar)
 Item* handle_sql2003_note184_exception(THD *thd, Item* left, bool equal,
                                        Item *expr)
 {
+  APPENDFUNC;
   /*
     Relevant references for this issue:
     - SQL:2003, Part 2, section 8.4 <in predicate>, page 383,
@@ -401,6 +409,7 @@ Item* handle_sql2003_note184_exception(THD *thd, Item* left, bool equal,
 
 bool sp_create_assignment_lex(THD *thd, const char *pos)
 {
+  APPENDFUNC;
   if (thd->lex->sphead)
   {
     if (thd->lex->sphead->is_invoked())
@@ -442,6 +451,7 @@ bool sp_create_assignment_lex(THD *thd, const char *pos)
 bool sp_create_assignment_instr(THD *thd, bool no_lookahead,
                                 bool need_set_keyword)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
 
   if (lex->sphead)
@@ -537,6 +547,7 @@ bool sp_create_assignment_instr(THD *thd, bool no_lookahead,
 void LEX::add_key_to_list(LEX_CSTRING *field_name,
                           enum Key::Keytype type, bool check_exists)
 {
+  APPENDFUNC;
   Key *key;
   MEM_ROOT *mem_root= thd->mem_root;
   key= new (mem_root)
@@ -553,6 +564,7 @@ void LEX::add_key_to_list(LEX_CSTRING *field_name,
 bool LEX::add_alter_list(LEX_CSTRING name, Virtual_column_info *expr,
                          bool exists)
 {
+  APPENDFUNC;
   MEM_ROOT *mem_root= thd->mem_root;
   Alter_column *ac= new (mem_root) Alter_column(name, expr, exists);
   if (unlikely(ac == NULL))
@@ -565,6 +577,7 @@ bool LEX::add_alter_list(LEX_CSTRING name, Virtual_column_info *expr,
 
 bool LEX::add_alter_list(LEX_CSTRING name, LEX_CSTRING new_name, bool exists)
 {
+  APPENDFUNC;
   Alter_column *ac= new (thd->mem_root) Alter_column(name, new_name, exists);
   if (unlikely(ac == NULL))
     return true;
@@ -577,6 +590,7 @@ bool LEX::add_alter_list(LEX_CSTRING name, LEX_CSTRING new_name, bool exists)
 void LEX::init_last_field(Column_definition *field,
                           const LEX_CSTRING *field_name)
 {
+  APPENDFUNC;
   last_field= field;
   field->field_name= *field_name;
 }
@@ -584,6 +598,7 @@ void LEX::init_last_field(Column_definition *field,
 
 Virtual_column_info *add_virtual_expression(THD *thd, Item *expr)
 {
+  APPENDFUNC;
   Virtual_column_info *v= new (thd->mem_root) Virtual_column_info();
   if (unlikely(!v))
      return 0;
@@ -643,6 +658,7 @@ Query_tables_list::binlog_stmt_unsafe_errcode[BINLOG_STMT_UNSAFE_COUNT] =
 
 static uchar to_upper_lex[]=
 {
+
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15,
    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
    32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -668,6 +684,7 @@ static uchar to_upper_lex[]=
 
 const char * index_hint_type_name[] =
 {
+
   "IGNORE INDEX", 
   "USE INDEX", 
   "FORCE INDEX"
@@ -675,6 +692,7 @@ const char * index_hint_type_name[] =
 
 inline int lex_casecmp(const char *s, const char *t, uint len)
 {
+
   while (len-- != 0 &&
          to_upper_lex[(uchar) *s++] == to_upper_lex[(uchar) *t++]) ;
   return (int) len+1;
@@ -685,6 +703,7 @@ inline int lex_casecmp(const char *s, const char *t, uint len)
 
 void lex_init(void)
 {
+  APPENDFUNC;
   uint i;
   DBUG_ENTER("lex_init");
   for (i=0 ; i < array_elements(symbols) ; i++)
@@ -698,6 +717,7 @@ void lex_init(void)
 
 void lex_free(void)
 {                                        // Call this when daemon ends
+  APPENDFUNC;
   DBUG_ENTER("lex_free");
   DBUG_VOID_RETURN;
 }
@@ -725,6 +745,7 @@ void lex_free(void)
 int
 init_lex_with_single_table(THD *thd, TABLE *table, LEX *lex)
 {
+  APPENDFUNC;
   TABLE_LIST *table_list;
   Table_ident *table_ident;
   SELECT_LEX *select_lex= lex->first_select_lex();
@@ -777,6 +798,7 @@ init_lex_with_single_table(THD *thd, TABLE *table, LEX *lex)
 void
 end_lex_with_single_table(THD *thd, TABLE *table, LEX *old_lex)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   table->map= 0;
   table->get_fields_in_item_tree= FALSE;
@@ -788,6 +810,7 @@ end_lex_with_single_table(THD *thd, TABLE *table, LEX *old_lex)
 void
 st_parsing_options::reset()
 {
+  APPENDFUNC;
   allows_variable= TRUE;
   lookup_keywords_after_qualifier= false;
 }
@@ -806,6 +829,7 @@ bool Lex_input_stream::init(THD *thd,
                             char* buff,
                             size_t length)
 {
+  APPENDFUNC;
   DBUG_EXECUTE_IF("bug42064_simulate_oom",
                   DBUG_SET("+d,simulate_out_of_memory"););
 
@@ -835,6 +859,7 @@ bool Lex_input_stream::init(THD *thd,
 void
 Lex_input_stream::reset(char *buffer, size_t length)
 {
+  APPENDFUNC;
   yylineno= 1;
   lookahead_token= -1;
   lookahead_yylval= NULL;
@@ -876,6 +901,7 @@ Lex_input_stream::reset(char *buffer, size_t length)
 
 void Lex_input_stream::body_utf8_start(THD *thd, const char *begin_ptr)
 {
+  APPENDFUNC;
   DBUG_ASSERT(begin_ptr);
   DBUG_ASSERT(m_cpp_buf <= begin_ptr && begin_ptr <= m_cpp_buf + m_buf_length);
 
@@ -891,6 +917,7 @@ void Lex_input_stream::body_utf8_start(THD *thd, const char *begin_ptr)
 
 size_t Lex_input_stream::get_body_utf8_maximum_length(THD *thd) const
 {
+  APPENDFUNC;
   /*
     String literals can grow during escaping:
     1a. Character string '<TAB>' can grow to '\t', 3 bytes to 4 bytes growth.
@@ -928,6 +955,7 @@ size_t Lex_input_stream::get_body_utf8_maximum_length(THD *thd) const
 void Lex_input_stream::body_utf8_append(const char *ptr,
                                         const char *end_ptr)
 {
+  APPENDFUNC;
   DBUG_ASSERT(m_cpp_buf <= ptr && ptr <= m_cpp_buf + m_buf_length);
   DBUG_ASSERT(m_cpp_buf <= end_ptr && end_ptr <= m_cpp_buf + m_buf_length);
 
@@ -956,6 +984,7 @@ void Lex_input_stream::body_utf8_append(const char *ptr,
 
 void Lex_input_stream::body_utf8_append(const char *ptr)
 {
+  APPENDFUNC;
   body_utf8_append(ptr, ptr);
 }
 
@@ -976,6 +1005,7 @@ Lex_input_stream::body_utf8_append_ident(THD *thd,
                                          const Lex_string_with_metadata_st *txt,
                                          const char *end_ptr)
 {
+  APPENDFUNC;
   if (!m_cpp_utf8_processed_ptr)
     return;
 
@@ -1008,6 +1038,7 @@ extern "C" {
 int my_wc_mb_utf8mb3_with_escape(CHARSET_INFO *cs, my_wc_t escape, my_wc_t wc,
                                  uchar *str, uchar *end)
 {
+  APPENDFUNC;
   DBUG_ASSERT(escape > 0);
   if (str + 1 >= end)
     return MY_CS_TOOSMALL2;  // Not enough space, need at least two bytes.
@@ -1038,6 +1069,7 @@ int my_wc_mb_utf8mb3_opt_escape(CHARSET_INFO *cs,
                                 my_wc_t wc, my_wc_t escape, my_wc_t ewc,
                                 uchar *str, uchar *end)
 {
+  APPENDFUNC;
   return escape ? my_wc_mb_utf8mb3_with_escape(cs, escape, ewc, str, end) :
                   my_charset_utf8mb3_handler.wc_mb(cs, wc, str, end);
 }
@@ -1062,6 +1094,7 @@ int my_wc_mb_utf8mb3_escape(CHARSET_INFO *cs, my_wc_t wc,
                             uchar *str, uchar *end,
                             my_wc_t sep, my_wc_t escape)
 {
+  APPENDFUNC;
   DBUG_ASSERT(escape == 0 || escape == '\\');
   DBUG_ASSERT(sep == '"' || sep == '\'');
   switch (wc) {
@@ -1084,6 +1117,7 @@ int my_wc_mb_utf8mb3_escape_single_quote_and_backslash(CHARSET_INFO *cs,
                                                     my_wc_t wc,
                                                     uchar *str, uchar *end)
 {
+  APPENDFUNC;
   return my_wc_mb_utf8mb3_escape(cs, wc, str, end, '\'', '\\');
 }
 
@@ -1092,6 +1126,7 @@ int my_wc_mb_utf8mb3_escape_double_quote_and_backslash(CHARSET_INFO *cs,
                                                     my_wc_t wc,
                                                     uchar *str, uchar *end)
 {
+  APPENDFUNC;
   return my_wc_mb_utf8mb3_escape(cs, wc, str, end, '"', '\\');
 }
 
@@ -1099,6 +1134,7 @@ int my_wc_mb_utf8mb3_escape_double_quote_and_backslash(CHARSET_INFO *cs,
 int my_wc_mb_utf8mb3_escape_single_quote(CHARSET_INFO *cs, my_wc_t wc,
                                       uchar *str, uchar *end)
 {
+  APPENDFUNC;
   return my_wc_mb_utf8mb3_escape(cs, wc, str, end, '\'', 0);
 }
 
@@ -1106,6 +1142,7 @@ int my_wc_mb_utf8mb3_escape_single_quote(CHARSET_INFO *cs, my_wc_t wc,
 int my_wc_mb_utf8mb3_escape_double_quote(CHARSET_INFO *cs, my_wc_t wc,
                                       uchar *str, uchar *end)
 {
+  APPENDFUNC;
   return my_wc_mb_utf8mb3_escape(cs, wc, str, end, '"', 0);
 }
 
@@ -1119,6 +1156,7 @@ int my_wc_mb_utf8mb3_escape_double_quote(CHARSET_INFO *cs, my_wc_t wc,
 my_charset_conv_wc_mb
 Lex_input_stream::get_escape_func(THD *thd, my_wc_t sep) const
 {
+  APPENDFUNC;
   return thd->backslash_escapes() ?
          (sep == '"' ? my_wc_mb_utf8mb3_escape_double_quote_and_backslash:
                        my_wc_mb_utf8mb3_escape_single_quote_and_backslash) :
@@ -1146,6 +1184,7 @@ void Lex_input_stream::body_utf8_append_escape(THD *thd,
                                                const char *end_ptr,
                                                my_wc_t sep)
 {
+  APPENDFUNC;
   DBUG_ASSERT(sep == '\'' || sep == '"');
   if (!m_cpp_utf8_processed_ptr)
     return;
@@ -1176,6 +1215,7 @@ void Lex_input_stream::body_utf8_append_escape(THD *thd,
 
 void Lex_input_stream::add_digest_token(uint token, LEX_YYSTYPE yylval)
 {
+  APPENDFUNC;
   if (m_digest != NULL)
   {
     m_digest= digest_add_token(m_digest, token, yylval);
@@ -1184,6 +1224,7 @@ void Lex_input_stream::add_digest_token(uint token, LEX_YYSTYPE yylval)
 
 void Lex_input_stream::reduce_digest_token(uint token_left, uint token_right)
 {
+  APPENDFUNC;
   if (m_digest != NULL)
   {
     m_digest= digest_reduce_token(m_digest, token_left, token_right);
@@ -1196,6 +1237,7 @@ void Lex_input_stream::reduce_digest_token(uint token_left, uint token_right)
 
 void SELECT_LEX::lex_start(LEX *plex)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit= &plex->unit;
   /* 'parent_lex' is used in init_query() so it must be before it. */
   parent_lex= plex;
@@ -1216,6 +1258,7 @@ void SELECT_LEX::lex_start(LEX *plex)
 
 void lex_start(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("lex_start");
   thd->lex->start(thd);
   DBUG_VOID_RETURN;
@@ -1230,6 +1273,7 @@ void lex_start(THD *thd)
 
 void LEX::start(THD *thd_arg)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::start");
   DBUG_PRINT("info", ("This: %p thd_arg->lex: %p", this, thd_arg->lex));
 
@@ -1342,6 +1386,7 @@ void LEX::start(THD *thd_arg)
 
 void lex_end(LEX *lex)
 {
+  APPENDFUNC;
   DBUG_ENTER("lex_end");
   DBUG_PRINT("enter", ("lex: %p", lex));
 
@@ -1353,6 +1398,7 @@ void lex_end(LEX *lex)
 
 void lex_unlock_plugins(LEX *lex)
 {
+  APPENDFUNC;
   DBUG_ENTER("lex_unlock_plugins");
 
   /* release used plugins */
@@ -1376,6 +1422,7 @@ void lex_unlock_plugins(LEX *lex)
 */
 void lex_end_nops(LEX *lex)
 {
+  APPENDFUNC;
   DBUG_ENTER("lex_end_nops");
   sp_head::destroy(lex->sphead);
   lex->sphead= NULL;
@@ -1389,6 +1436,7 @@ void lex_end_nops(LEX *lex)
 
 Yacc_state::~Yacc_state()
 {
+  APPENDFUNC;
   if (yacc_yyss)
   {
     my_free(yacc_yyss);
@@ -1399,6 +1447,7 @@ Yacc_state::~Yacc_state()
 int Lex_input_stream::find_keyword(Lex_ident_cli_st *kwd,
                                    uint len, bool function) const
 {
+  APPENDFUNC;
   const char *tok= m_tok_start;
 
   SYMBOL *symbol= get_hash_symbol(tok, len, function);
@@ -1464,6 +1513,7 @@ int Lex_input_stream::find_keyword(Lex_ident_cli_st *kwd,
 
 bool is_keyword(const char *name, uint len)
 {
+  APPENDFUNC;
   DBUG_ASSERT(len != 0);
   return get_hash_symbol(name,len,0)!=0;
 }
@@ -1480,6 +1530,7 @@ bool is_keyword(const char *name, uint len)
 
 bool is_lex_native_function(const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   DBUG_ASSERT(name != NULL);
   return (get_hash_symbol(name->str, (uint) name->length, 1) != 0);
 }
@@ -1487,6 +1538,7 @@ bool is_lex_native_function(const LEX_CSTRING *name)
 
 bool is_native_function(THD *thd, const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   if (mariadb_schema.find_native_function_builder(thd, *name))
     return true;
 
@@ -1502,6 +1554,7 @@ bool is_native_function(THD *thd, const LEX_CSTRING *name)
 
 bool is_native_function_with_warn(THD *thd, const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   if (!is_native_function(thd, name))
     return false;
   /*
@@ -1544,6 +1597,7 @@ bool is_native_function_with_warn(THD *thd, const LEX_CSTRING *name)
 
 LEX_CSTRING Lex_input_stream::get_token(uint skip, uint length)
 {
+  APPENDFUNC;
   LEX_CSTRING tmp;
   yyUnget();                       // ptr points now after last token char
   tmp.length= length;
@@ -1560,6 +1614,7 @@ static size_t
 my_unescape(CHARSET_INFO *cs, char *to, const char *str, const char *end,
             int sep, bool backslash_escapes)
 {
+  APPENDFUNC;
   char *start= to;
   for ( ; str != end ; str++)
   {
@@ -1618,6 +1673,7 @@ Lex_input_stream::unescape(CHARSET_INFO *cs, char *to,
                            const char *str, const char *end,
                            int sep)
 {
+  APPENDFUNC;
   return my_unescape(cs, to, str, end, sep, m_thd->backslash_escapes());
 }
 
@@ -1630,6 +1686,7 @@ Lex_input_stream::unescape(CHARSET_INFO *cs, char *to,
 bool Lex_input_stream::get_text(Lex_string_with_metadata_st *dst, uint sep,
                                 int pre_skip, int post_skip)
 {
+  APPENDFUNC;
   uchar c;
   uint found_escape=0;
   CHARSET_INFO *cs= m_thd->charset();
@@ -1729,6 +1786,7 @@ static const uint unsigned_longlong_len=20;
 
 static inline uint int_token(const char *str,uint length)
 {
+  APPENDFUNC;
   if (length < long_len)                        // quick normal case
     return NUM;
   bool neg=0;
@@ -1814,6 +1872,7 @@ static inline uint int_token(const char *str,uint length)
 */
 bool Lex_input_stream::consume_comment(int remaining_recursions_permitted)
 {
+  APPENDFUNC;
   // only one level of nested comments are allowed
   DBUG_ASSERT(remaining_recursions_permitted == 0 ||
               remaining_recursions_permitted == 1);
@@ -1869,18 +1928,21 @@ bool Lex_input_stream::consume_comment(int remaining_recursions_permitted)
 
 int MYSQLlex(YYSTYPE *yylval, THD *thd)
 {
+  APPENDFUNC;
   return thd->m_parser_state->m_lip.lex_token(yylval, thd);
 }
 
 
 int ORAlex(YYSTYPE *yylval, THD *thd)
 {
+  APPENDFUNC;
   return thd->m_parser_state->m_lip.lex_token(yylval, thd);
 }
 
 
 int Lex_input_stream::lex_token(YYSTYPE *yylval, THD *thd)
 {
+  APPENDFUNC;
   int token;
   const int left_paren= (int) '(';
 
@@ -2020,6 +2082,7 @@ int Lex_input_stream::lex_token(YYSTYPE *yylval, THD *thd)
 
 int Lex_input_stream::lex_one_token(YYSTYPE *yylval, THD *thd)
 {
+  APPENDFUNC;
   uchar UNINIT_VAR(c);
   bool comment_closed;
   int tokval;
@@ -2634,6 +2697,7 @@ int Lex_input_stream::lex_one_token(YYSTYPE *yylval, THD *thd)
 
 bool Lex_input_stream::get_7bit_or_8bit_ident(THD *thd, uchar *last_char)
 {
+  APPENDFUNC;
   uchar c;
   CHARSET_INFO *const cs= thd->charset();
   const uchar *const ident_map= cs->ident_map;
@@ -2661,6 +2725,7 @@ bool Lex_input_stream::get_7bit_or_8bit_ident(THD *thd, uchar *last_char)
 int Lex_input_stream::find_keyword_qualified_special_func(Lex_ident_cli_st *str,
                                                           uint length) const
 {
+  APPENDFUNC;
   /*
     There are many other special functions, see the following grammar rules:
       function_call_keyword
@@ -2707,6 +2772,7 @@ int Lex_input_stream::find_keyword_qualified_special_func(Lex_ident_cli_st *str,
 int Lex_input_stream::scan_ident_common(THD *thd, Lex_ident_cli_st *str,
                                         Ident_mode mode)
 {
+  APPENDFUNC;
   uchar last_char;
   uint length;
   int tokval;
@@ -2782,6 +2848,7 @@ int Lex_input_stream::scan_ident_common(THD *thd, Lex_ident_cli_st *str,
 */
 int Lex_input_stream::scan_ident_start(THD *thd, Lex_ident_cli_st *str)
 {
+  APPENDFUNC;
   uchar c;
   bool is_8bit;
   CHARSET_INFO *const cs= thd->charset();
@@ -2821,6 +2888,7 @@ int Lex_input_stream::scan_ident_middle(THD *thd, Lex_ident_cli_st *str,
                                         CHARSET_INFO **introducer,
                                         my_lex_states *st)
 {
+  APPENDFUNC;
   CHARSET_INFO *const cs= thd->charset();
   const uchar *const ident_map= cs->ident_map;
   const uchar *const state_map= cs->state_map;
@@ -2922,6 +2990,7 @@ int Lex_input_stream::scan_ident_delimited(THD *thd,
                                            Lex_ident_cli_st *str,
                                            uchar quote_char)
 {
+  APPENDFUNC;
   CHARSET_INFO *const cs= thd->charset();
   uchar c;
   DBUG_ASSERT(m_ptr == m_tok_start + 1);
@@ -2978,6 +3047,7 @@ int Lex_input_stream::scan_ident_delimited(THD *thd,
 
 void st_select_lex_node::init_query_common()
 {
+  APPENDFUNC;
   options= 0;
   set_linkage(UNSPECIFIED_TYPE);
   distinct= FALSE;
@@ -2987,6 +3057,7 @@ void st_select_lex_node::init_query_common()
 
 void st_select_lex_unit::init_query()
 {
+  APPENDFUNC;
   init_query_common();
   set_linkage(GLOBAL_OPTIONS_TYPE);
   lim.clear();
@@ -3020,6 +3091,7 @@ void st_select_lex_unit::init_query()
 
 void st_select_lex::init_query()
 {
+  APPENDFUNC;
   init_query_common();
   table_list.empty();
   top_join_list.empty();
@@ -3097,6 +3169,7 @@ void st_select_lex::init_query()
 
 void st_select_lex::init_select()
 {
+  APPENDFUNC;
   sj_nests.empty();
   sj_subselects.empty();
   group_list.empty();
@@ -3155,6 +3228,7 @@ void st_select_lex::init_select()
 /* include on level down */
 void st_select_lex_node::include_down(st_select_lex_node *upper)
 {
+  APPENDFUNC;
   if ((next= upper->slave))
     next->prev= &next;
   prev= &upper->slave;
@@ -3166,6 +3240,7 @@ void st_select_lex_node::include_down(st_select_lex_node *upper)
 
 void st_select_lex_node::attach_single(st_select_lex_node *slave_arg)
 {
+  APPENDFUNC;
   DBUG_ASSERT(slave == 0);
   {
     slave= slave_arg;
@@ -3177,6 +3252,7 @@ void st_select_lex_node::attach_single(st_select_lex_node *slave_arg)
 
 void st_select_lex_node::link_chain_down(st_select_lex_node *first)
 {
+  APPENDFUNC;
   st_select_lex_node *last_node;
   st_select_lex_node *node= first;
   do
@@ -3207,6 +3283,7 @@ void st_select_lex_node::link_chain_down(st_select_lex_node *first)
 
 void st_select_lex_node::substitute_in_tree(st_select_lex_node *subst)
 {
+  APPENDFUNC;
   if ((subst->next= next))
     next->prev= &subst->next;
   subst->prev= prev;
@@ -3225,6 +3302,7 @@ void st_select_lex_node::substitute_in_tree(st_select_lex_node *subst)
 void st_select_lex_node::include_standalone(st_select_lex_node *upper,
                                             st_select_lex_node **ref)
 {
+  APPENDFUNC;
   next= 0;
   prev= ref;
   master= upper;
@@ -3234,6 +3312,7 @@ void st_select_lex_node::include_standalone(st_select_lex_node *upper,
 /* include neighbour (on same level) */
 void st_select_lex_node::include_neighbour(st_select_lex_node *before)
 {
+  APPENDFUNC;
   if ((next= before->next))
     next->prev= &next;
   prev= &before->next;
@@ -3245,6 +3324,7 @@ void st_select_lex_node::include_neighbour(st_select_lex_node *before)
 /* including in global SELECT_LEX list */
 void st_select_lex_node::include_global(st_select_lex_node **plink)
 {
+  APPENDFUNC;
   if ((link_next= *plink))
     link_next->link_prev= &link_next;
   link_prev= plink;
@@ -3254,6 +3334,7 @@ void st_select_lex_node::include_global(st_select_lex_node **plink)
 //excluding from global list (internal function)
 void st_select_lex_node::fast_exclude()
 {
+  APPENDFUNC;
   if (link_prev)
   {
     if ((*link_prev= link_next))
@@ -3292,6 +3373,7 @@ st_select_lex_node *st_select_lex_node:: insert_chain_before(
                                          st_select_lex_node **ptr_pos_to_insert,
                                          st_select_lex_node *end_chain_node)
 {
+  APPENDFUNC;
   end_chain_node->link_next= *ptr_pos_to_insert;
   (*ptr_pos_to_insert)->link_prev= &end_chain_node->link_next;
   link_prev= ptr_pos_to_insert;
@@ -3305,6 +3387,7 @@ st_select_lex_node *st_select_lex_node:: insert_chain_before(
 
 void st_select_lex_node::move_as_slave(st_select_lex_node *new_master)
 {
+  APPENDFUNC;
   exclude_from_tree();
   if (new_master->slave)
   {
@@ -3327,6 +3410,7 @@ void st_select_lex_node::move_as_slave(st_select_lex_node *new_master)
 
 void st_select_lex_node::exclude_from_tree()
 {
+  APPENDFUNC;
   if ((*prev= next))
     next->prev= prev;
 }
@@ -3338,6 +3422,7 @@ void st_select_lex_node::exclude_from_tree()
 */
 void st_select_lex_node::exclude()
 {
+  APPENDFUNC;
   /* exclude the node from the tree  */
   exclude_from_tree();
   /* 
@@ -3362,6 +3447,7 @@ void st_select_lex_node::exclude()
 */
 void st_select_lex_unit::exclude_level()
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *units= 0, **units_last= &units;
   for (SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
   {
@@ -3419,6 +3505,7 @@ void st_select_lex_unit::exclude_level()
 bool st_select_lex::mark_as_dependent(THD *thd, st_select_lex *last,
                                       Item_ident *dependency)
 {
+  APPENDFUNC;
 
   DBUG_ASSERT(this != last);
 
@@ -3465,6 +3552,7 @@ bool st_select_lex::mark_as_dependent(THD *thd, st_select_lex *last,
 */
 bool st_select_lex::test_limit()
 {
+  APPENDFUNC;
   if (limit_params.select_limit)
   {
     my_error(ER_NOT_SUPPORTED_YET, MYF(0),
@@ -3478,12 +3566,14 @@ bool st_select_lex::test_limit()
 
 st_select_lex* st_select_lex_unit::outer_select() const
 {
+  APPENDFUNC;
   return (st_select_lex*) master;
 }
 
 
 ha_rows st_select_lex::get_offset()
 {
+  APPENDFUNC;
   ha_rows val= 0;
 
   Item *offset_limit= limit_params.offset_limit;
@@ -3501,6 +3591,7 @@ ha_rows st_select_lex::get_offset()
 
 ha_rows st_select_lex::get_limit()
 {
+  APPENDFUNC;
   ha_rows val= HA_POS_ERROR;
 
   Item *select_limit= limit_params.select_limit;
@@ -3543,18 +3634,21 @@ ha_rows st_select_lex::get_limit()
 
 bool st_select_lex::add_order_to_list(THD *thd, Item *item, bool asc)
 {
+  APPENDFUNC;
   return add_to_list(thd, order_list, item, asc);
 }
 
 
 bool st_select_lex::add_gorder_to_list(THD *thd, Item *item, bool asc)
 {
+  APPENDFUNC;
   return add_to_list(thd, gorder_list, item, asc);
 }
 
 
 bool st_select_lex::add_item_to_list(THD *thd, Item *item)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex::add_item_to_list");
   DBUG_PRINT("info", ("Item: %p", item));
   DBUG_RETURN(item_list.push_back(item, thd->mem_root));
@@ -3563,24 +3657,28 @@ bool st_select_lex::add_item_to_list(THD *thd, Item *item)
 
 bool st_select_lex::add_group_to_list(THD *thd, Item *item, bool asc)
 {
+  APPENDFUNC;
   return add_to_list(thd, group_list, item, asc);
 }
 
 
 bool st_select_lex::add_ftfunc_to_list(THD *thd, Item_func_match *func)
 {
+  APPENDFUNC;
   return !func || ftfunc_list->push_back(func, thd->mem_root); // end of memory?
 }
 
 
 st_select_lex* st_select_lex::outer_select()
 {
+  APPENDFUNC;
   return (st_select_lex*) master->get_master();
 }
 
 
 bool st_select_lex::inc_in_sum_expr()
 {
+  APPENDFUNC;
   in_sum_expr++;
   return 0;
 }
@@ -3588,23 +3686,27 @@ bool st_select_lex::inc_in_sum_expr()
 
 uint st_select_lex::get_in_sum_expr()
 {
+  APPENDFUNC;
   return in_sum_expr;
 }
 
 
 TABLE_LIST* st_select_lex::get_table_list()
 {
+  APPENDFUNC;
   return table_list.first;
 }
 
 List<Item>* st_select_lex::get_item_list()
 {
+  APPENDFUNC;
   return &item_list;
 }
 
 
 uint st_select_lex::get_cardinality_of_ref_ptrs_slice(uint order_group_num_arg)
 {
+  APPENDFUNC;
   if (!((options & SELECT_DISTINCT) && !group_list.elements))
     hidden_bit_fields= 0;
 
@@ -3630,6 +3732,7 @@ uint st_select_lex::get_cardinality_of_ref_ptrs_slice(uint order_group_num_arg)
 
 bool st_select_lex::setup_ref_array(THD *thd, uint order_group_num)
 {
+  APPENDFUNC;
   uint n_elems= get_cardinality_of_ref_ptrs_slice(order_group_num) * 5;
   if (!ref_pointer_array.is_null())
     return false;
@@ -3658,6 +3761,7 @@ bool st_select_lex::setup_ref_array(THD *thd, uint order_group_num)
 
 void LEX::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (sql_command == SQLCOM_UPDATE)
   {
     SELECT_LEX *sel= first_select_lex();
@@ -3748,6 +3852,7 @@ void LEX::print(String *str, enum_query_type query_type)
 
 void st_select_lex_unit::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (with_clause)
     with_clause->print(thd, str, query_type);
   for (SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
@@ -3798,6 +3903,7 @@ void st_select_lex::print_order(String *str,
                                 ORDER *order,
                                 enum_query_type query_type)
 {
+  APPENDFUNC;
   for (; order; order= order->next)
   {
     if (order->counter_used)
@@ -3829,6 +3935,7 @@ void st_select_lex::print_limit(THD *thd,
                                 String *str,
                                 enum_query_type query_type)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit= master_unit();
   Item_subselect *item= unit->item;
 
@@ -3891,6 +3998,7 @@ void st_select_lex::print_limit(THD *thd,
 
 void LEX::cleanup_lex_after_parse_error(THD *thd)
 {
+  APPENDFUNC;
   /*
     Don't delete an instance of the class sp_head pointed by the data member
     thd->lex->sphead since sp_head's destructor deletes every instruction
@@ -3968,6 +4076,7 @@ void LEX::cleanup_lex_after_parse_error(THD *thd)
 
 void Query_tables_list::reset_query_tables_list(bool init)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_END;
   if (!init && query_tables)
   {
@@ -4013,6 +4122,7 @@ void Query_tables_list::reset_query_tables_list(bool init)
 
 void Query_tables_list::destroy_query_tables_list()
 {
+  APPENDFUNC;
   my_hash_free(&sroutines);
 }
 
@@ -4039,6 +4149,7 @@ LEX::LEX()
     context_analysis_only(0), sphead(0), sp_mem_root_ptr(nullptr),
     limit_rows_examined_cnt(ULONGLONG_MAX)
 {
+  APPENDFUNC;
 
   init_dynamic_array2(PSI_INSTRUMENT_ME, &plugins, sizeof(plugin_ref),
                       plugins_static_buffer, INITIAL_LEX_PLUGIN_LIST_SIZE,
@@ -4055,6 +4166,7 @@ LEX::LEX()
 
 bool LEX::can_be_merged()
 {
+  APPENDFUNC;
   return unit.can_be_merged();
 }
 
@@ -4079,6 +4191,7 @@ bool LEX::can_be_merged()
 
 bool st_select_lex_unit::can_be_merged()
 {
+  APPENDFUNC;
   // TODO: do not forget implement case when select_lex.table_list.elements==0
 
   /* find non VIEW subqueries/unions */
@@ -4122,6 +4235,7 @@ bool st_select_lex_unit::can_be_merged()
 
 bool LEX::can_use_merged()
 {
+  APPENDFUNC;
   switch (sql_command)
   {
   case SQLCOM_SELECT:
@@ -4158,6 +4272,7 @@ bool LEX::can_use_merged()
 
 bool LEX::can_not_use_merged()
 {
+  APPENDFUNC;
   switch (sql_command) {
   case SQLCOM_CREATE_VIEW:
   case SQLCOM_SHOW_CREATE:
@@ -4186,6 +4301,7 @@ bool LEX::can_not_use_merged()
 
 bool LEX::only_view_structure()
 {
+  APPENDFUNC;
   switch (sql_command) {
   case SQLCOM_SHOW_CREATE:
   case SQLCOM_CHECKSUM:
@@ -4218,6 +4334,7 @@ bool LEX::only_view_structure()
 
 bool LEX::need_correct_ident()
 {
+  APPENDFUNC;
   switch(sql_command)
   {
   case SQLCOM_SHOW_CREATE:
@@ -4248,6 +4365,7 @@ bool LEX::need_correct_ident()
 
 uint8 LEX::get_effective_with_check(TABLE_LIST *view)
 {
+  APPENDFUNC;
   if (view->select_lex->master_unit() == &unit &&
       which_check_option_applicable())
     return (uint8)view->with_check;
@@ -4276,6 +4394,7 @@ uint8 LEX::get_effective_with_check(TABLE_LIST *view)
 
 bool LEX::copy_db_to(LEX_CSTRING *to)
 {
+  APPENDFUNC;
   if (sphead && sphead->m_name.str)
   {
     DBUG_ASSERT(sphead->m_db.str && sphead->m_db.length);
@@ -4297,6 +4416,7 @@ bool LEX::copy_db_to(LEX_CSTRING *to)
 
 void st_select_lex_unit::set_limit(st_select_lex *sl)
 {
+  APPENDFUNC;
   DBUG_ASSERT(!thd->stmt_arena->is_stmt_prepare());
 
   lim.set_limit(sl->get_limit(), sl->get_offset(), sl->limit_params.with_ties);
@@ -4311,6 +4431,7 @@ void st_select_lex_unit::set_limit(st_select_lex *sl)
 
 bool st_select_lex_unit::union_needs_tmp_table()
 {
+  APPENDFUNC;
   if (with_element && with_element->is_recursive)
     return true;
   if (!with_wrapped_tvc)
@@ -4359,6 +4480,7 @@ bool st_select_lex_unit::union_needs_tmp_table()
 
 void LEX::set_trg_event_type_for_tables()
 {
+  APPENDFUNC;
   uint8 new_trg_event_map= 0;
   DBUG_ENTER("LEX::set_trg_event_type_for_tables");
 
@@ -4509,6 +4631,7 @@ void LEX::set_trg_event_type_for_tables()
 */
 TABLE_LIST *LEX::unlink_first_table(bool *link_to_local)
 {
+  APPENDFUNC;
   TABLE_LIST *first;
   if ((first= query_tables))
   {
@@ -4561,6 +4684,7 @@ TABLE_LIST *LEX::unlink_first_table(bool *link_to_local)
 
 void LEX::first_lists_tables_same()
 {
+  APPENDFUNC;
   TABLE_LIST *first_table= first_select_lex()->table_list.first;
   if (query_tables != first_table && first_table != 0)
   {
@@ -4588,6 +4712,7 @@ void LEX::first_lists_tables_same()
 
 void LEX::fix_first_select_number()
 {
+  APPENDFUNC;
   SELECT_LEX *first= first_select_lex();
   if (first && first->select_number != 1)
   {
@@ -4618,6 +4743,7 @@ void LEX::fix_first_select_number()
 void LEX::link_first_table_back(TABLE_LIST *first,
                                 bool link_to_local)
 {
+  APPENDFUNC;
   if (first)
   {
     if ((first->next_global= query_tables))
@@ -4652,6 +4778,7 @@ void LEX::link_first_table_back(TABLE_LIST *first,
 
 void LEX::cleanup_after_one_table_open()
 {
+  APPENDFUNC;
   /*
     thd->lex->derived_tables & additional units may be set if we open
     a view. It is necessary to clear thd->lex->derived_tables flag
@@ -4688,6 +4815,7 @@ void LEX::cleanup_after_one_table_open()
 
 void LEX::reset_n_backup_query_tables_list(Query_tables_list *backup)
 {
+  APPENDFUNC;
   backup->set_query_tables_list(this);
   /*
     We have to perform full initialization here since otherwise we
@@ -4707,6 +4835,7 @@ void LEX::reset_n_backup_query_tables_list(Query_tables_list *backup)
 
 void LEX::restore_backup_query_tables_list(Query_tables_list *backup)
 {
+  APPENDFUNC;
   destroy_query_tables_list();
   set_query_tables_list(backup);
 }
@@ -4725,6 +4854,7 @@ void LEX::restore_backup_query_tables_list(Query_tables_list *backup)
 
 bool LEX::table_or_sp_used()
 {
+  APPENDFUNC;
   DBUG_ENTER("table_or_sp_used");
 
   if (sroutines.records || query_tables)
@@ -4751,6 +4881,7 @@ bool LEX::table_or_sp_used()
 
 static void fix_prepare_info_in_table_list(THD *thd, TABLE_LIST *tbl)
 {
+  APPENDFUNC;
   for (; tbl; tbl= tbl->next_local)
   {
     if (tbl->on_expr && !tbl->prep_on_expr)
@@ -4790,6 +4921,7 @@ static void fix_prepare_info_in_table_list(THD *thd, TABLE_LIST *tbl)
 void st_select_lex::fix_prepare_information(THD *thd, Item **conds, 
                                             Item **having_conds)
 {
+  APPENDFUNC;
   Query_arena *active_arena= thd->active_stmt_arena_to_use();
 
   DBUG_ENTER("st_select_lex::fix_prepare_information");
@@ -4861,6 +4993,7 @@ void st_select_lex::fix_prepare_information(THD *thd, Item **conds,
 void st_select_lex::set_index_hint_type(enum index_hint_type type_arg,
                                         index_clause_map clause)
 { 
+  APPENDFUNC;
   current_index_hint_type= type_arg;
   current_index_hint_clause= clause;
 }
@@ -4876,6 +5009,7 @@ void st_select_lex::set_index_hint_type(enum index_hint_type type_arg,
 
 void st_select_lex::alloc_index_hints (THD *thd)
 { 
+  APPENDFUNC;
   index_hints= new (thd->mem_root) List<Index_hint>(); 
 }
 
@@ -4896,6 +5030,7 @@ void st_select_lex::alloc_index_hints (THD *thd)
 */
 bool st_select_lex::add_index_hint (THD *thd, const char *str, size_t length)
 {
+  APPENDFUNC;
   return index_hints->push_front(new (thd->mem_root) 
                                  Index_hint(current_index_hint_type,
                                             current_index_hint_clause,
@@ -4921,6 +5056,7 @@ bool st_select_lex::add_index_hint (THD *thd, const char *str, size_t length)
 
 bool st_select_lex::optimize_unflattened_subqueries(bool const_only)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *next_unit= NULL;
   for (SELECT_LEX_UNIT *un= first_inner_unit();
        un;
@@ -5067,6 +5203,7 @@ bool st_select_lex::optimize_unflattened_subqueries(bool const_only)
 
 bool st_select_lex::handle_derived(LEX *lex, uint phases)
 {
+  APPENDFUNC;
   return lex->handle_list_of_derived(table_list.first, phases);
 }
 
@@ -5088,6 +5225,7 @@ bool st_select_lex::handle_derived(LEX *lex, uint phases)
 
 bool st_select_lex::get_free_table_map(table_map *map, uint *tablenr)
 {
+  APPENDFUNC;
   *map= 0;
   *tablenr= 0;
   TABLE_LIST *tl;
@@ -5123,6 +5261,7 @@ bool st_select_lex::get_free_table_map(table_map *map, uint *tablenr)
 void st_select_lex::append_table_to_list(TABLE_LIST *TABLE_LIST::*link,
                                          TABLE_LIST *table)
 {
+  APPENDFUNC;
   TABLE_LIST *tl;
   for (tl= leaf_tables.head(); tl->*link; tl= tl->*link) ;
   tl->*link= table;
@@ -5142,6 +5281,7 @@ void st_select_lex::append_table_to_list(TABLE_LIST *TABLE_LIST::*link,
 
 void st_select_lex::replace_leaf_table(TABLE_LIST *table, List<TABLE_LIST> &tbl_list)
 {
+  APPENDFUNC;
   TABLE_LIST *tl;
   List_iterator<TABLE_LIST> ti(leaf_tables);
   while ((tl= ti++))
@@ -5178,6 +5318,7 @@ void st_select_lex::replace_leaf_table(TABLE_LIST *table, List<TABLE_LIST> &tbl_
 void st_select_lex::remap_tables(TABLE_LIST *derived, table_map map,
                                  uint tablenr, SELECT_LEX *parent_lex)
 {
+  APPENDFUNC;
   bool first_table= TRUE;
   bool has_table_function= FALSE;
   TABLE_LIST *tl;
@@ -5266,6 +5407,7 @@ bool SELECT_LEX::merge_subquery(THD *thd, TABLE_LIST *derived,
                                 SELECT_LEX *subq_select,
                                 uint table_no, table_map map)
 {
+  APPENDFUNC;
   derived->wrap_into_nested_join(subq_select->top_join_list);
 
   ftfunc_list->append(subq_select->ftfunc_list);
@@ -5322,6 +5464,7 @@ bool SELECT_LEX::merge_subquery(THD *thd, TABLE_LIST *derived,
 
 void SELECT_LEX::mark_as_belong_to_derived(TABLE_LIST *derived)
 {
+  APPENDFUNC;
   /* Mark tables as belonging to this DT */
   TABLE_LIST *tl;
   List_iterator<TABLE_LIST> ti(leaf_tables);
@@ -5341,6 +5484,7 @@ void SELECT_LEX::mark_as_belong_to_derived(TABLE_LIST *derived)
 
 void SELECT_LEX::update_used_tables()
 {
+  APPENDFUNC;
   TABLE_LIST *tl;
   List_iterator<TABLE_LIST> ti(leaf_tables);
 
@@ -5475,6 +5619,7 @@ void SELECT_LEX::update_used_tables()
 
 void st_select_lex::update_correlated_cache()
 {
+  APPENDFUNC;
   TABLE_LIST *tl;
   List_iterator<TABLE_LIST> ti(leaf_tables);
 
@@ -5536,6 +5681,7 @@ void st_select_lex::update_correlated_cache()
 
 void st_select_lex::set_explain_type(bool on_the_fly)
 {
+  APPENDFUNC;
   bool is_primary= FALSE;
   if (next_select())
     is_primary= TRUE;
@@ -5690,6 +5836,7 @@ void st_select_lex::set_explain_type(bool on_the_fly)
 
 void SELECT_LEX::increase_derived_records(ha_rows records)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit= master_unit();
   DBUG_ASSERT(unit->derived);
 
@@ -5741,6 +5888,7 @@ void SELECT_LEX::increase_derived_records(ha_rows records)
 
 void SELECT_LEX::mark_const_derived(bool empty)
 {
+  APPENDFUNC;
   TABLE_LIST *derived= master_unit()->derived;
   /* join == NULL in  DELETE ... RETURNING */
   if (!(join && join->thd->lex->describe) && derived)
@@ -5756,6 +5904,7 @@ void SELECT_LEX::mark_const_derived(bool empty)
 
 bool st_select_lex::save_leaf_tables(THD *thd)
 {
+  APPENDFUNC;
   Query_arena *arena, backup;
   arena= thd->activate_stmt_arena_if_needed(&backup);
 
@@ -5781,6 +5930,7 @@ bool st_select_lex::save_leaf_tables(THD *thd)
 
 bool LEX::save_prep_leaf_tables()
 {
+  APPENDFUNC;
   if (!thd->save_prep_leaf_list)
     return FALSE;
 
@@ -5803,6 +5953,7 @@ bool LEX::save_prep_leaf_tables()
 
 bool st_select_lex::save_prep_leaf_tables(THD *thd)
 {
+  APPENDFUNC;
   if (prep_leaf_list_state == SAVED)
     return FALSE;
 
@@ -5844,6 +5995,7 @@ bool st_select_lex::save_prep_leaf_tables(THD *thd)
 
 void st_select_lex::set_unique_exclude()
 {
+  APPENDFUNC;
   exclude_from_table_unique_test= TRUE;
   for (SELECT_LEX_UNIT *unit= first_inner_unit();
        unit;
@@ -5881,6 +6033,7 @@ void st_select_lex::set_unique_exclude()
 
 bool st_select_lex::is_merged_child_of(st_select_lex *ancestor)
 {
+  APPENDFUNC;
   bool all_merged= TRUE;
   for (SELECT_LEX *sl= this; sl && sl!=ancestor;
        sl=sl->outer_select())
@@ -5914,6 +6067,7 @@ int LEX::print_explain(select_result_sink *output, uint8 explain_flags,
                        bool is_analyze, bool is_json_format,
                        bool *printed_anything)
 {
+  APPENDFUNC;
   int res;
   if (explain && explain->have_query_plan())
   {
@@ -5954,6 +6108,7 @@ int LEX::print_explain(select_result_sink *output, uint8 explain_flags,
 
 bool LEX::set_arena_for_set_stmt(Query_arena *backup)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::set_arena_for_set_stmt");
   DBUG_ASSERT(arena_for_set_stmt== 0);
   if (!mem_root_for_set_stmt)
@@ -5978,6 +6133,7 @@ bool LEX::set_arena_for_set_stmt(Query_arena *backup)
 
 void LEX::reset_arena_for_set_stmt(Query_arena *backup)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::reset_arena_for_set_stmt");
   DBUG_ASSERT(arena_for_set_stmt);
   thd->restore_active_arena(arena_for_set_stmt, backup);
@@ -5990,6 +6146,7 @@ void LEX::reset_arena_for_set_stmt(Query_arena *backup)
 
 void LEX::free_arena_for_set_stmt()
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::free_arena_for_set_stmt");
   if (!arena_for_set_stmt)
     return;
@@ -6005,6 +6162,7 @@ void LEX::free_arena_for_set_stmt()
 
 bool LEX::restore_set_statement_var()
 {
+  APPENDFUNC;
   bool err= false;
   DBUG_ENTER("LEX::restore_set_statement_var");
   if (!old_var_list.is_empty())
@@ -6020,6 +6178,7 @@ bool LEX::restore_set_statement_var()
 
 unit_common_op st_select_lex_unit::common_op()
 {
+  APPENDFUNC;
   SELECT_LEX *first= first_select();
   bool first_op= TRUE;
   unit_common_op operation= OP_MIX; // if no op
@@ -6073,6 +6232,7 @@ unit_common_op st_select_lex_unit::common_op()
 
 int st_select_lex_unit::save_union_explain(Explain_query *output)
 {
+  APPENDFUNC;
   SELECT_LEX *first= first_select();
 
   if (output->get_union(first->select_number))
@@ -6119,6 +6279,7 @@ int st_select_lex_unit::save_union_explain(Explain_query *output)
 
 int st_select_lex_unit::save_union_explain_part2(Explain_query *output)
 {
+  APPENDFUNC;
   Explain_union *eu= output->get_union(first_select()->select_number);
   if (fake_select_lex)
   {
@@ -6147,6 +6308,7 @@ int st_select_lex_unit::save_union_explain_part2(Explain_query *output)
 
 bool LEX::is_partition_management() const
 {
+  APPENDFUNC;
   return (sql_command == SQLCOM_ALTER_TABLE &&
           (alter_info.partition_flags & (ALTER_PARTITION_ADD |
                                          ALTER_PARTITION_CONVERT_IN |
@@ -6164,11 +6326,13 @@ bool LEX::is_partition_management() const
 
 SELECT_LEX *LEX::exclude_last_select()
 {
+  APPENDFUNC;
   return exclude_not_first_select(current_select);
 }
 
 SELECT_LEX *LEX::exclude_not_first_select(SELECT_LEX *exclude)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::exclude_not_first_select");
   DBUG_PRINT("enter", ("exclude %p #%u", exclude, exclude->select_number));
   SELECT_LEX_UNIT *unit= exclude->master_unit();
@@ -6192,6 +6356,7 @@ SELECT_LEX *LEX::exclude_not_first_select(SELECT_LEX *exclude)
 
 SELECT_LEX_UNIT *LEX::alloc_unit()
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit;
   DBUG_ENTER("LEX::alloc_unit");
   if (!(unit= new (thd->mem_root) SELECT_LEX_UNIT()))
@@ -6210,6 +6375,7 @@ SELECT_LEX_UNIT *LEX::alloc_unit()
 
 SELECT_LEX *LEX::alloc_select(bool select)
 {
+  APPENDFUNC;
   SELECT_LEX *select_lex;
   DBUG_ENTER("LEX::alloc_select");
   if (!(select_lex= new (thd->mem_root) SELECT_LEX()))
@@ -6235,6 +6401,7 @@ SELECT_LEX *LEX::alloc_select(bool select)
 SELECT_LEX_UNIT *
 LEX::create_unit(SELECT_LEX *first_sel)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit;
   DBUG_ENTER("LEX::create_unit");
 
@@ -6258,6 +6425,7 @@ SELECT_LEX_UNIT *
 SELECT_LEX::attach_selects_chain(SELECT_LEX *first_sel,
                                  Name_resolution_context *context)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit;
   DBUG_ENTER("SELECT_LEX::attach_select_chain");
 
@@ -6280,6 +6448,7 @@ SELECT_LEX::attach_selects_chain(SELECT_LEX *first_sel,
 SELECT_LEX *
 LEX::wrap_unit_into_derived(SELECT_LEX_UNIT *unit)
 {
+  APPENDFUNC;
   SELECT_LEX *wrapping_sel;
   Table_ident *ti;
   DBUG_ENTER("LEX::wrap_unit_into_derived");
@@ -6340,6 +6509,7 @@ err:
 
 SELECT_LEX *LEX::wrap_select_chain_into_derived(SELECT_LEX *sel)
 {
+  APPENDFUNC;
   SELECT_LEX *dummy_select;
   SELECT_LEX_UNIT *unit;
   Table_ident *ti;
@@ -6402,6 +6572,7 @@ err:
 
 bool LEX::push_context(Name_resolution_context *context)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::push_context");
   DBUG_PRINT("info", ("Context: %p Select: %p (%d)",
                        context, context->select_lex,
@@ -6415,6 +6586,7 @@ bool LEX::push_context(Name_resolution_context *context)
 
 Name_resolution_context *LEX::pop_context()
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::pop_context");
   Name_resolution_context *context= context_stack.pop();
   DBUG_PRINT("info", ("Context: %p Select: %p (%d)",
@@ -6428,6 +6600,7 @@ Name_resolution_context *LEX::pop_context()
 
 SELECT_LEX *LEX::create_priority_nest(SELECT_LEX *first_in_nest)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::create_priority_nest");
   DBUG_ASSERT(first_in_nest->first_nested);
   enum sub_select_type wr_unit_type= first_in_nest->get_linkage();
@@ -6457,6 +6630,7 @@ SELECT_LEX *LEX::create_priority_nest(SELECT_LEX *first_in_nest)
 
 void LEX::check_automatic_up(enum sub_select_type type)
 {
+  APPENDFUNC;
   if (type != INTERSECT_TYPE &&
       current_select->get_linkage() == INTERSECT_TYPE &&
       current_select->outer_select() &&
@@ -6470,6 +6644,7 @@ void LEX::check_automatic_up(enum sub_select_type type)
 
 sp_variable *LEX::sp_param_init(LEX_CSTRING *name)
 {
+  APPENDFUNC;
   if (spcont->find_variable(name, true))
   {
     my_error(ER_SP_DUP_PARAM, MYF(0), name->str);
@@ -6484,6 +6659,7 @@ sp_variable *LEX::sp_param_init(LEX_CSTRING *name)
 bool LEX::sp_param_fill_definition(sp_variable *spvar,
                                    const Lex_field_type_st &def)
 {
+  APPENDFUNC;
   return
     last_field->set_attributes(thd, def, COLUMN_DEFINITION_ROUTINE_PARAM) ||
     sphead->fill_spvar_definition(thd, last_field, &spvar->name);
@@ -6492,6 +6668,7 @@ bool LEX::sp_param_fill_definition(sp_variable *spvar,
 
 bool LEX::sf_return_fill_definition(const Lex_field_type_st &def)
 {
+  APPENDFUNC;
   return
     last_field->set_attributes(thd, def, COLUMN_DEFINITION_FUNCTION_RETURN) ||
     sphead->fill_field_definition(thd, last_field);
@@ -6500,6 +6677,7 @@ bool LEX::sf_return_fill_definition(const Lex_field_type_st &def)
 
 void LEX::set_stmt_init()
 {
+  APPENDFUNC;
   sql_command= SQLCOM_SET_OPTION;
   init_select();
   option_type= OPT_SESSION;
@@ -6524,6 +6702,7 @@ LEX::find_variable(const LEX_CSTRING *name,
                    sp_pcontext **ctx,
                    const Sp_rcontext_handler **rh) const
 {
+  APPENDFUNC;
   sp_variable *spv;
   if (spcont && (spv= spcont->find_variable(name, false)))
   {
@@ -6546,6 +6725,7 @@ LEX::find_variable(const LEX_CSTRING *name,
 
 static bool is_new(const char *str)
 {
+  APPENDFUNC;
   return (str[0] == 'n' || str[0] == 'N') &&
          (str[1] == 'e' || str[1] == 'E') &&
          (str[2] == 'w' || str[2] == 'W');
@@ -6553,6 +6733,7 @@ static bool is_new(const char *str)
 
 static bool is_old(const char *str)
 {
+  APPENDFUNC;
   return (str[0] == 'o' || str[0] == 'O') &&
          (str[1] == 'l' || str[1] == 'L') &&
          (str[2] == 'd' || str[2] == 'D');
@@ -6561,6 +6742,7 @@ static bool is_old(const char *str)
 
 bool LEX::is_trigger_new_or_old_reference(const LEX_CSTRING *name) const
 {
+  APPENDFUNC;
   // "name" is not necessarily NULL-terminated!
   return sphead && sphead->m_handler->type() == SP_TYPE_TRIGGER &&
          name->length == 3 && (is_new(name->str) || is_old(name->str));
@@ -6569,6 +6751,7 @@ bool LEX::is_trigger_new_or_old_reference(const LEX_CSTRING *name) const
 
 void LEX::sp_variable_declarations_init(THD *thd, int nvars)
 {
+  APPENDFUNC;
   sp_variable *spvar= spcont->get_last_context_variable();
 
   sphead->reset_lex(thd);
@@ -6581,6 +6764,7 @@ bool LEX::sp_variable_declarations_set_default(THD *thd, int nvars,
                                                Item *dflt_value_item,
                                                const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   bool has_default_clause= dflt_value_item != NULL;
   if (!has_default_clause &&
       unlikely(!(dflt_value_item= new (thd->mem_root) Item_null(thd))))
@@ -6630,6 +6814,7 @@ LEX::sp_variable_declarations_copy_type_finalize(THD *thd, int nvars,
                                                  Item *default_value,
                                                  const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   for (uint i= 0 ; i < (uint) nvars; i++)
   {
     sp_variable *spvar= spcont->get_last_context_variable((uint) nvars - 1 - i);
@@ -6654,6 +6839,7 @@ bool LEX::sp_variable_declarations_finalize(THD *thd, int nvars,
                                             Item *dflt_value_item,
                                             const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(cdef);
   Column_definition tmp(*cdef);
   if (sphead->fill_spvar_definition(thd, &tmp))
@@ -6668,6 +6854,7 @@ bool LEX::sp_variable_declarations_row_finalize(THD *thd, int nvars,
                                                 Item *dflt_value_item,
                                                 const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(row);
   /*
     Prepare all row fields.
@@ -6715,6 +6902,7 @@ LEX::sp_variable_declarations_rowtype_finalize(THD *thd, int nvars,
                                                Item *def,
                                                const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   uint coffp;
   const sp_pcursor *pcursor= ref->table.str && ref->db.str ? NULL :
                              spcont->find_cursor(&ref->m_column, &coffp,
@@ -6748,6 +6936,7 @@ LEX::sp_variable_declarations_table_rowtype_finalize(THD *thd, int nvars,
                                                      Item *def,
                                                      const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   Table_ident *table_ref;
   if (unlikely(!(table_ref=
                  new (thd->mem_root) Table_ident(thd, &db, &table, false))))
@@ -6774,6 +6963,7 @@ LEX::sp_variable_declarations_cursor_rowtype_finalize(THD *thd, int nvars,
                                                       Item *def,
                                                       const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   const sp_pcursor *pcursor= spcont->find_cursor(offset);
 
   // Loop through all variables in the same declaration
@@ -6814,6 +7004,7 @@ LEX::sp_variable_declarations_with_ref_finalize(THD *thd, int nvars,
                                                 Item *def,
                                                 const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   return ref->db.length == 0 && ref->table.length == 0 ?
     sp_variable_declarations_vartype_finalize(thd, nvars, ref->m_column, def,
                                               expr_str) :
@@ -6828,6 +7019,7 @@ LEX::sp_variable_declarations_column_type_finalize(THD *thd, int nvars,
                                                    Item *def,
                                                    const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   for (uint i= 0 ; i < (uint) nvars; i++)
   {
     sp_variable *spvar= spcont->get_last_context_variable((uint) nvars - 1 - i);
@@ -6848,6 +7040,7 @@ LEX::sp_variable_declarations_vartype_finalize(THD *thd, int nvars,
                                                Item *default_value,
                                                const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_variable *t;
   if (!spcont || !(t= spcont->find_variable(&ref, false)))
   {
@@ -6920,6 +7113,7 @@ sp_variable *LEX::sp_add_for_loop_variable(THD *thd, const LEX_CSTRING *name,
                                            Item *value,
                                            const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_variable *spvar= spcont->add_variable(thd, name);
   spcont->declare_var_boundary(1);
   spvar->field_def.field_name= spvar->name;
@@ -6946,6 +7140,7 @@ bool LEX::sp_for_loop_implicit_cursor_statement(THD *thd,
                                                 Lex_for_loop_bounds_st *bounds,
                                                 sp_lex_cursor *cur)
 {
+  APPENDFUNC;
   Item *item;
   DBUG_ASSERT(sphead);
   LEX_CSTRING name= {STRING_WITH_LEN("[implicit_cursor]") };
@@ -6987,6 +7182,7 @@ LEX::sp_add_for_loop_cursor_variable(THD *thd,
                                      sp_assignment_lex *param_lex,
                                      Item_args *parameters)
 {
+  APPENDFUNC;
   sp_variable *spvar= spcont->add_variable(thd, name);
   if (!spvar)
     return NULL;
@@ -7015,6 +7211,7 @@ LEX::sp_add_for_loop_cursor_variable(THD *thd,
 */
 bool LEX::sp_for_loop_condition(THD *thd, const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   Item_splocal *args[2];
   for (uint i= 0 ; i < 2; i++)
   {
@@ -7043,6 +7240,7 @@ bool LEX::sp_for_loop_condition(THD *thd, const Lex_for_loop_st &loop)
 bool LEX::sp_for_loop_intrange_condition_test(THD *thd,
                                               const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   spcont->set_for_loop(loop);
   sphead->reset_lex(thd);
   if (unlikely(thd->lex->sp_for_loop_condition(thd, loop)))
@@ -7054,6 +7252,7 @@ bool LEX::sp_for_loop_intrange_condition_test(THD *thd,
 bool LEX::sp_for_loop_cursor_condition_test(THD *thd,
                                             const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   const LEX_CSTRING *cursor_name;
   Item *expr;
   spcont->set_for_loop(loop);
@@ -7075,6 +7274,7 @@ bool LEX::sp_for_loop_intrange_declarations(THD *thd, Lex_for_loop_st *loop,
                                             const LEX_CSTRING *index,
                                             const Lex_for_loop_bounds_st &bounds)
 {
+  APPENDFUNC;
   Item *item;
   if ((item= bounds.m_index->get_item())->type() == Item::FIELD_ITEM)
   {
@@ -7114,6 +7314,7 @@ bool LEX::sp_for_loop_cursor_declarations(THD *thd,
                                           const LEX_CSTRING *index,
                                           const Lex_for_loop_bounds_st &bounds)
 {
+  APPENDFUNC;
   Item *item= bounds.m_index->get_item();
   Item_splocal *item_splocal;
   Item_field *item_field;
@@ -7178,6 +7379,7 @@ bool LEX::sp_for_loop_cursor_declarations(THD *thd,
 */
 bool LEX::sp_for_loop_increment(THD *thd, const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   Item_splocal *splocal= new (thd->mem_root)
     Item_splocal(thd, &sp_rcontext_handler_local,
                       &loop.m_index->name, loop.m_index->offset,
@@ -7203,6 +7405,7 @@ bool LEX::sp_for_loop_increment(THD *thd, const Lex_for_loop_st &loop)
 
 bool LEX::sp_for_loop_intrange_iterate(THD *thd, const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   sphead->reset_lex(thd);
 
   // Generate FOR LOOP index increment in its own lex
@@ -7217,6 +7420,7 @@ bool LEX::sp_for_loop_intrange_iterate(THD *thd, const Lex_for_loop_st &loop)
 
 bool LEX::sp_for_loop_cursor_iterate(THD *thd, const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   sp_instr_cfetch *instr=
     new (thd->mem_root) sp_instr_cfetch(sphead->instructions(),
                                         spcont, loop.m_cursor_offset, false);
@@ -7230,6 +7434,7 @@ bool LEX::sp_for_loop_cursor_iterate(THD *thd, const Lex_for_loop_st &loop)
 bool LEX::sp_for_loop_outer_block_finalize(THD *thd,
                                            const Lex_for_loop_st &loop)
 {
+  APPENDFUNC;
   Lex_spblock tmp;
   tmp.curs= MY_TEST(loop.m_implicit_cursor);
   if (unlikely(sp_block_finalize(thd, tmp))) // The outer DECLARE..BEGIN..END
@@ -7254,6 +7459,7 @@ bool LEX::sp_declare_cursor(THD *thd, const LEX_CSTRING *name,
                             sp_pcontext *param_ctx, bool add_cpush_instr)
 
 {
+  APPENDFUNC;
   uint offp;
   sp_instr_cpush *i;
 
@@ -7308,6 +7514,7 @@ bool LEX::sp_declare_cursor(THD *thd, const LEX_CSTRING *name,
 bool LEX::sp_open_cursor(THD *thd, const LEX_CSTRING *name,
                          List<sp_assignment_lex> *parameters)
 {
+  APPENDFUNC;
   uint offset;
   const sp_pcursor *pcursor;
   uint param_count= parameters ? parameters->elements : 0;
@@ -7320,6 +7527,7 @@ bool LEX::sp_open_cursor(THD *thd, const LEX_CSTRING *name,
 
 bool LEX::sp_handler_declaration_init(THD *thd, int type)
 {
+  APPENDFUNC;
   sp_handler *h= spcont->add_handler(thd, (sp_handler::enum_type) type);
 
   spcont= spcont->push_context(thd, sp_pcontext::HANDLER_SCOPE);
@@ -7346,6 +7554,7 @@ bool LEX::sp_handler_declaration_init(THD *thd, int type)
 
 bool LEX::sp_handler_declaration_finalize(THD *thd, int type)
 {
+  APPENDFUNC;
   sp_label *hlab= spcont->pop_label(); /* After this hdlr */
   sp_instr_hreturn *i;
 
@@ -7372,6 +7581,7 @@ bool LEX::sp_handler_declaration_finalize(THD *thd, int type)
 
 void LEX::sp_block_init(THD *thd, const LEX_CSTRING *label)
 {
+  APPENDFUNC;
   spcont->push_label(thd, label, sphead->instructions(), sp_label::BEGIN);
   spcont= spcont->push_context(thd, sp_pcontext::REGULAR_SCOPE);
 }
@@ -7380,6 +7590,7 @@ void LEX::sp_block_init(THD *thd, const LEX_CSTRING *label)
 bool LEX::sp_block_finalize(THD *thd, const Lex_spblock_st spblock,
                                       class sp_label **splabel)
 {
+  APPENDFUNC;
   sp_head *sp= sphead;
   sp_pcontext *ctx= spcont;
   sp_instr *i;
@@ -7410,6 +7621,7 @@ bool LEX::sp_block_finalize(THD *thd, const Lex_spblock_st spblock,
 bool LEX::sp_block_finalize(THD *thd, const Lex_spblock_st spblock,
                             const LEX_CSTRING *end_label)
 {
+  APPENDFUNC;
   sp_label *splabel;
   if (unlikely(sp_block_finalize(thd, spblock, &splabel)))
     return true;
@@ -7426,6 +7638,7 @@ bool LEX::sp_block_finalize(THD *thd, const Lex_spblock_st spblock,
 
 sp_name *LEX::make_sp_name(THD *thd, const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   sp_name *res;
   LEX_CSTRING db;
   if (unlikely(check_routine_name(&name)) ||
@@ -7452,6 +7665,7 @@ sp_name *LEX::make_sp_name(THD *thd, const Lex_ident_sys_st &name)
 sp_name *LEX::make_sp_name_package_routine(THD *thd,
                                            const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   sp_name *res= make_sp_name(thd, name);
   if (likely(res) && unlikely(strchr(res->m_name.str, '.')))
   {
@@ -7465,6 +7679,7 @@ sp_name *LEX::make_sp_name_package_routine(THD *thd,
 sp_name *LEX::make_sp_name(THD *thd, const Lex_ident_sys_st &name1,
                                      const Lex_ident_sys_st &name2)
 {
+  APPENDFUNC;
   DBUG_ASSERT(name1.str);
   sp_name *res;
   const Lex_ident_db norm_name1= thd->to_ident_db_internal_with_error(name1);
@@ -7480,6 +7695,7 @@ sp_head *LEX::make_sp_head(THD *thd, const sp_name *name,
                            const Sp_handler *sph,
                            enum_sp_aggregate_type agg_type)
 {
+  APPENDFUNC;
   sp_package *package= get_sp_package();
   sp_head *sp;
 
@@ -7511,6 +7727,7 @@ sp_head *LEX::make_sp_head_no_recursive(THD *thd, const sp_name *name,
                                         const Sp_handler *sph,
                                         enum_sp_aggregate_type agg_type)
 {
+  APPENDFUNC;
   sp_package *package= thd->lex->get_sp_package();
   /*
     Sp_handler::sp_clone_and_link_routine() generates a standalone-alike
@@ -7535,6 +7752,7 @@ sp_head *LEX::make_sp_head_no_recursive(THD *thd, const sp_name *name,
 
 bool LEX::sp_body_finalize_routine(THD *thd)
 {
+  APPENDFUNC;
   if (sphead->check_unresolved_goto())
     return true;
   sphead->set_stmt_end(thd, thd->m_parser_state->m_lip.get_cpp_tok_start());
@@ -7545,6 +7763,7 @@ bool LEX::sp_body_finalize_routine(THD *thd)
 
 bool LEX::sp_body_finalize_procedure(THD *thd)
 {
+  APPENDFUNC;
   return sphead->check_group_aggregate_instructions_forbid() ||
          sp_body_finalize_routine(thd);
 }
@@ -7553,6 +7772,7 @@ bool LEX::sp_body_finalize_procedure(THD *thd)
 bool LEX::sp_body_finalize_procedure_standalone(THD *thd,
                                                 const sp_name *end_name)
 {
+  APPENDFUNC;
   return sp_body_finalize_procedure(thd) ||
          sphead->check_standalone_routine_end_name(end_name);
 }
@@ -7560,6 +7780,7 @@ bool LEX::sp_body_finalize_procedure_standalone(THD *thd,
 
 bool LEX::sp_body_finalize_function(THD *thd)
 {
+  APPENDFUNC;
   if (sphead->is_not_allowed_in_function("function") ||
       sphead->check_group_aggregate_instructions_function())
     return true;
@@ -7577,6 +7798,7 @@ bool LEX::sp_body_finalize_function(THD *thd)
 
 bool LEX::sp_body_finalize_trigger(THD *thd)
 {
+  APPENDFUNC;
   return sphead->is_not_allowed_in_function("trigger") ||
          sp_body_finalize_procedure(thd);
 }
@@ -7584,6 +7806,7 @@ bool LEX::sp_body_finalize_trigger(THD *thd)
 
 bool LEX::sp_body_finalize_event(THD *thd)
 {
+  APPENDFUNC;
   event_parse_data->body_changed= true;
   return sp_body_finalize_procedure(thd);
 }
@@ -7591,6 +7814,7 @@ bool LEX::sp_body_finalize_event(THD *thd)
 
 bool LEX::stmt_create_stored_function_finalize_standalone(const sp_name *end_name)
 {
+  APPENDFUNC;
   if (sphead->check_standalone_routine_end_name(end_name))
     return true;
   stmt_create_routine_finalize();
@@ -7600,6 +7824,7 @@ bool LEX::stmt_create_stored_function_finalize_standalone(const sp_name *end_nam
 
 bool LEX::sp_block_with_exceptions_finalize_declarations(THD *thd)
 {
+  APPENDFUNC;
   /*
     [ DECLARE declarations ]
     BEGIN executable_section
@@ -7621,6 +7846,7 @@ bool
 LEX::sp_block_with_exceptions_finalize_executable_section(THD *thd,
                                          uint executable_section_ip)
 {
+  APPENDFUNC;
   /*
     We're now at the end of "executable_section" of the block,
     near the "EXCEPTION" or the "END" keyword.
@@ -7643,6 +7869,7 @@ LEX::sp_block_with_exceptions_finalize_exceptions(THD *thd,
                                                   uint executable_section_ip,
                                                   uint exception_count)
 {
+  APPENDFUNC;
   if (!exception_count)
   {
     /*
@@ -7664,6 +7891,7 @@ LEX::sp_block_with_exceptions_finalize_exceptions(THD *thd,
 
 bool LEX::sp_block_with_exceptions_add_empty(THD *thd)
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   return sp_block_with_exceptions_finalize_executable_section(thd, ip) ||
          sp_block_with_exceptions_finalize_exceptions(thd, ip, 0);
@@ -7672,6 +7900,7 @@ bool LEX::sp_block_with_exceptions_add_empty(THD *thd)
 
 bool LEX::sp_change_context(THD *thd, const sp_pcontext *ctx, bool exclusive)
 {
+  APPENDFUNC;
   uint n;
   uint ip= sphead->instructions();
   if ((n= spcont->diff_handlers(ctx, exclusive)))
@@ -7692,6 +7921,7 @@ bool LEX::sp_change_context(THD *thd, const sp_pcontext *ctx, bool exclusive)
 
 bool LEX::sp_leave_statement(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (unlikely(!lab))
   {
@@ -7703,6 +7933,7 @@ bool LEX::sp_leave_statement(THD *thd, const LEX_CSTRING *label_name)
 
 bool LEX::sp_goto_statement(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_goto_label(label_name);
   if (!lab || lab->ip == 0)
   {
@@ -7730,6 +7961,7 @@ bool LEX::sp_goto_statement(THD *thd, const LEX_CSTRING *label_name)
 
 bool LEX::sp_push_goto_label(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_goto_label(label_name, false);
   if (lab)
   {
@@ -7752,6 +7984,7 @@ bool LEX::sp_push_goto_label(THD *thd, const LEX_CSTRING *label_name)
 
 bool LEX::sp_exit_block(THD *thd, sp_label *lab)
 {
+  APPENDFUNC;
   /*
     When jumping to a BEGIN-END block end, the target jump
     points to the block hpop/cpop cleanup instructions,
@@ -7769,6 +8002,7 @@ bool LEX::sp_exit_block(THD *thd, sp_label *lab)
 bool LEX::sp_exit_block(THD *thd, sp_label *lab, Item *when,
                         const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   if (!when)
     return sp_exit_block(thd, lab);
 
@@ -7789,6 +8023,7 @@ bool LEX::sp_exit_block(THD *thd, sp_label *lab, Item *when,
 
 bool LEX::sp_exit_statement(THD *thd, Item *item, const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label_current_loop_start();
   if (unlikely(!lab))
   {
@@ -7803,6 +8038,7 @@ bool LEX::sp_exit_statement(THD *thd, Item *item, const LEX_CSTRING &expr_str)
 bool LEX::sp_exit_statement(THD *thd, const LEX_CSTRING *label_name,
                             Item *item, const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (unlikely(!lab || lab->type != sp_label::ITERATION))
   {
@@ -7815,6 +8051,7 @@ bool LEX::sp_exit_statement(THD *thd, const LEX_CSTRING *label_name,
 
 bool LEX::sp_iterate_statement(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (unlikely(!lab || lab->type != sp_label::ITERATION))
   {
@@ -7827,6 +8064,7 @@ bool LEX::sp_iterate_statement(THD *thd, const LEX_CSTRING *label_name)
 
 bool LEX::sp_continue_loop(THD *thd, sp_label *lab)
 {
+  APPENDFUNC;
   const sp_pcontext::Lex_for_loop &for_loop= lab->ctx->for_loop();
   /*
     FOR loops need some additional instructions (e.g. an integer increment or
@@ -7852,6 +8090,7 @@ bool LEX::sp_continue_loop(THD *thd, sp_label *lab)
 
 bool LEX::sp_continue_statement(THD *thd)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label_current_loop_start();
   if (unlikely(!lab))
   {
@@ -7865,6 +8104,7 @@ bool LEX::sp_continue_statement(THD *thd)
 
 bool LEX::sp_continue_statement(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (!lab || lab->type != sp_label::ITERATION)
   {
@@ -7878,6 +8118,7 @@ bool LEX::sp_continue_statement(THD *thd, const LEX_CSTRING *label_name)
 bool LEX::sp_continue_loop(THD *thd, sp_label *lab, Item *when,
                            const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(when);
   DBUG_ASSERT(sphead == thd->lex->sphead);
   DBUG_ASSERT(spcont == thd->lex->spcont);
@@ -7896,6 +8137,7 @@ bool LEX::sp_continue_loop(THD *thd, sp_label *lab, Item *when,
 
 bool sp_expr_lex::sp_continue_when_statement(THD *thd)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label_current_loop_start();
   if (unlikely(!lab))
   {
@@ -7910,6 +8152,7 @@ bool sp_expr_lex::sp_continue_when_statement(THD *thd)
 bool sp_expr_lex::sp_continue_when_statement(THD *thd,
                                              const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (!lab || lab->type != sp_label::ITERATION)
   {
@@ -7922,6 +8165,7 @@ bool sp_expr_lex::sp_continue_when_statement(THD *thd,
 
 bool LEX::maybe_start_compound_statement(THD *thd)
 {
+  APPENDFUNC;
   if (!sphead)
   {
     if (!make_sp_head(thd, NULL, &sp_handler_procedure, DEFAULT_AGGREGATE))
@@ -7935,6 +8179,7 @@ bool LEX::maybe_start_compound_statement(THD *thd)
 
 bool LEX::sp_push_loop_label(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->find_label(label_name);
   if (lab)
   {
@@ -7949,6 +8194,7 @@ bool LEX::sp_push_loop_label(THD *thd, const LEX_CSTRING *label_name)
 
 bool LEX::sp_push_loop_empty_label(THD *thd)
 {
+  APPENDFUNC;
   if (maybe_start_compound_statement(thd))
     return true;
   /* Unlabeled controls get an empty label. */
@@ -7960,6 +8206,7 @@ bool LEX::sp_push_loop_empty_label(THD *thd)
 
 bool LEX::sp_pop_loop_label(THD *thd, const LEX_CSTRING *label_name)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->pop_label();
   sphead->backpatch(lab);
   if (label_name->str &&
@@ -7975,6 +8222,7 @@ bool LEX::sp_pop_loop_label(THD *thd, const LEX_CSTRING *label_name)
 
 void LEX::sp_pop_loop_empty_label(THD *thd)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->pop_label();
   sphead->backpatch(lab);
   DBUG_ASSERT(lab->name.length == 0);
@@ -7984,6 +8232,7 @@ void LEX::sp_pop_loop_empty_label(THD *thd)
 bool LEX::sp_while_loop_expression(THD *thd, Item *item,
                                    const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_instr_jump_if_not *i= new (thd->mem_root)
     sp_instr_jump_if_not(sphead->instructions(), spcont, item, this, expr_str);
   return (unlikely(i == NULL) ||
@@ -7996,6 +8245,7 @@ bool LEX::sp_while_loop_expression(THD *thd, Item *item,
 
 bool LEX::sp_while_loop_finalize(THD *thd)
 {
+  APPENDFUNC;
   sp_label *lab= spcont->last_label();  /* Jumping back */
   sp_instr_jump *i= new (thd->mem_root)
     sp_instr_jump(sphead->instructions(), spcont, lab->ip);
@@ -8011,6 +8261,7 @@ Item *LEX::create_and_link_Item_trigger_field(THD *thd,
                                               const LEX_CSTRING *name,
                                               bool new_row)
 {
+  APPENDFUNC;
   Item_trigger_field *trg_fld;
 
   if (unlikely(trg_chistics.event == TRG_EVENT_INSERT && !new_row))
@@ -8053,6 +8304,7 @@ Item *LEX::make_item_colon_ident_ident(THD *thd,
                                        const Lex_ident_cli_st *ca,
                                        const Lex_ident_cli_st *cb)
 {
+  APPENDFUNC;
   Lex_ident_sys a(thd, ca), b(thd, cb);
   if (a.is_null() || b.is_null())
     return NULL; // OEM
@@ -8069,6 +8321,7 @@ Item *LEX::make_item_colon_ident_ident(THD *thd,
 Item *LEX::make_item_plsql_cursor_attr(THD *thd, const LEX_CSTRING *name,
                                        plsql_cursor_attr_t attr)
 {
+  APPENDFUNC;
   uint offset;
   if (unlikely(!spcont || !spcont->find_cursor(name, &offset, false)))
   {
@@ -8096,6 +8349,7 @@ Item *LEX::make_item_sysvar(THD *thd,
                             const LEX_CSTRING *component)
 
 {
+  APPENDFUNC;
   Item *item;
   DBUG_ASSERT(name->str);
   /*
@@ -8117,6 +8371,7 @@ Item *LEX::make_item_sysvar(THD *thd,
 
 static bool param_push_or_clone(THD *thd, LEX *lex, Item_param *item)
 {
+  APPENDFUNC;
   return !lex->clone_spec_offset ?
          lex->param_list.push_back(item, thd->mem_root) :
          item->add_as_clone(thd);
@@ -8126,6 +8381,7 @@ static bool param_push_or_clone(THD *thd, LEX *lex, Item_param *item)
 Item_param *LEX::add_placeholder(THD *thd, const LEX_CSTRING *name,
                                  const char *start, const char *end)
 {
+  APPENDFUNC;
   if (unlikely(!thd->m_parser_state->m_lip.stmt_prepare_mode))
   {
     thd->parse_error(ER_SYNTAX_ERROR, start);
@@ -8150,6 +8406,7 @@ Item_param *LEX::add_placeholder(THD *thd, const LEX_CSTRING *name,
 
 bool LEX::add_signal_statement(THD *thd, const sp_condition_value *v)
 {
+  APPENDFUNC;
   Yacc_state *state= &thd->m_parser_state->m_yacc;
   sql_command= SQLCOM_SIGNAL;
   m_sql_cmd= new (thd->mem_root) Sql_cmd_signal(v, state->m_set_signal_info);
@@ -8159,6 +8416,7 @@ bool LEX::add_signal_statement(THD *thd, const sp_condition_value *v)
 
 bool LEX::add_resignal_statement(THD *thd, const sp_condition_value *v)
 {
+  APPENDFUNC;
   Yacc_state *state= &thd->m_parser_state->m_yacc;
   sql_command= SQLCOM_RESIGNAL;
   m_sql_cmd= new (thd->mem_root) Sql_cmd_resignal(v, state->m_set_signal_info);
@@ -8182,6 +8440,7 @@ Item *LEX::create_item_for_loop_bound(THD *thd,
                                       const LEX_CSTRING *b,
                                       const LEX_CSTRING *c)
 {
+  APPENDFUNC;
   /*
     Pass NULL as the name resolution context.
     This is OK, fix_fields() won't be called for this Item_field.
@@ -8192,6 +8451,7 @@ Item *LEX::create_item_for_loop_bound(THD *thd,
 
 bool LEX::check_expr_allows_fields_or_error(THD *thd, const char *name) const
 {
+  APPENDFUNC;
   if (select_stack_top > 0)
     return false; // OK, fields are allowed
   my_error(ER_BAD_FIELD_ERROR, MYF(0), name, thd->where);
@@ -8202,6 +8462,7 @@ Item *LEX::create_item_ident_nospvar(THD *thd,
                                      const Lex_ident_sys_st *a,
                                      const Lex_ident_sys_st *b)
 {
+  APPENDFUNC;
   DBUG_ASSERT(this == thd->lex);
   /*
     FIXME This will work ok in simple_ident_nospvar case because
@@ -8236,6 +8497,7 @@ Item_splocal *LEX::create_item_spvar_row_field(THD *thd,
                                                const char *start,
                                                const char *end)
 {
+  APPENDFUNC;
   if (unlikely(!parsing_options.allows_variable))
   {
     my_error(ER_VIEW_SELECT_VARIABLE, MYF(0));
@@ -8277,6 +8539,7 @@ Item_splocal *LEX::create_item_spvar_row_field(THD *thd,
 
 my_var *LEX::create_outvar(THD *thd, const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   const Sp_rcontext_handler *rh;
   sp_variable *spv;
   if (likely((spv= find_variable(name, &rh))))
@@ -8293,6 +8556,7 @@ my_var *LEX::create_outvar(THD *thd,
                            const LEX_CSTRING *a,
                            const LEX_CSTRING *b)
 {
+  APPENDFUNC;
   const Sp_rcontext_handler *rh;
   sp_variable *t;
   if (unlikely(!(t= find_variable(a, &rh))))
@@ -8312,6 +8576,7 @@ my_var *LEX::create_outvar(THD *thd,
 
 Item *LEX::create_item_func_nextval(THD *thd, Table_ident *table_ident)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   if (unlikely(!(table= current_select->add_table_to_list(thd, table_ident, 0,
                                                           TL_OPTION_SEQUENCE,
@@ -8325,6 +8590,7 @@ Item *LEX::create_item_func_nextval(THD *thd, Table_ident *table_ident)
 
 Item *LEX::create_item_func_lastval(THD *thd, Table_ident *table_ident)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   if (unlikely(!(table= current_select->add_table_to_list(thd, table_ident, 0,
                                                           TL_OPTION_SEQUENCE,
@@ -8340,6 +8606,7 @@ Item *LEX::create_item_func_nextval(THD *thd,
                                     const LEX_CSTRING *db,
                                     const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   Table_ident *table_ident;
   if (unlikely(!(table_ident=
                  new (thd->mem_root) Table_ident(thd, db, name, false))))
@@ -8352,6 +8619,7 @@ Item *LEX::create_item_func_lastval(THD *thd,
                                     const LEX_CSTRING *db,
                                     const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   Table_ident *table_ident;
   if (unlikely(!(table_ident=
                  new (thd->mem_root) Table_ident(thd, db, name, false))))
@@ -8364,6 +8632,7 @@ Item *LEX::create_item_func_setval(THD *thd, Table_ident *table_ident,
                                    longlong nextval, ulonglong round,
                                    bool is_used)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   if (unlikely(!(table= current_select->add_table_to_list(thd, table_ident, 0,
                                                           TL_OPTION_SEQUENCE,
@@ -8379,6 +8648,7 @@ Item *LEX::create_item_ident(THD *thd,
                              const Lex_ident_cli_st *ca,
                              const Lex_ident_cli_st *cb)
 {
+  APPENDFUNC;
   const char *start= ca->pos();
   const char *end= cb->end();
   const Sp_rcontext_handler *rh;
@@ -8416,6 +8686,7 @@ Item *LEX::create_item_ident(THD *thd,
                              const Lex_ident_sys_st *b,
                              const Lex_ident_sys_st *c)
 {
+  APPENDFUNC;
   Lex_ident_sys_st schema= thd->client_capabilities & CLIENT_NO_SCHEMA ?
                            Lex_ident_sys() : *a;
   if ((thd->variables.sql_mode & MODE_ORACLE) && c->length == 7)
@@ -8445,6 +8716,7 @@ Item *LEX::create_item_ident(THD *thd,
 
 Item *LEX::create_item_limit(THD *thd, const Lex_ident_cli_st *ca)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd->m_parser_state->m_lip.get_buf() <= ca->pos());
   DBUG_ASSERT(ca->pos() <= ca->end());
   DBUG_ASSERT(ca->end() <= thd->m_parser_state->m_lip.get_end_of_query());
@@ -8485,6 +8757,7 @@ Item *LEX::create_item_limit(THD *thd,
                              const Lex_ident_cli_st *ca,
                              const Lex_ident_cli_st *cb)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd->m_parser_state->m_lip.get_buf() <= ca->pos());
   DBUG_ASSERT(ca->pos() <= cb->end());
   DBUG_ASSERT(cb->end() <= thd->m_parser_state->m_lip.get_end_of_query());
@@ -8514,6 +8787,7 @@ Item *LEX::create_item_limit(THD *thd,
 
 bool LEX::set_user_variable(THD *thd, const LEX_CSTRING *name, Item *val)
 {
+  APPENDFUNC;
   Item_func_set_user_var *item;
   set_var_user *var;
   if (unlikely(!(item= new (thd->mem_root) Item_func_set_user_var(thd, name,
@@ -8531,6 +8805,7 @@ Item *LEX::create_item_ident_field(THD *thd,
                                    const Lex_ident_sys_st &table,
                                    const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   if (check_expr_allows_fields_or_error(thd, name.str))
     return NULL;
 
@@ -8548,6 +8823,7 @@ Item *LEX::create_item_ident_sp(THD *thd, Lex_ident_sys_st *name,
                                 const char *start,
                                 const char *end)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd->m_parser_state->m_lip.get_buf() <= start);
   DBUG_ASSERT(start <= end);
   DBUG_ASSERT(end <= thd->m_parser_state->m_lip.get_end_of_query());
@@ -8614,6 +8890,7 @@ Item *LEX::create_item_ident_sp(THD *thd, Lex_ident_sys_st *name,
 bool LEX::set_variable(const Lex_ident_sys_st *name, Item *item,
                        const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   sp_pcontext *ctx;
   const Sp_rcontext_handler *rh;
   sp_variable *spv= find_variable(name, &ctx, &rh);
@@ -8631,6 +8908,7 @@ bool LEX::set_variable(const Lex_ident_sys_st *name1,
                        const Lex_ident_sys_st *name2,
                        Item *item, const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   const Sp_rcontext_handler *rh;
   sp_pcontext *ctx;
   sp_variable *spv;
@@ -8662,6 +8940,7 @@ bool LEX::set_default_system_variable(enum_var_type var_type,
                                       const Lex_ident_sys_st *name,
                                       Item *val)
 {
+  APPENDFUNC;
   static Lex_ident_sys default_base_name= {STRING_WITH_LEN("default")};
   sys_var *var= find_sys_var(thd, name->str, name->length);
   if (!var)
@@ -8679,6 +8958,7 @@ bool LEX::set_system_variable(enum_var_type var_type,
                               const Lex_ident_sys_st *name,
                               Item *val)
 {
+  APPENDFUNC;
   sys_var *var= find_sys_var(thd, name->str, name->length);
   DBUG_ASSERT(thd->is_error() || var != NULL);
   static Lex_ident_sys null_str;
@@ -8691,6 +8971,7 @@ bool LEX::set_system_variable(THD *thd, enum_var_type var_type,
                               const Lex_ident_sys_st *name2,
                               Item *val)
 {
+  APPENDFUNC;
   sys_var *tmp;
   if (unlikely(check_reserved_words(name1)) ||
       unlikely(!(tmp= find_sys_var(thd, name2->str, name2->length, true))))
@@ -8711,6 +8992,7 @@ bool LEX::set_system_variable(THD *thd, enum_var_type var_type,
 bool LEX::set_trigger_field(const LEX_CSTRING *name1, const LEX_CSTRING *name2,
                             Item *val, const LEX_CSTRING &expr_str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(is_trigger_new_or_old_reference(name1));
   if (unlikely(name1->str[0]=='O' || name1->str[0]=='o'))
   {
@@ -8757,6 +9039,7 @@ uint binlog_unsafe_map[256];
 void unsafe_mixed_statement(LEX::enum_stmt_accessed_table a,
                             LEX::enum_stmt_accessed_table b, uint condition)
 {
+  APPENDFUNC;
   int type= 0;
   int index= (1U << a) | (1U << b);
   
@@ -8785,6 +9068,7 @@ void unsafe_mixed_statement(LEX::enum_stmt_accessed_table a,
 */
 void binlog_unsafe_map_init()
 {
+  APPENDFUNC;
   memset((void*) binlog_unsafe_map, 0, sizeof(uint) * 256);
 
   /*
@@ -8893,6 +9177,7 @@ void binlog_unsafe_map_init()
 void st_select_lex::collect_grouping_fields_for_derived(THD *thd,
                                                         ORDER *grouping_list)
 {
+  APPENDFUNC;
   grouping_tmp_fields.empty();
   List_iterator<Item> li(join->fields_list);
   Item *item= li++;
@@ -8918,6 +9203,7 @@ void st_select_lex::collect_grouping_fields_for_derived(THD *thd,
 
 bool st_select_lex::collect_grouping_fields(THD *thd)
 {
+  APPENDFUNC;
   grouping_tmp_fields.empty();
 
   for (ORDER *ord= group_list.first; ord; ord= ord->next)
@@ -8970,6 +9256,7 @@ bool st_select_lex::collect_grouping_fields(THD *thd)
 void 
 st_select_lex::check_cond_extraction_for_grouping_fields(THD *thd, Item *cond)
 {
+  APPENDFUNC;
   if (cond->get_extraction_flag() == MARKER_NO_EXTRACTION)
     return;
   cond->clear_extraction_flag();
@@ -9052,6 +9339,7 @@ st_select_lex::check_cond_extraction_for_grouping_fields(THD *thd, Item *cond)
 Item *st_select_lex::build_cond_for_grouping_fields(THD *thd, Item *cond,
                                                     bool no_top_clones)
 {
+  APPENDFUNC;
   if (cond->get_extraction_flag() == MARKER_FULL_EXTRACTION)
   {
     if (no_top_clones)
@@ -9115,6 +9403,7 @@ Item *st_select_lex::build_cond_for_grouping_fields(THD *thd, Item *cond,
 
 bool st_select_lex::set_nest_level(int new_nest_level)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex::set_nest_level");
   DBUG_PRINT("enter", ("select #%d %p nest level: %d",
                        select_number, this, new_nest_level));
@@ -9135,6 +9424,7 @@ bool st_select_lex::set_nest_level(int new_nest_level)
 
 bool st_select_lex_unit::set_nest_level(int new_nest_level)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::set_nest_level");
   for(SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
   {
@@ -9150,6 +9440,7 @@ bool st_select_lex_unit::set_nest_level(int new_nest_level)
 
 bool st_select_lex::check_parameters(SELECT_LEX *main_select)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex::check_parameters");
   DBUG_PRINT("enter", ("select #%d %p nest level: %d",
                        select_number, this, nest_level));
@@ -9230,6 +9521,7 @@ bool st_select_lex::check_parameters(SELECT_LEX *main_select)
 
 bool st_select_lex_unit::check_parameters(SELECT_LEX *main_select)
 {
+  APPENDFUNC;
   for(SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
   {
     if (sl->check_parameters(main_select))
@@ -9241,6 +9533,7 @@ bool st_select_lex_unit::check_parameters(SELECT_LEX *main_select)
 
 bool LEX::check_main_unit_semantics()
 {
+  APPENDFUNC;
   if (unit.set_nest_level(0) ||
       unit.check_parameters(first_select_lex()))
     return TRUE;
@@ -9252,6 +9545,7 @@ bool LEX::check_main_unit_semantics()
 int set_statement_var_if_exists(THD *thd, const char *var_name,
                                 size_t var_name_length, ulonglong value)
 {
+  APPENDFUNC;
   sys_var *sysvar;
   if (unlikely(thd->lex->sql_command == SQLCOM_CREATE_VIEW))
   {
@@ -9282,6 +9576,7 @@ int set_statement_var_if_exists(THD *thd, const char *var_name,
 
 bool LEX::sp_add_cfetch(THD *thd, const LEX_CSTRING *name)
 {
+  APPENDFUNC;
   uint offset;
   sp_instr_cfetch *i;
 
@@ -9301,6 +9596,7 @@ bool LEX::sp_add_cfetch(THD *thd, const LEX_CSTRING *name)
 
 bool LEX::sp_add_agg_cfetch()
 {
+  APPENDFUNC;
   sphead->m_flags|= sp_head::HAS_AGGREGATE_INSTR;
   sp_instr_agg_cfetch *i=
     new (thd->mem_root) sp_instr_agg_cfetch(sphead->instructions(), spcont);
@@ -9310,6 +9606,7 @@ bool LEX::sp_add_agg_cfetch()
 
 bool LEX::create_or_alter_view_finalize(THD *thd, Table_ident *table_ident)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_CREATE_VIEW;
   /* first table in list is target VIEW name */
   if (!first_select_lex()->add_table_to_list(thd, table_ident, NULL,
@@ -9326,6 +9623,7 @@ bool LEX::add_alter_view(THD *thd, uint16 algorithm,
                          enum_view_suid suid,
                          Table_ident *table_ident)
 {
+  APPENDFUNC;
   if (unlikely(sphead))
   {
     my_error(ER_SP_BADSTATEMENT, MYF(0), "ALTER VIEW");
@@ -9342,6 +9640,7 @@ bool LEX::add_create_view(THD *thd, DDL_options_st ddl,
                           uint16 algorithm, enum_view_suid suid,
                           Table_ident *table_ident)
 {
+  APPENDFUNC;
   if (unlikely(set_create_options_with_check(ddl)))
     return true;
   if (unlikely(!(create_view= new (thd->mem_root)
@@ -9356,6 +9655,7 @@ bool LEX::add_create_view(THD *thd, DDL_options_st ddl,
 
 bool LEX::call_statement_start(THD *thd, sp_name *name)
 {
+  APPENDFUNC;
   Database_qualified_name pkgname(&null_clex_str, &null_clex_str);
   const Sp_handler *sph= &sp_handler_procedure;
   sql_command= SQLCOM_CALL;
@@ -9374,6 +9674,7 @@ bool LEX::call_statement_start(THD *thd, sp_name *name)
 
 bool LEX::call_statement_start(THD *thd, const Lex_ident_sys_st *name)
 {
+  APPENDFUNC;
   sp_name *spname= make_sp_name(thd, *name);
   return unlikely(!spname) || call_statement_start(thd, spname);
 }
@@ -9382,6 +9683,7 @@ bool LEX::call_statement_start(THD *thd, const Lex_ident_sys_st *name)
 bool LEX::call_statement_start(THD *thd, const Lex_ident_sys_st *name1,
                                          const Lex_ident_sys_st *name2)
 {
+  APPENDFUNC;
   sp_name *spname= make_sp_name(thd, *name1, *name2);
   return unlikely(!spname) || call_statement_start(thd, spname);
 }
@@ -9392,6 +9694,7 @@ bool LEX::call_statement_start(THD *thd,
                                const Lex_ident_sys_st *pkg,
                                const Lex_ident_sys_st *proc)
 {
+  APPENDFUNC;
   DBUG_ASSERT(db->str);
   Database_qualified_name q_db_pkg(db, pkg);
   Identifier_chain2 q_pkg_proc(*pkg, *proc);
@@ -9422,6 +9725,7 @@ bool LEX::call_statement_start(THD *thd,
 
 sp_package *LEX::get_sp_package() const
 {
+  APPENDFUNC;
   return sphead ? sphead->get_package() : NULL;
 }
 
@@ -9432,6 +9736,7 @@ sp_package *LEX::create_package_start(THD *thd,
                                       const sp_name *name_arg,
                                       DDL_options_st options)
 {
+  APPENDFUNC;
   sp_package *pkg;
 
   if (unlikely(sphead))
@@ -9486,6 +9791,7 @@ bool LEX::create_package_finalize(THD *thd,
                                   const sp_name *name2,
                                   const char *cpp_body_end)
 {
+  APPENDFUNC;
   if (name2 &&
       (name2->m_explicit_name != name->m_explicit_name ||
        strcmp(name2->m_db.str, name->m_db.str) ||
@@ -9509,6 +9815,7 @@ bool LEX::create_package_finalize(THD *thd,
 
 bool LEX::add_grant_command(THD *thd, const List<LEX_COLUMN> &columns)
 {
+  APPENDFUNC;
   if (columns.elements)
   {
     thd->parse_error();
@@ -9520,6 +9827,7 @@ bool LEX::add_grant_command(THD *thd, const List<LEX_COLUMN> &columns)
 
 Item *LEX::make_item_func_sysdate(THD *thd, uint fsp)
 {
+  APPENDFUNC;
   /*
     Unlike other time-related functions, SYSDATE() is
     replication-unsafe because it is not affected by the
@@ -9542,6 +9850,7 @@ const Schema *
 LEX::find_func_schema_by_name_or_error(const Lex_ident_sys &schema,
                                        const Lex_ident_sys &func)
 {
+  APPENDFUNC;
   Schema *res= Schema::find_by_name(schema);
   if (res)
     return res;
@@ -9556,6 +9865,7 @@ Item *LEX::make_item_func_substr(THD *thd,
                                  const Lex_ident_cli_st &func_name_cli,
                                  const Lex_substring_spec_st &spec)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9571,6 +9881,7 @@ Item *LEX::make_item_func_substr(THD *thd,
                                  const Lex_ident_cli_st &func_name_cli,
                                  List<Item> *item_list)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9599,6 +9910,7 @@ Item *LEX::make_item_func_replace(THD *thd,
                                   Item *find,
                                   Item *replace)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9615,6 +9927,7 @@ Item *LEX::make_item_func_replace(THD *thd,
                                   const Lex_ident_cli_st &func_name_cli,
                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9637,6 +9950,7 @@ Item *LEX::make_item_func_trim(THD *thd,
                                const Lex_ident_cli_st &func_name_cli,
                                const Lex_trim_st &spec)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9652,6 +9966,7 @@ Item *LEX::make_item_func_trim(THD *thd,
                                const Lex_ident_cli_st &func_name_cli,
                                List<Item> *item_list)
 {
+  APPENDFUNC;
   Lex_ident_sys schema_name(thd, &schema_name_cli);
   Lex_ident_sys func_name(thd, &func_name_cli);
   if (schema_name.is_null() || func_name.is_null())
@@ -9671,6 +9986,7 @@ Item *LEX::make_item_func_trim(THD *thd,
 bool SELECT_LEX::vers_push_field(THD *thd, TABLE_LIST *table,
                                  const LEX_CSTRING field_name)
 {
+  APPENDFUNC;
   DBUG_ASSERT(field_name.str);
   Item_field *fld= new (thd->mem_root) Item_field(thd, &context,
                                                   table->db,
@@ -9694,6 +10010,7 @@ bool SELECT_LEX::vers_push_field(THD *thd, TABLE_LIST *table,
 
 Item *Lex_trim_st::make_item_func_trim_std(THD *thd) const
 {
+  APPENDFUNC;
   if (m_remove)
   {
     switch (m_spec) {
@@ -9721,6 +10038,7 @@ Item *Lex_trim_st::make_item_func_trim_std(THD *thd) const
 
 Item *Lex_trim_st::make_item_func_trim_oracle(THD *thd) const
 {
+  APPENDFUNC;
   if (m_remove)
   {
     switch (m_spec) {
@@ -9751,6 +10069,7 @@ Item *LEX::make_item_func_call_generic(THD *thd,
                                        const Lex_ident_cli_st *cname,
                                        List<Item> *args)
 {
+  APPENDFUNC;
   Lex_ident_sys db(thd, cdb), name(thd, cname);
   if (db.is_null() || name.is_null())
     return NULL; // EOM
@@ -9781,6 +10100,7 @@ Item *LEX::make_item_func_call_generic(THD *thd,
                                        const Lex_ident_sys &name,
                                        List<Item> *args)
 {
+  APPENDFUNC;
   const Schema *schema= Schema::find_by_name(db);
   if (schema)
     return schema->make_item_func_call_native(thd, name, args);
@@ -9802,6 +10122,7 @@ Item *LEX::make_item_func_call_generic(THD *thd,
                                        Lex_ident_cli_st *cfunc,
                                        List<Item> *args)
 {
+  APPENDFUNC;
   static Lex_cstring dot(".", 1);
   Lex_ident_sys db(thd, cdb), pkg(thd, cpkg), func(thd, cfunc);
   Database_qualified_name q_db_pkg(db, pkg);
@@ -9842,6 +10163,7 @@ Item *LEX::make_item_func_call_native_or_parse_error(THD *thd,
                                                      Lex_ident_cli_st &name,
                                                      List<Item> *args)
 {
+  APPENDFUNC;
   Create_func *builder= native_functions_hash.find(thd, name);
   DBUG_EXECUTE_IF("make_item_func_call_native_simulate_not_found",
                   builder= NULL;);
@@ -9855,6 +10177,7 @@ Item *LEX::make_item_func_call_native_or_parse_error(THD *thd,
 Item *LEX::create_item_qualified_asterisk(THD *thd,
                                           const Lex_ident_sys_st *name)
 {
+  APPENDFUNC;
   Item *item;
   if (!(item= new (thd->mem_root) Item_field(thd, current_context(),
                                              null_clex_str, *name,
@@ -9870,6 +10193,7 @@ Item *LEX::create_item_qualified_asterisk(THD *thd,
                                           const Lex_ident_sys_st *a,
                                           const Lex_ident_sys_st *b)
 {
+  APPENDFUNC;
   Item *item;
   Lex_ident_sys_st schema= thd->client_capabilities & CLIENT_NO_SCHEMA ?
                            Lex_ident_sys() : *a;
@@ -9884,11 +10208,13 @@ Item *LEX::create_item_qualified_asterisk(THD *thd,
 
 bool Lex_ident_sys_st::copy_ident_cli(const THD *thd, const Lex_ident_cli_st *str)
 {
+  APPENDFUNC;
   return thd->to_ident_sys_alloc(this, str);
 }
 
 bool Lex_ident_sys_st::copy_keyword(const THD *thd, const Lex_ident_cli_st *str)
 {
+  APPENDFUNC;
   return thd->make_lex_string(static_cast<LEX_CSTRING*>(this),
                               str->str, str->length) == NULL;
 }
@@ -9897,6 +10223,7 @@ bool Lex_ident_sys_st::copy_or_convert(const THD *thd,
                                        const Lex_ident_cli_st *src,
                                        CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   if (!src->is_8bit())
     return copy_keyword(thd, src); // 7bit string makes a wellformed identifier
   return convert(thd, src, cs);
@@ -9905,6 +10232,7 @@ bool Lex_ident_sys_st::copy_or_convert(const THD *thd,
 
 bool Lex_ident_sys_st::copy_sys(const THD *thd, const LEX_CSTRING *src)
 {
+  APPENDFUNC;
   if (thd->check_string_for_wellformedness(src->str, src->length,
                                            system_charset_info))
     return true;
@@ -9915,6 +10243,7 @@ bool Lex_ident_sys_st::copy_sys(const THD *thd, const LEX_CSTRING *src)
 bool Lex_ident_sys_st::convert(const THD *thd,
                                const LEX_CSTRING *src, CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   LEX_STRING tmp;
   if (thd->convert_with_error(system_charset_info, &tmp, cs,
                               src->str, src->length))
@@ -9927,6 +10256,7 @@ bool Lex_ident_sys_st::convert(const THD *thd,
 
 bool Lex_ident_sys_st::to_size_number(ulonglong *to) const
 {
+  APPENDFUNC;
   ulonglong number;
   uint text_shift_number= 0;
   longlong prefix_number;
@@ -9969,6 +10299,7 @@ bool Lex_ident_sys_st::to_size_number(ulonglong *to) const
 #ifdef WITH_PARTITION_STORAGE_ENGINE
 bool LEX::part_values_current(THD *thd)
 {
+  APPENDFUNC;
   partition_element *elem= part_info->curr_part_elem;
   if (!is_partition_management())
   {
@@ -9996,6 +10327,7 @@ bool LEX::part_values_current(THD *thd)
 
 bool LEX::part_values_history(THD *thd)
 {
+  APPENDFUNC;
   partition_element *elem= part_info->curr_part_elem;
   if (!is_partition_management())
   {
@@ -10033,6 +10365,7 @@ bool LEX::last_field_generated_always_as_row_start_or_end(Lex_ident *p,
                                                           const char *type,
                                                           uint flag)
 {
+  APPENDFUNC;
   if (unlikely(p->str))
   {
     my_error(ER_VERS_DUPLICATE_ROW_START_END, MYF(0), type,
@@ -10049,6 +10382,7 @@ bool LEX::last_field_generated_always_as_row_start_or_end(Lex_ident *p,
 
 bool LEX::last_field_generated_always_as_row_start()
 {
+  APPENDFUNC;
   Vers_parse_info &info= vers_get_info();
   Lex_ident *p= &info.as_row.start;
   return last_field_generated_always_as_row_start_or_end(p, "START",
@@ -10058,6 +10392,7 @@ bool LEX::last_field_generated_always_as_row_start()
 
 bool LEX::last_field_generated_always_as_row_end()
 {
+  APPENDFUNC;
   Vers_parse_info &info= vers_get_info();
   Lex_ident *p= &info.as_row.end;
   return last_field_generated_always_as_row_start_or_end(p, "END",
@@ -10066,6 +10401,7 @@ bool LEX::last_field_generated_always_as_row_end()
 
 void st_select_lex_unit::reset_distinct()
 {
+  APPENDFUNC;
   union_distinct= NULL;
   for(SELECT_LEX *sl= first_select()->next_select();
       sl;
@@ -10081,6 +10417,7 @@ void st_select_lex_unit::reset_distinct()
 
 void LEX::save_values_list_state()
 {
+  APPENDFUNC;
   current_select->save_many_values= many_values;
   current_select->save_insert_list= insert_list;
 }
@@ -10088,6 +10425,7 @@ void LEX::save_values_list_state()
 
 void LEX::restore_values_list_state()
 {
+  APPENDFUNC;
   many_values= current_select->save_many_values;
   insert_list= current_select->save_insert_list;
 }
@@ -10095,6 +10433,7 @@ void LEX::restore_values_list_state()
 
 void st_select_lex_unit::fix_distinct()
 {
+  APPENDFUNC;
   if (union_distinct && this != union_distinct->master_unit())
     reset_distinct();
 }
@@ -10102,6 +10441,7 @@ void st_select_lex_unit::fix_distinct()
 
 void st_select_lex_unit::register_select_chain(SELECT_LEX *first_sel)
 {
+  APPENDFUNC;
   DBUG_ASSERT(first_sel != 0);
   slave= first_sel;
   first_sel->prev= &slave;
@@ -10116,6 +10456,7 @@ void st_select_lex_unit::register_select_chain(SELECT_LEX *first_sel)
 void st_select_lex::register_unit(SELECT_LEX_UNIT *unit,
                                   Name_resolution_context *outer_context)
 {
+  APPENDFUNC;
   if ((unit->next= slave))
     slave->prev= &unit->next;
   unit->prev= &slave;
@@ -10132,6 +10473,7 @@ void st_select_lex::register_unit(SELECT_LEX_UNIT *unit,
 
 void st_select_lex::add_statistics(SELECT_LEX_UNIT *unit)
 {
+  APPENDFUNC;
   for (;
        unit;
        unit= unit->next_unit())
@@ -10155,6 +10497,7 @@ void st_select_lex::add_statistics(SELECT_LEX_UNIT *unit)
 
 bool LEX::main_select_push(bool service)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::main_select_push");
   DBUG_PRINT("info", ("service: %u", service));
   current_select_number= ++thd->lex->stmt_lex->current_select_number;
@@ -10167,6 +10510,7 @@ bool LEX::main_select_push(bool service)
 
 void Lex_select_lock::set_to(SELECT_LEX *sel)
 {
+  APPENDFUNC;
   if (defined_lock)
   {
     if (sel->master_unit() &&
@@ -10202,6 +10546,7 @@ void Lex_select_lock::set_to(SELECT_LEX *sel)
 
 bool Lex_order_limit_lock::set_to(SELECT_LEX *sel)
 {
+  APPENDFUNC;
   /*TODO: lock */
   //if (lock.defined_lock && sel == sel->master_unit()->fake_select_lex)
   //  return TRUE;
@@ -10247,6 +10592,7 @@ bool Lex_order_limit_lock::set_to(SELECT_LEX *sel)
 static void change_item_list_context(List<Item> *list,
                                      Name_resolution_context *context)
 {
+  APPENDFUNC;
   List_iterator_fast<Item> it (*list);
   Item *item;
   while((item= it++))
@@ -10258,6 +10604,7 @@ static void change_item_list_context(List<Item> *list,
 
 bool LEX::insert_select_hack(SELECT_LEX *sel)
 {
+  APPENDFUNC;
   DBUG_ENTER("LEX::insert_select_hack");
 
   DBUG_ASSERT(first_select_lex() == &builtin_select);
@@ -10325,6 +10672,7 @@ bool LEX::insert_select_hack(SELECT_LEX *sel)
 Item *LEX::create_item_query_expression(THD *thd,
                                         st_select_lex_unit *unit)
 {
+  APPENDFUNC;
   if (clause_that_disallows_subselect)
   {
     my_error(ER_SUBQUERIES_NOT_SUPPORTED, MYF(0),
@@ -10352,6 +10700,7 @@ SELECT_LEX_UNIT *LEX::parsed_select_expr_start(SELECT_LEX *s1, SELECT_LEX *s2,
                                                enum sub_select_type unit_type,
                                                bool distinct)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *res;
   SELECT_LEX *sel1;
   SELECT_LEX *sel2;
@@ -10389,6 +10738,7 @@ SELECT_LEX_UNIT *LEX::parsed_select_expr_cont(SELECT_LEX_UNIT *unit,
                                               enum sub_select_type unit_type,
                                               bool distinct, bool oracle)
 {
+  APPENDFUNC;
   DBUG_ASSERT(!s2->next_select());
   SELECT_LEX *sel1= s2;
   SELECT_LEX *last= unit->pre_last_parse->next_select();
@@ -10435,6 +10785,7 @@ LEX::add_primary_to_query_expression_body(SELECT_LEX_UNIT *unit,
                                           bool distinct,
                                           bool oracle)
 {
+  APPENDFUNC;
   SELECT_LEX *sel2= sel;
   if (sel->master_unit() && sel->master_unit()->first_select()->next_select())
   {
@@ -10457,6 +10808,7 @@ LEX::add_primary_to_query_expression_body(SELECT_LEX_UNIT *unit,
                                           enum sub_select_type unit_type,
                                           bool distinct)
 {
+  APPENDFUNC;
   return
     add_primary_to_query_expression_body(unit, sel, unit_type, distinct,
                                          thd->variables.sql_mode & MODE_ORACLE);
@@ -10474,6 +10826,7 @@ LEX::add_primary_to_query_expression_body_ext_parens(
                                                  enum sub_select_type unit_type,
                                                  bool distinct)
 {
+  APPENDFUNC;
   SELECT_LEX *sel1= unit->first_select();
   if (unit->first_select()->next_select())
   {
@@ -10501,6 +10854,7 @@ LEX::add_primary_to_query_expression_body_ext_parens(
 
 bool LEX::parsed_multi_operand_query_expression_body(SELECT_LEX_UNIT *unit)
 {
+  APPENDFUNC;
   SELECT_LEX *first_in_nest=
     unit->pre_last_parse->next_select()->first_nested;
   if (first_in_nest->first_nested != first_in_nest)
@@ -10521,6 +10875,7 @@ bool LEX::parsed_multi_operand_query_expression_body(SELECT_LEX_UNIT *unit)
 SELECT_LEX_UNIT *LEX::add_tail_to_query_expression_body(SELECT_LEX_UNIT *unit,
                                                         Lex_order_limit_lock *l)
 {
+  APPENDFUNC;
   DBUG_ASSERT(l != NULL);
   pop_select();
   SELECT_LEX *sel= unit->first_select()->next_select() ? unit->fake_select_lex :
@@ -10538,6 +10893,7 @@ SELECT_LEX_UNIT *
 LEX::add_tail_to_query_expression_body_ext_parens(SELECT_LEX_UNIT *unit,
                                                   Lex_order_limit_lock *l)
 {
+  APPENDFUNC;
   SELECT_LEX *sel= unit->first_select()->next_select() ? unit->fake_select_lex :
                                                          unit->first_select();
 
@@ -10570,6 +10926,7 @@ LEX::add_tail_to_query_expression_body_ext_parens(SELECT_LEX_UNIT *unit,
 
 SELECT_LEX *LEX::parsed_subselect(SELECT_LEX_UNIT *unit)
 {
+  APPENDFUNC;
   if (clause_that_disallows_subselect)
   {
     my_error(ER_SUBQUERIES_NOT_SUPPORTED, MYF(0),
@@ -10597,6 +10954,7 @@ SELECT_LEX *LEX::parsed_subselect(SELECT_LEX_UNIT *unit)
 
 bool LEX::parsed_insert_select(SELECT_LEX *first_select)
 {
+  APPENDFUNC;
   if (sql_command == SQLCOM_INSERT ||
       sql_command == SQLCOM_REPLACE)
   {
@@ -10619,6 +10977,7 @@ bool LEX::parsed_insert_select(SELECT_LEX *first_select)
 
 bool LEX::parsed_TVC_start()
 {
+  APPENDFUNC;
   SELECT_LEX *sel;
   save_values_list_state();
   many_values.empty();
@@ -10632,6 +10991,7 @@ bool LEX::parsed_TVC_start()
 
 SELECT_LEX *LEX::parsed_TVC_end()
 {
+  APPENDFUNC;
   SELECT_LEX *res= pop_select(); // above TVC select
   if (!(res->tvc=
         new (thd->mem_root) table_value_constr(many_values, res, res->options)))
@@ -10646,6 +11006,7 @@ TABLE_LIST *LEX::parsed_derived_table(SELECT_LEX_UNIT *unit,
                                      int for_system_time,
                                      LEX_CSTRING *alias)
 {
+  APPENDFUNC;
   TABLE_LIST *res;
   derived_tables|= DERIVED_SUBQUERY;
   unit->first_select()->set_linkage(DERIVED_TABLE_TYPE);
@@ -10670,6 +11031,7 @@ TABLE_LIST *LEX::parsed_derived_table(SELECT_LEX_UNIT *unit,
 
 bool LEX::parsed_create_view(SELECT_LEX_UNIT *unit, int check)
 {
+  APPENDFUNC;
   SQL_I_List<TABLE_LIST> *save= &first_select_lex()->table_list;
   if (set_main_unit(unit))
     return true;
@@ -10692,6 +11054,7 @@ bool LEX::parsed_create_view(SELECT_LEX_UNIT *unit, int check)
 
 bool LEX::select_finalize(st_select_lex_unit *expr)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_SELECT;
   selects_allow_procedure= TRUE;
   if (set_main_unit(expr))
@@ -10702,6 +11065,7 @@ bool LEX::select_finalize(st_select_lex_unit *expr)
 
 bool LEX::select_finalize(st_select_lex_unit *expr, Lex_select_lock l)
 {
+  APPENDFUNC;
   return expr->set_lock_to_the_last_select(l) ||
          select_finalize(expr);
 }
@@ -10728,6 +11092,7 @@ bool LEX::select_finalize(st_select_lex_unit *expr, Lex_select_lock l)
 
 void LEX::relink_hack(st_select_lex *select_lex)
 {
+  APPENDFUNC;
   if (!select_stack_top) // Statements of the second type
   {
     if (!select_lex->outer_select() &&
@@ -10743,6 +11108,7 @@ void LEX::relink_hack(st_select_lex *select_lex)
 
 bool SELECT_LEX_UNIT::set_lock_to_the_last_select(Lex_select_lock l)
 {
+  APPENDFUNC;
   if (l.defined_lock)
   {
     SELECT_LEX *sel= first_select();
@@ -10765,6 +11131,7 @@ bool SELECT_LEX_UNIT::set_lock_to_the_last_select(Lex_select_lock l)
 
 bool SELECT_LEX::make_unique_derived_name(THD *thd, LEX_CSTRING *alias)
 {
+  APPENDFUNC;
   // uint32 digits + two underscores + trailing '\0'
   char buff[MAX_INT_WIDTH + 2 + 1];
   alias->length= my_snprintf(buff, sizeof(buff), "__%u", select_number);
@@ -10788,6 +11155,7 @@ bool LEX::new_sp_instr_stmt(THD *thd,
                             const LEX_CSTRING &prefix,
                             const LEX_CSTRING &suffix)
 {
+  APPENDFUNC;
   LEX_STRING qbuff;
   sp_instr_stmt *i;
 
@@ -10826,6 +11194,7 @@ bool LEX::new_sp_instr_stmt(THD *thd,
 
 bool LEX::sp_proc_stmt_statement_finalize_buf(THD *thd, const LEX_CSTRING &qbuf)
 {
+  APPENDFUNC;
   sphead->m_flags|= sp_get_flags_for_command(this);
   /* "USE db" doesn't work in a procedure */
   if (unlikely(sql_command == SQLCOM_CHANGE_DB))
@@ -10847,6 +11216,7 @@ bool LEX::sp_proc_stmt_statement_finalize_buf(THD *thd, const LEX_CSTRING &qbuf)
 
 bool LEX::sp_proc_stmt_statement_finalize(THD *thd, bool no_lookahead)
 {
+  APPENDFUNC;
   // Extract the query statement from the tokenizer
   Lex_input_stream *lip= &thd->m_parser_state->m_lip;
   Lex_cstring qbuf(sphead->m_tmp_query, no_lookahead ? lip->get_ptr() :
@@ -10902,6 +11272,7 @@ void st_select_lex::pushdown_cond_into_where_clause(THD *thd, Item *cond,
                                                     Item_transformer transformer,
                                                     uchar *arg)
 {
+  APPENDFUNC;
   if (!cond_pushdown_is_allowed())
     return;
   thd->lex->current_select= this;
@@ -11037,6 +11408,7 @@ void st_select_lex::pushdown_cond_into_where_clause(THD *thd, Item *cond,
 
 void mark_or_conds_to_avoid_pushdown(Item *cond)
 {
+  APPENDFUNC;
   if (cond->type() == Item::COND_ITEM &&
       ((Item_cond*) cond)->functype() == Item_func::COND_AND_FUNC)
   {
@@ -11110,6 +11482,7 @@ void mark_or_conds_to_avoid_pushdown(Item *cond)
 bool
 st_select_lex::build_pushable_cond_for_having_pushdown(THD *thd, Item *cond)
 {
+  APPENDFUNC;
   List<Item> equalities;
 
   /* Condition can't be pushed */
@@ -11218,6 +11591,7 @@ st_select_lex::build_pushable_cond_for_having_pushdown(THD *thd, Item *cond)
 Field_pair *get_corresponding_field_pair(Item *item,
                                          List<Field_pair> pair_list)
 {
+  APPENDFUNC;
   DBUG_ASSERT(item->type() == Item::FIELD_ITEM ||
               (item->type() == Item::REF_ITEM &&
                ((((Item_ref *) item)->ref_type() == Item_ref::VIEW_REF) ||
@@ -11253,6 +11627,7 @@ Field_pair *get_corresponding_field_pair(Item *item,
 
 bool st_select_lex::collect_fields_equal_to_grouping(THD *thd)
 {
+  APPENDFUNC;
   if (!join->cond_equal || join->cond_equal->is_empty())
     return false;
 
@@ -11304,6 +11679,7 @@ bool st_select_lex::collect_fields_equal_to_grouping(THD *thd)
 
 Item *remove_pushed_top_conjuncts_for_having(THD *thd, Item *cond)
 {
+  APPENDFUNC;
   /* Nothing to extract */
   if (cond->get_extraction_flag() == MARKER_NO_EXTRACTION)
   {
@@ -11415,6 +11791,7 @@ Item *remove_pushed_top_conjuncts_for_having(THD *thd, Item *cond)
 
 Item *st_select_lex::pushdown_from_having_into_where(THD *thd, Item *having)
 {
+  APPENDFUNC;
   if (!having || !group_list.first)
     return having;
   if (!cond_pushdown_is_allowed())
@@ -11528,6 +11905,7 @@ exit:
 
 bool st_select_lex::save_item_list_names(THD *thd)
 {
+  APPENDFUNC;
   if (orig_names_of_item_list_elems)
     return false;
 
@@ -11569,6 +11947,7 @@ bool st_select_lex::save_item_list_names(THD *thd)
 
 void st_select_lex::restore_item_list_names()
 {
+  APPENDFUNC;
   if (!orig_names_of_item_list_elems)
     return;
 
@@ -11587,6 +11966,7 @@ bool LEX::stmt_install_plugin(const DDL_options_st &opt,
                               const Lex_ident_sys_st &name,
                               const LEX_CSTRING &soname)
 {
+  APPENDFUNC;
   create_info.init();
   if (add_create_options_with_check(opt))
     return true;
@@ -11599,6 +11979,7 @@ bool LEX::stmt_install_plugin(const DDL_options_st &opt,
 
 void LEX::stmt_install_plugin(const LEX_CSTRING &soname)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_INSTALL_PLUGIN;
   comment= null_clex_str;
   ident= soname;
@@ -11608,6 +11989,7 @@ void LEX::stmt_install_plugin(const LEX_CSTRING &soname)
 bool LEX::stmt_uninstall_plugin_by_name(const DDL_options_st &opt,
                                         const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   check_opt.init();
   if (add_create_options_with_check(opt))
     return true;
@@ -11621,6 +12003,7 @@ bool LEX::stmt_uninstall_plugin_by_name(const DDL_options_st &opt,
 bool LEX::stmt_uninstall_plugin_by_soname(const DDL_options_st &opt,
                                           const LEX_CSTRING &soname)
 {
+  APPENDFUNC;
   check_opt.init();
   if (add_create_options_with_check(opt))
     return true;
@@ -11633,6 +12016,7 @@ bool LEX::stmt_uninstall_plugin_by_soname(const DDL_options_st &opt,
 
 bool LEX::stmt_prepare_validate(const char *stmt_type)
 {
+  APPENDFUNC;
   if (unlikely(table_or_sp_used()))
   {
     my_error(ER_SUBQUERIES_NOT_SUPPORTED, MYF(0), stmt_type);
@@ -11644,6 +12028,7 @@ bool LEX::stmt_prepare_validate(const char *stmt_type)
 
 bool LEX::stmt_prepare(const Lex_ident_sys_st &ident, Item *code)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_PREPARE;
   if (stmt_prepare_validate("PREPARE..FROM"))
     return true;
@@ -11654,6 +12039,7 @@ bool LEX::stmt_prepare(const Lex_ident_sys_st &ident, Item *code)
 
 bool LEX::stmt_execute_immediate(Item *code, List<Item> *params)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_EXECUTE_IMMEDIATE;
   if (stmt_prepare_validate("EXECUTE IMMEDIATE"))
     return true;
@@ -11665,6 +12051,7 @@ bool LEX::stmt_execute_immediate(Item *code, List<Item> *params)
 
 bool LEX::stmt_execute(const Lex_ident_sys_st &ident, List<Item> *params)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_EXECUTE;
   prepared_stmt.set(ident, NULL, params);
   return stmt_prepare_validate("EXECUTE..USING");
@@ -11673,6 +12060,7 @@ bool LEX::stmt_execute(const Lex_ident_sys_st &ident, List<Item> *params)
 
 void LEX::stmt_deallocate_prepare(const Lex_ident_sys_st &ident)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_DEALLOCATE_PREPARE;
   prepared_stmt.set(ident, NULL, NULL);
 }
@@ -11680,6 +12068,7 @@ void LEX::stmt_deallocate_prepare(const Lex_ident_sys_st &ident)
 
 bool LEX::stmt_alter_table_exchange_partition(Table_ident *table)
 {
+  APPENDFUNC;
   DBUG_ASSERT(sql_command == SQLCOM_ALTER_TABLE);
   first_select_lex()->db= table->db;
   if (first_select_lex()->db.str == NULL &&
@@ -11700,6 +12089,7 @@ bool LEX::stmt_alter_table_exchange_partition(Table_ident *table)
 
 bool LEX::stmt_alter_table(Table_ident *table)
 {
+  APPENDFUNC;
   DBUG_ASSERT(sql_command == SQLCOM_ALTER_TABLE);
 
   if (table->db.str)
@@ -11724,6 +12114,7 @@ bool LEX::stmt_alter_table(Table_ident *table)
 
 void LEX::stmt_purge_to(const LEX_CSTRING &to)
 {
+  APPENDFUNC;
   type= 0;
   sql_command= SQLCOM_PURGE;
   to_log= to.str;
@@ -11732,6 +12123,7 @@ void LEX::stmt_purge_to(const LEX_CSTRING &to)
 
 bool LEX::stmt_purge_before(Item *item)
 {
+  APPENDFUNC;
   type= 0;
   sql_command= SQLCOM_PURGE_BEFORE;
   value_list.empty();
@@ -11746,6 +12138,7 @@ bool LEX::stmt_create_udf_function(const DDL_options_st &options,
                                    Item_result return_type,
                                    const LEX_CSTRING &soname)
 {
+  APPENDFUNC;
   if (stmt_create_function_start(options))
     return true;
 
@@ -11769,6 +12162,7 @@ bool LEX::stmt_create_stored_function_start(const DDL_options_st &options,
                                             enum_sp_aggregate_type agg_type,
                                             const sp_name *spname)
 {
+  APPENDFUNC;
   if (stmt_create_function_start(options) ||
       unlikely(!make_sp_head_no_recursive(thd, spname,
                                           &sp_handler_function, agg_type)))
@@ -11795,6 +12189,7 @@ bool LEX::stmt_drop_routine(const Sp_handler *sph,
                             const Lex_ident_sys_st &db,
                             const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   DBUG_ASSERT(name.str);
   if (unlikely(sphead))
   {
@@ -11845,6 +12240,7 @@ bool LEX::stmt_drop_routine(const Sp_handler *sph,
 
 bool LEX::stmt_alter_function_start(sp_name *name)
 {
+  APPENDFUNC;
   if (unlikely(sphead))
   {
     my_error(ER_SP_NO_DROP_SP, MYF(0), "FUNCTION");
@@ -11861,6 +12257,7 @@ bool LEX::stmt_alter_function_start(sp_name *name)
 
 bool LEX::stmt_alter_procedure_start(sp_name *name)
 {
+  APPENDFUNC;
   if (unlikely(sphead))
   {
     my_error(ER_SP_NO_DROP_SP, MYF(0), "PROCEDURE");
@@ -11877,6 +12274,7 @@ bool LEX::stmt_alter_procedure_start(sp_name *name)
 
 Spvar_definition *LEX::row_field_name(THD *thd, const Lex_ident_sys_st &name)
 {
+  APPENDFUNC;
   Spvar_definition *res;
   if (unlikely(check_string_char_length(&name, 0, NAME_CHAR_LEN,
                                         system_charset_info, 1)))
@@ -11894,6 +12292,7 @@ Spvar_definition *LEX::row_field_name(THD *thd, const Lex_ident_sys_st &name)
 Item *
 Lex_cast_type_st::create_typecast_item_or_error(THD *thd, Item *item) const
 {
+  APPENDFUNC;
   Item *tmp= create_typecast_item(thd, item);
   if (!tmp)
   {
@@ -11911,6 +12310,7 @@ Lex_cast_type_st::create_typecast_item_or_error(THD *thd, Item *item) const
 void
 Lex_length_and_dec_st::set(const char *plength, const char *pdec)
 {
+  APPENDFUNC;
   reset();
 
   if ((m_has_explicit_length= (plength != nullptr)))
@@ -11940,6 +12340,7 @@ Lex_field_type_st::set_handler_length_flags(const Type_handler *handler,
                                             const Lex_length_and_dec_st &attr,
                                             uint32 flags)
 {
+  APPENDFUNC;
   DBUG_ASSERT(!handler->is_unsigned());
   set(handler, attr);
   if (flags & UNSIGNED_FLAG)
@@ -11951,6 +12352,7 @@ bool LEX::set_field_type_udt(Lex_field_type_st *type,
                              const LEX_CSTRING &name,
                              const Lex_length_and_dec_st &attr)
 {
+  APPENDFUNC;
   const Type_handler *h;
   if (!(h= Type_handler::handler_by_name_or_error(thd, name)))
     return true;
@@ -11962,6 +12364,7 @@ bool LEX::set_field_type_udt(Lex_field_type_st *type,
 bool LEX::set_cast_type_udt(Lex_cast_type_st *type,
                              const LEX_CSTRING &name)
 {
+  APPENDFUNC;
   const Type_handler *h;
   if (!(h= Type_handler::handler_by_name_or_error(thd, name)))
     return true;
@@ -11972,6 +12375,7 @@ bool LEX::set_cast_type_udt(Lex_cast_type_st *type,
 
 bool sp_expr_lex::sp_repeat_loop_finalize(THD *thd)
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   sp_label *lab= spcont->last_label();  /* Jumping back */
   sp_instr_jump_if_not *i= new (thd->mem_root)
@@ -11987,6 +12391,7 @@ bool sp_expr_lex::sp_repeat_loop_finalize(THD *thd)
 
 bool sp_expr_lex::sp_if_expr(THD *thd)
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   sp_instr_jump_if_not *i= new (thd->mem_root)
                            sp_instr_jump_if_not(ip, spcont, get_item(), this,
@@ -12003,6 +12408,7 @@ bool sp_expr_lex::sp_if_expr(THD *thd)
 
 bool LEX::sp_if_after_statements(THD *thd)
 {
+  APPENDFUNC;
   uint ip= sphead->instructions();
   sp_instr_jump *i= new (thd->mem_root) sp_instr_jump(ip, spcont);
   if (unlikely(i == NULL) ||
@@ -12016,6 +12422,7 @@ bool LEX::sp_if_after_statements(THD *thd)
 
 sp_condition_value *LEX::stmt_signal_value(const Lex_ident_sys_st &ident)
 {
+  APPENDFUNC;
   sp_condition_value *cond;
   /* SIGNAL foo cannot be used outside of stored programs */
   if (unlikely(spcont == NULL))
@@ -12046,6 +12453,7 @@ bool LEX::add_table_foreign_key(const LEX_CSTRING *name,
                                 Table_ident *ref_table_name,
                                 DDL_options ddl_options)
 {
+  APPENDFUNC;
   Key *key= new (thd->mem_root) Foreign_key(name,
                                             &last_key->columns,
                                             constraint_name,
@@ -12080,6 +12488,7 @@ bool LEX::add_column_foreign_key(const LEX_CSTRING *name,
                                  Table_ident *ref_table_name,
                                  DDL_options ddl_options)
 {
+  APPENDFUNC;
   if (last_field->vcol_info || last_field->vers_sys_field())
   {
     thd->parse_error();
@@ -12114,6 +12523,7 @@ bool LEX::stmt_grant_table(THD *thd,
                            const Lex_grant_object_name &ident,
                            privilege_t grant_option)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_GRANT;
   return
     grant->set_object_name(thd, ident, current_select, grant_option) ||
@@ -12125,6 +12535,7 @@ bool LEX::stmt_revoke_table(THD *thd,
                             Grant_privilege *grant,
                             const Lex_grant_object_name &ident)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_REVOKE;
   return
     grant->set_object_name(thd, ident, current_select, NO_ACL) ||
@@ -12138,6 +12549,7 @@ bool LEX::stmt_grant_sp(THD *thd,
                         const Sp_handler &sph,
                         privilege_t grant_option)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_GRANT;
   return
     grant->set_object_name(thd, ident, current_select, grant_option) ||
@@ -12152,6 +12564,7 @@ bool LEX::stmt_revoke_sp(THD *thd,
                          const Lex_grant_object_name &ident,
                          const Sp_handler &sph)
 {
+  APPENDFUNC;
   sql_command= SQLCOM_REVOKE;
   return
     grant->set_object_name(thd, ident, current_select, NO_ACL) ||
@@ -12163,6 +12576,7 @@ bool LEX::stmt_revoke_sp(THD *thd,
 
 bool LEX::stmt_grant_proxy(THD *thd, LEX_USER *user, privilege_t grant_option)
 {
+  APPENDFUNC;
   users_list.push_front(user);
   sql_command= SQLCOM_GRANT;
   return !(m_sql_cmd= new (thd->mem_root) Sql_cmd_grant_proxy(sql_command,
@@ -12172,6 +12586,7 @@ bool LEX::stmt_grant_proxy(THD *thd, LEX_USER *user, privilege_t grant_option)
 
 bool LEX::stmt_revoke_proxy(THD *thd, LEX_USER *user)
 {
+  APPENDFUNC;
   users_list.push_front(user);
   sql_command= SQLCOM_REVOKE;
   return !(m_sql_cmd= new (thd->mem_root) Sql_cmd_grant_proxy(sql_command,
@@ -12181,6 +12596,7 @@ bool LEX::stmt_revoke_proxy(THD *thd, LEX_USER *user)
 
 LEX_USER *LEX::current_user_for_set_password(THD *thd)
 {
+  APPENDFUNC;
   LEX_CSTRING pw= { STRING_WITH_LEN("password") };
   if (unlikely(spcont && spcont->find_variable(&pw, false)))
   {
@@ -12200,6 +12616,7 @@ bool LEX::sp_create_set_password_instr(THD *thd,
                                        USER_AUTH *auth,
                                        bool no_lookahead)
 {
+  APPENDFUNC;
   user->auth= auth;
   set_var_password *var= new (thd->mem_root) set_var_password(user);
   if (unlikely(var == NULL) ||
@@ -12216,6 +12633,7 @@ bool LEX::set_names(const char *pos,
                     const Lex_exact_charset_opt_extended_collate &cscl,
                     bool no_lookahead)
 {
+  APPENDFUNC;
   if (sp_create_assignment_lex(thd, pos))
     return true;
   CHARSET_INFO *ci= cscl.collation().charset_info();
@@ -12230,6 +12648,7 @@ bool LEX::set_names(const char *pos,
 bool LEX::map_data_type(const Lex_ident_sys_st &schema_name,
                         Lex_field_type_st *type) const
 {
+  APPENDFUNC;
   const Schema *schema= schema_name.str ?
                         Schema::find_by_name(schema_name) :
                         Schema::find_implied(thd);
@@ -12251,6 +12670,7 @@ bool LEX::map_data_type(const Lex_ident_sys_st &schema_name,
 
 bool SELECT_LEX_UNIT::explainable() const
 {
+  APPENDFUNC;
   /*
     EXPLAIN/ANALYZE unit, when:
     (1) if it's a subquery - it's not part of eliminated WHERE/ON clause.
@@ -12273,6 +12693,7 @@ bool SELECT_LEX_UNIT::explainable() const
 
 bool st_select_lex::is_query_topmost(THD *thd)
 {
+  APPENDFUNC;
   return get_master() == &thd->lex->unit;
 }
 
@@ -12286,6 +12707,7 @@ bool st_select_lex::is_query_topmost(THD *thd)
 
 bool SELECT_LEX_UNIT::is_derived_eliminated() const
 {
+  APPENDFUNC;
   if (!derived)
     return false;
   if (!derived->table)

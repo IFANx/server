@@ -132,6 +132,7 @@ static bool extract_date_time(THD *thd, DATE_TIME_FORMAT *format,
                               const char *date_time_type,
                               date_conv_mode_t fuzzydate)
 {
+  APPENDFUNC;
   int weekday= 0, yearday= 0, daypart= 0;
   int week_number= -1;
   int error= 0;
@@ -477,6 +478,7 @@ static bool make_date_time(THD *thd, const String *format,
                            const MYSQL_TIME *l_time, timestamp_type type,
                            const MY_LOCALE *locale, String *str)
 {
+  APPENDFUNC;
   char intbuff[15];
   uint hours_i;
   uint weekday;
@@ -757,6 +759,7 @@ static bool get_interval_info(const char *str, size_t length,CHARSET_INFO *cs,
                               size_t count, ulonglong *values,
                               bool transform_msec)
 {
+  APPENDFUNC;
   const char *end=str+length;
   uint i;
   size_t field_length= 0;
@@ -810,6 +813,7 @@ static bool get_interval_info(const char *str, size_t length,CHARSET_INFO *cs,
 
 longlong Item_func_period_add::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   ulong period=(ulong) args[0]->val_int();
   int months=(int) args[1]->val_int();
@@ -825,6 +829,7 @@ longlong Item_func_period_add::val_int()
 
 longlong Item_func_period_diff::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   ulong period1=(ulong) args[0]->val_int();
   ulong period2=(ulong) args[1]->val_int();
@@ -839,6 +844,7 @@ longlong Item_func_period_diff::val_int()
 
 longlong Item_func_to_days::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_NO_ZEROS, thd));
@@ -849,6 +855,7 @@ longlong Item_func_to_days::val_int()
 longlong Item_func_to_seconds::val_int_endpoint(bool left_endp,
                                                 bool *incl_endp)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   // val_int_endpoint() is called only if args[0] is a temporal Item_field
   Datetime_from_temporal dt(current_thd, args[0], TIME_FUZZY_DATES);
@@ -867,6 +874,7 @@ longlong Item_func_to_seconds::val_int_endpoint(bool left_endp,
 
 longlong Item_func_to_seconds::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   /*
@@ -893,6 +901,7 @@ longlong Item_func_to_seconds::val_int()
 
 enum_monotonicity_info Item_func_to_days::get_monotonicity_info() const
 {
+  APPENDFUNC;
   if (args[0]->type() == Item::FIELD_ITEM)
   {
     if (args[0]->field_type() == MYSQL_TYPE_DATE)
@@ -905,6 +914,7 @@ enum_monotonicity_info Item_func_to_days::get_monotonicity_info() const
 
 enum_monotonicity_info Item_func_to_seconds::get_monotonicity_info() const
 {
+  APPENDFUNC;
   if (args[0]->type() == Item::FIELD_ITEM)
   {
     if (args[0]->field_type() == MYSQL_TYPE_DATE ||
@@ -917,6 +927,7 @@ enum_monotonicity_info Item_func_to_seconds::get_monotonicity_info() const
 
 longlong Item_func_to_days::val_int_endpoint(bool left_endp, bool *incl_endp)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   // val_int_endpoint() is only called if args[0] is a temporal Item_field
   Datetime_from_temporal dt(current_thd, args[0], TIME_CONV_NONE);
@@ -971,6 +982,7 @@ longlong Item_func_to_days::val_int_endpoint(bool left_endp, bool *incl_endp)
 
 longlong Item_func_dayofyear::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_NO_ZEROS, thd));
@@ -979,6 +991,7 @@ longlong Item_func_dayofyear::val_int()
 
 longlong Item_func_dayofmonth::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_CONV_NONE, thd));
@@ -987,6 +1000,7 @@ longlong Item_func_dayofmonth::val_int()
 
 longlong Item_func_month::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_CONV_NONE, thd));
@@ -996,6 +1010,7 @@ longlong Item_func_month::val_int()
 
 bool Item_func_monthname::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   CHARSET_INFO *cs= thd->variables.collation_connection;
   locale= thd->variables.lc_time_names;
   collation.set(cs, DERIVATION_COERCIBLE, locale->repertoire());
@@ -1008,6 +1023,7 @@ bool Item_func_monthname::fix_length_and_dec(THD *thd)
 
 String* Item_func_monthname::val_str(String* str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   const char *month_name;
   uint err;
@@ -1029,6 +1045,7 @@ String* Item_func_monthname::val_str(String* str)
 
 longlong Item_func_quarter::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_CONV_NONE, thd));
@@ -1037,6 +1054,7 @@ longlong Item_func_quarter::val_int()
 
 longlong Item_func_hour::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -1045,6 +1063,7 @@ longlong Item_func_hour::val_int()
 
 longlong Item_func_minute::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -1056,6 +1075,7 @@ longlong Item_func_minute::val_int()
 */
 longlong Item_func_second::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -1065,6 +1085,7 @@ longlong Item_func_second::val_int()
 
 uint week_mode(uint mode)
 {
+  APPENDFUNC;
   uint week_format= (mode & 7);
   if (!(week_format & WEEK_MONDAY_FIRST))
     week_format^= WEEK_FIRST_WEEKDAY;
@@ -1104,6 +1125,7 @@ uint week_mode(uint mode)
 
 longlong Item_func_week::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   uint week_format;
   THD *thd= current_thd;
@@ -1120,6 +1142,7 @@ longlong Item_func_week::val_int()
 
 longlong Item_func_yearweek::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_NO_ZEROS, thd));
@@ -1130,6 +1153,7 @@ longlong Item_func_yearweek::val_int()
 
 longlong Item_func_weekday::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime dt(thd, args[0], Datetime::Options(TIME_NO_ZEROS, thd));
@@ -1140,6 +1164,7 @@ longlong Item_func_weekday::val_int()
 
 bool Item_func_dayname::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   CHARSET_INFO *cs= thd->variables.collation_connection;
   locale= thd->variables.lc_time_names;  
   collation.set(cs, DERIVATION_COERCIBLE, locale->repertoire());
@@ -1152,6 +1177,7 @@ bool Item_func_dayname::fix_length_and_dec(THD *thd)
 
 String* Item_func_dayname::val_str(String* str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   const char *day_name;
   uint err;
@@ -1170,6 +1196,7 @@ String* Item_func_dayname::val_str(String* str)
 
 longlong Item_func_year::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Datetime d(thd, args[0], Datetime::Options(TIME_CONV_NONE, thd));
@@ -1193,6 +1220,7 @@ longlong Item_func_year::val_int()
 
 enum_monotonicity_info Item_func_year::get_monotonicity_info() const
 {
+  APPENDFUNC;
   if (args[0]->type() == Item::FIELD_ITEM &&
       (args[0]->field_type() == MYSQL_TYPE_DATE ||
        args[0]->field_type() == MYSQL_TYPE_DATETIME))
@@ -1203,6 +1231,7 @@ enum_monotonicity_info Item_func_year::get_monotonicity_info() const
 
 longlong Item_func_year::val_int_endpoint(bool left_endp, bool *incl_endp)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   // val_int_endpoint() is cally only if args[0] is a temporal Item_field
   Datetime_from_temporal dt(current_thd, args[0], TIME_CONV_NONE);
@@ -1236,6 +1265,7 @@ longlong Item_func_year::val_int_endpoint(bool left_endp, bool *incl_endp)
 bool Item_func_unix_timestamp::get_timestamp_value(my_time_t *seconds,
                                                    ulong *second_part)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   if (args[0]->type() == FIELD_ITEM)
   {						// Optimize timestamp field
@@ -1261,6 +1291,7 @@ bool Item_func_unix_timestamp::get_timestamp_value(my_time_t *seconds,
 
 longlong Item_func_unix_timestamp::int_op()
 {
+  APPENDFUNC;
   if (arg_count == 0)
     return (longlong) current_thd->query_start();
   
@@ -1275,6 +1306,7 @@ longlong Item_func_unix_timestamp::int_op()
 
 my_decimal *Item_func_unix_timestamp::decimal_op(my_decimal* buf)
 {
+  APPENDFUNC;
   ulong second_part;
   my_time_t seconds;
   if (get_timestamp_value(&seconds, &second_part))
@@ -1287,6 +1319,7 @@ my_decimal *Item_func_unix_timestamp::decimal_op(my_decimal* buf)
 
 enum_monotonicity_info Item_func_unix_timestamp::get_monotonicity_info() const
 {
+  APPENDFUNC;
   if (args[0]->type() == Item::FIELD_ITEM &&
       (args[0]->field_type() == MYSQL_TYPE_TIMESTAMP))
     return MONOTONIC_INCREASING;
@@ -1296,6 +1329,7 @@ enum_monotonicity_info Item_func_unix_timestamp::get_monotonicity_info() const
 
 longlong Item_func_unix_timestamp::val_int_endpoint(bool left_endp, bool *incl_endp)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   DBUG_ASSERT(arg_count == 1 &&
               args[0]->type() == Item::FIELD_ITEM &&
@@ -1311,6 +1345,7 @@ longlong Item_func_unix_timestamp::val_int_endpoint(bool left_endp, bool *incl_e
 
 longlong Item_func_time_to_sec::int_op()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -1320,6 +1355,7 @@ longlong Item_func_time_to_sec::int_op()
 
 my_decimal *Item_func_time_to_sec::decimal_op(my_decimal* buf)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -1340,6 +1376,7 @@ my_decimal *Item_func_time_to_sec::decimal_op(my_decimal* buf)
 bool get_interval_value(THD *thd, Item *args,
                         interval_type int_type, INTERVAL *interval)
 {
+  APPENDFUNC;
   ulonglong array[5];
   longlong UNINIT_VAR(value);
   const char *UNINIT_VAR(str);
@@ -1511,6 +1548,7 @@ bool get_interval_value(THD *thd, Item *args,
 
 bool Item_func_from_days::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   longlong value=args[0]->val_int();
   if ((null_value= (args[0]->null_value ||
                     ((fuzzydate & TIME_NO_ZERO_DATE) && value == 0))))
@@ -1531,6 +1569,7 @@ bool Item_func_from_days::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzz
 */
 void Item_func_curdate_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   thd->variables.time_zone->gmt_sec_to_TIME(now_time, thd->query_start());
   thd->used |= THD::TIME_ZONE_USED;
 }
@@ -1542,6 +1581,7 @@ void Item_func_curdate_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 */
 void Item_func_curdate_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   my_tz_UTC->gmt_sec_to_TIME(now_time, thd->query_start());
   /* 
     We are not flagging this query as using time zone, since it uses fixed
@@ -1553,6 +1593,7 @@ void Item_func_curdate_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 bool Item_func_curdate::get_date(THD *thd, MYSQL_TIME *res,
 				 date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   query_id_t query_id= thd->query_id;
   /* Cache value for this query */
   if (last_query_id != query_id)
@@ -1570,6 +1611,7 @@ bool Item_func_curdate::get_date(THD *thd, MYSQL_TIME *res,
 
 bool Item_func_curtime::fix_fields(THD *thd, Item **items)
 {
+  APPENDFUNC;
   if (decimals > TIME_SECOND_PART_DIGITS)
   {
     my_error(ER_TOO_BIG_PRECISION, MYF(0),
@@ -1582,6 +1624,7 @@ bool Item_func_curtime::fix_fields(THD *thd, Item **items)
 bool Item_func_curtime::get_date(THD *thd, MYSQL_TIME *res,
                                  date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   query_id_t query_id= thd->query_id;
   /* Cache value for this query */
   if (last_query_id != query_id)
@@ -1595,6 +1638,7 @@ bool Item_func_curtime::get_date(THD *thd, MYSQL_TIME *res,
 
 void Item_func_curtime::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(func_name_cstring());
   str->append('(');
   if (decimals)
@@ -1604,6 +1648,7 @@ void Item_func_curtime::print(String *str, enum_query_type query_type)
 
 static void set_sec_part(ulong sec_part, MYSQL_TIME *ltime, Item *item)
 {
+  APPENDFUNC;
   DBUG_ASSERT(item->decimals == AUTO_SEC_PART_DIGITS ||
               item->decimals <= TIME_SECOND_PART_DIGITS);
   if (item->decimals)
@@ -1620,6 +1665,7 @@ static void set_sec_part(ulong sec_part, MYSQL_TIME *ltime, Item *item)
 */
 void Item_func_curtime_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   thd->variables.time_zone->gmt_sec_to_TIME(now_time, thd->query_start());
   now_time->year= now_time->month= now_time->day= 0;
   now_time->time_type= MYSQL_TIMESTAMP_TIME;
@@ -1634,6 +1680,7 @@ void Item_func_curtime_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 */
 void Item_func_curtime_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   my_tz_UTC->gmt_sec_to_TIME(now_time, thd->query_start());
   now_time->year= now_time->month= now_time->day= 0;
   now_time->time_type= MYSQL_TIMESTAMP_TIME;
@@ -1646,6 +1693,7 @@ void Item_func_curtime_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 
 bool Item_func_now::fix_fields(THD *thd, Item **items)
 {
+  APPENDFUNC;
   if (decimals > TIME_SECOND_PART_DIGITS)
   {
     my_error(ER_TOO_BIG_PRECISION, MYF(0),
@@ -1657,6 +1705,7 @@ bool Item_func_now::fix_fields(THD *thd, Item **items)
 
 void Item_func_now::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(func_name_cstring());
   str->append('(');
   if (decimals)
@@ -1667,6 +1716,7 @@ void Item_func_now::print(String *str, enum_query_type query_type)
 
 int Item_func_now_local::save_in_field(Field *field, bool no_conversions)
 {
+  APPENDFUNC;
   if (field->type() == MYSQL_TYPE_TIMESTAMP)
   {
     THD *thd= field->get_thd();
@@ -1688,6 +1738,7 @@ int Item_func_now_local::save_in_field(Field *field, bool no_conversions)
 */
 void Item_func_now_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   thd->variables.time_zone->gmt_sec_to_TIME(now_time, thd->query_start());
   set_sec_part(thd->query_start_sec_part(), now_time, this);
   thd->used|= THD::TIME_ZONE_USED;
@@ -1700,6 +1751,7 @@ void Item_func_now_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 */
 void Item_func_now_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   my_tz_UTC->gmt_sec_to_TIME(now_time, thd->query_start());
   set_sec_part(thd->query_start_sec_part(), now_time, this);
   /* 
@@ -1712,6 +1764,7 @@ void Item_func_now_utc::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 bool Item_func_now::get_date(THD *thd, MYSQL_TIME *res,
                              date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   query_id_t query_id= thd->query_id;
   /* Cache value for this query */
   if (last_query_id != query_id)
@@ -1730,6 +1783,7 @@ bool Item_func_now::get_date(THD *thd, MYSQL_TIME *res,
 */
 void Item_func_sysdate_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 {
+  APPENDFUNC;
   my_hrtime_t now= my_hrtime();
   thd->variables.time_zone->gmt_sec_to_TIME(now_time, hrtime_to_my_time(now));
   set_sec_part(hrtime_sec_part(now), now_time, this);
@@ -1740,12 +1794,14 @@ void Item_func_sysdate_local::store_now_in_TIME(THD *thd, MYSQL_TIME *now_time)
 bool Item_func_sysdate_local::get_date(THD *thd, MYSQL_TIME *res,
                                        date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   store_now_in_TIME(thd, res);
   return 0;
 }
 
 bool Item_func_sec_to_time::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   VSec9 sec(thd, args[0], "seconds", LONGLONG_MAX);
   if ((null_value= sec.is_null()))
@@ -1758,6 +1814,7 @@ bool Item_func_sec_to_time::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fu
 
 bool Item_func_date_format::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   if (!is_time_format)
   {
     if (arg_count < 3)
@@ -1800,6 +1857,7 @@ bool Item_func_date_format::fix_length_and_dec(THD *thd)
 
 bool Item_func_date_format::eq(const Item *item, bool binary_cmp) const
 {
+  APPENDFUNC;
   Item_func_date_format *item_func;
 
   if (item->type() != FUNC_ITEM)
@@ -1829,6 +1887,7 @@ bool Item_func_date_format::eq(const Item *item, bool binary_cmp) const
 
 uint Item_func_date_format::format_length(const String *format)
 {
+  APPENDFUNC;
   uint size=0;
   const char *ptr=format->ptr();
   const char *end=ptr+format->length();
@@ -1906,6 +1965,7 @@ uint Item_func_date_format::format_length(const String *format)
 
 String *Item_func_date_format::val_str(String *str)
 {
+  APPENDFUNC;
   StringBuffer<64> format_buffer;
   String *format;
   MYSQL_TIME l_time;
@@ -2033,6 +2093,7 @@ enum enum_tochar_formats
 
 static inline bool check_quotation(uint16 cfmt, bool *quotation_flag)
 {
+  APPENDFUNC;
   if (cfmt == '"')
   {
     *quotation_flag= !*quotation_flag;
@@ -2054,6 +2115,7 @@ static inline bool check_quotation(uint16 cfmt, bool *quotation_flag)
 static uint parse_special(char cfmt, const char *ptr, const char *end,
                          uint16 *array)
 {
+  APPENDFUNC;
   int offset= 0;
   char tmp1;
 
@@ -2100,6 +2162,7 @@ static uint parse_special(char cfmt, const char *ptr, const char *end,
 
 bool Item_func_tochar::parse_format_string(const String *format, uint *fmt_len)
 {
+  APPENDFUNC;
   const char *ptr, *end;
   uint16 *tmp_fmt= fmt_array;
   uint tmp_len= 0;
@@ -2431,6 +2494,7 @@ error:
 
 static inline bool append_val(int val, int size, String *str)
 {
+  APPENDFUNC;
   return str->append_zerofill(val, size);
 }
 
@@ -2440,6 +2504,7 @@ static bool make_date_time_oracle(const uint16 *fmt_array,
                                   const MY_LOCALE *locale,
                                   String *str)
 {
+  APPENDFUNC;
   bool quotation_flag= false;
   const uint16 *ptr= fmt_array;
   uint hours_i;
@@ -2639,6 +2704,7 @@ err_exit:
 
 bool Item_func_tochar::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   CHARSET_INFO *cs= thd->variables.collation_connection;
   Item *arg1= args[1]->this_item();
   my_repertoire_t repertoire= arg1->collation.repertoire;
@@ -2755,6 +2821,7 @@ null_date:
 
 bool Item_func_from_unixtime::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   thd->used|= THD::TIME_ZONE_USED;
   tz= thd->variables.time_zone;
   Type_std_attributes::set(
@@ -2769,6 +2836,7 @@ bool Item_func_from_unixtime::fix_length_and_dec(THD *thd)
 bool Item_func_from_unixtime::get_date(THD *thd, MYSQL_TIME *ltime,
 				       date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   bzero((char *)ltime, sizeof(*ltime));
   ltime->time_type= MYSQL_TIMESTAMP_TIME;
 
@@ -2792,6 +2860,7 @@ bool Item_func_from_unixtime::get_date(THD *thd, MYSQL_TIME *ltime,
 bool Item_func_convert_tz::get_date(THD *thd, MYSQL_TIME *ltime,
                                     date_mode_t fuzzydate __attribute__((unused)))
 {
+  APPENDFUNC;
   my_time_t my_time_tmp;
   String str;
 
@@ -2832,6 +2901,7 @@ bool Item_func_convert_tz::get_date(THD *thd, MYSQL_TIME *ltime,
 
 void Item_func_convert_tz::cleanup()
 {
+  APPENDFUNC;
   from_tz_cached= to_tz_cached= 0;
   Item_datetimefunc::cleanup();
 }
@@ -2839,6 +2909,7 @@ void Item_func_convert_tz::cleanup()
 
 bool Item_date_add_interval::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   enum_field_types arg0_field_type;
 
   if (!args[0]->type_handler()->is_traditional_scalar_type())
@@ -2897,6 +2968,7 @@ bool Func_handler_date_add_interval_datetime_arg0_time::
        get_date(THD *thd, Item_handled_func *item,
                 MYSQL_TIME *to, date_mode_t fuzzy) const
 {
+  APPENDFUNC;
   // time_expr + INTERVAL {YEAR|QUARTER|MONTH|WEEK|YEAR_MONTH}
   push_warning_printf(thd, Sql_condition::WARN_LEVEL_WARN,
                       ER_DATETIME_FUNCTION_OVERFLOW,
@@ -2907,6 +2979,7 @@ bool Func_handler_date_add_interval_datetime_arg0_time::
 
 bool Item_date_add_interval::eq(const Item *item, bool binary_cmp) const
 {
+  APPENDFUNC;
   if (!Item_func::eq(item, binary_cmp))
     return 0;
   Item_date_add_interval *other= (Item_date_add_interval*) item;
@@ -2921,7 +2994,7 @@ bool Item_date_add_interval::eq(const Item *item, bool binary_cmp) const
 
 static const char *interval_names[]=
 {
-  "year", "quarter", "month", "week", "day",  
+  "year", "quarter", "month", "week", "day",
   "hour", "minute", "second", "microsecond",
   "year_month", "day_hour", "day_minute", 
   "day_second", "hour_minute", "hour_second",
@@ -2932,6 +3005,7 @@ static const char *interval_names[]=
 
 void Item_date_add_interval::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   args[0]->print_parenthesised(str, query_type, INTERVAL_PRECEDENCE);
   static LEX_CSTRING minus_interval= { STRING_WITH_LEN(" - interval ") };
   static LEX_CSTRING plus_interval=  { STRING_WITH_LEN(" + interval ") };
@@ -2944,6 +3018,7 @@ void Item_date_add_interval::print(String *str, enum_query_type query_type)
 
 void Item_extract::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(STRING_WITH_LEN("extract("));
   str->append(interval_names[int_type], strlen(interval_names[int_type]));
   str->append(STRING_WITH_LEN(" from "));
@@ -2954,6 +3029,7 @@ void Item_extract::print(String *str, enum_query_type query_type)
 
 bool Item_extract::check_arguments() const
 {
+  APPENDFUNC;
   if (!args[0]->type_handler()->can_return_extract_source(int_type))
   {
     char tmp[64];
@@ -2968,6 +3044,7 @@ bool Item_extract::check_arguments() const
 
 bool Item_extract::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   set_maybe_null(); // If wrong date
   uint32 daylen= args[0]->cmp_type() == TIME_RESULT ? 2 :
                  TIME_MAX_INTERVAL_DAY_CHAR_LENGTH;
@@ -3000,6 +3077,7 @@ bool Item_extract::fix_length_and_dec(THD *thd)
 
 uint Extract_source::week(THD *thd) const
 {
+  APPENDFUNC;
   DBUG_ASSERT(is_valid_extract_source());
   uint year;
   ulong week_format= current_thd->variables.default_week_format;
@@ -3009,6 +3087,7 @@ uint Extract_source::week(THD *thd) const
 
 longlong Item_extract::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Extract_source dt(thd, args[0], m_date_mode);
@@ -3042,6 +3121,7 @@ longlong Item_extract::val_int()
 
 bool Item_extract::eq(const Item *item, bool binary_cmp) const
 {
+  APPENDFUNC;
   if (this == item)
     return 1;
   if (item->type() != FUNC_ITEM ||
@@ -3060,6 +3140,7 @@ bool Item_extract::eq(const Item *item, bool binary_cmp) const
 
 bool Item_char_typecast::eq(const Item *item, bool binary_cmp) const
 {
+  APPENDFUNC;
   if (this == item)
     return 1;
   if (item->type() != FUNC_ITEM ||
@@ -3078,6 +3159,7 @@ bool Item_char_typecast::eq(const Item *item, bool binary_cmp) const
 
 void Item_func::print_cast_temporal(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   char buf[32];
   str->append(STRING_WITH_LEN("cast("));
   args[0]->print(str, query_type);
@@ -3097,6 +3179,7 @@ void Item_func::print_cast_temporal(String *str, enum_query_type query_type)
 
 void Item_char_typecast::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(STRING_WITH_LEN("cast("));
   args[0]->print(str, query_type);
   str->append(STRING_WITH_LEN(" as char"));
@@ -3126,6 +3209,7 @@ void Item_char_typecast::print(String *str, enum_query_type query_type)
 
 void Item_char_typecast::check_truncation_with_warn(String *src, size_t dstlen)
 {
+  APPENDFUNC;
   if (dstlen < src->length())
   {
     THD *thd= current_thd;
@@ -3147,6 +3231,7 @@ void Item_char_typecast::check_truncation_with_warn(String *src, size_t dstlen)
 
 String *Item_char_typecast::reuse(String *src, size_t length)
 {
+  APPENDFUNC;
   DBUG_ASSERT(length <= src->length());
   check_truncation_with_warn(src, length);
   tmp_value.set(src->ptr(), length, cast_cs);
@@ -3159,6 +3244,7 @@ String *Item_char_typecast::reuse(String *src, size_t length)
 */
 String *Item_char_typecast::copy(String *str, CHARSET_INFO *strcs)
 {
+  APPENDFUNC;
   String_copier_for_item copier(current_thd);
   if (copier.copy_with_warn(cast_cs, &tmp_value, strcs,
                             str->ptr(), str->length(), cast_length))
@@ -3173,6 +3259,7 @@ String *Item_char_typecast::copy(String *str, CHARSET_INFO *strcs)
 
 uint Item_char_typecast::adjusted_length_with_warn(uint length)
 {
+  APPENDFUNC;
   if (length <= current_thd->variables.max_allowed_packet)
     return length;
 
@@ -3189,6 +3276,7 @@ uint Item_char_typecast::adjusted_length_with_warn(uint length)
 
 String *Item_char_typecast::val_str_generic(String *str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   String *res;
 
@@ -3245,6 +3333,7 @@ end:
 
 String *Item_char_typecast::val_str_binary_from_native(String *str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   DBUG_ASSERT(cast_cs == &my_charset_bin);
   NativeBuffer<STRING_BUFFER_USUAL_SIZE> native;
@@ -3308,6 +3397,7 @@ static Item_char_typecast_func_handler item_char_typecast_func_handler;
 
 void Item_char_typecast::fix_length_and_dec_numeric()
 {
+  APPENDFUNC;
   fix_length_and_dec_internal(from_cs= cast_cs->mbminlen == 1 ?
                                        cast_cs :
                                        &my_charset_latin1);
@@ -3317,6 +3407,7 @@ void Item_char_typecast::fix_length_and_dec_numeric()
 
 void Item_char_typecast::fix_length_and_dec_generic()
 {
+  APPENDFUNC;
   fix_length_and_dec_internal(from_cs= args[0]->dynamic_result() ?
                                        0 :
                                        args[0]->collation.collation);
@@ -3326,6 +3417,7 @@ void Item_char_typecast::fix_length_and_dec_generic()
 
 void Item_char_typecast::fix_length_and_dec_str()
 {
+  APPENDFUNC;
   fix_length_and_dec_generic();
   m_suppress_warning_to_error_escalation= true;
   set_func_handler(&item_char_typecast_func_handler);
@@ -3335,6 +3427,7 @@ void Item_char_typecast::fix_length_and_dec_str()
 void
 Item_char_typecast::fix_length_and_dec_native_to_binary(uint32 octet_length)
 {
+  APPENDFUNC;
   collation.set(&my_charset_bin, DERIVATION_IMPLICIT);
   max_length= has_explicit_length() ? (uint32) cast_length : octet_length;
   if (current_thd->is_strict_mode())
@@ -3344,6 +3437,7 @@ Item_char_typecast::fix_length_and_dec_native_to_binary(uint32 octet_length)
 
 void Item_char_typecast::fix_length_and_dec_internal(CHARSET_INFO *from_cs)
 {
+  APPENDFUNC;
   uint32 char_length;
   /* 
      We always force character set conversion if cast_cs
@@ -3390,6 +3484,7 @@ void Item_char_typecast::fix_length_and_dec_internal(CHARSET_INFO *from_cs)
 
 bool Item_time_typecast::get_date(THD *thd, MYSQL_TIME *to, date_mode_t mode)
 {
+  APPENDFUNC;
   Time *tm= new(to) Time(thd, args[0], Time::Options_for_cast(mode, thd),
                          MY_MIN(decimals, TIME_SECOND_PART_DIGITS));
   return (null_value= !tm->is_valid_time());
@@ -3398,6 +3493,7 @@ bool Item_time_typecast::get_date(THD *thd, MYSQL_TIME *to, date_mode_t mode)
 
 Sql_mode_dependency Item_time_typecast::value_depends_on_sql_mode() const
 {
+  APPENDFUNC;
   return Item_timefunc::value_depends_on_sql_mode() |
          Sql_mode_dependency(decimals < args[0]->decimals ?
                              MODE_TIME_ROUND_FRACTIONAL : 0, 0);
@@ -3406,6 +3502,7 @@ Sql_mode_dependency Item_time_typecast::value_depends_on_sql_mode() const
 
 bool Item_date_typecast::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   date_mode_t tmp= (fuzzydate | sql_mode_for_dates(thd)) & ~TIME_TIME_ONLY;
   // Force truncation
   Date *d= new(ltime) Date(thd, args[0], Date::Options(date_conv_mode_t(tmp)));
@@ -3415,6 +3512,7 @@ bool Item_date_typecast::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzy
 
 bool Item_datetime_typecast::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   date_mode_t tmp= (fuzzydate | sql_mode_for_dates(thd)) & ~TIME_TIME_ONLY;
   // Force rounding if the current sql_mode says so
   Datetime::Options opt(date_conv_mode_t(tmp), thd);
@@ -3426,6 +3524,7 @@ bool Item_datetime_typecast::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t f
 
 Sql_mode_dependency Item_datetime_typecast::value_depends_on_sql_mode() const
 {
+  APPENDFUNC;
   return Item_datetimefunc::value_depends_on_sql_mode() |
          Sql_mode_dependency(decimals < args[0]->decimals ?
                              MODE_TIME_ROUND_FRACTIONAL : 0, 0);
@@ -3445,6 +3544,7 @@ Sql_mode_dependency Item_datetime_typecast::value_depends_on_sql_mode() const
 
 bool Item_func_makedate::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   long year, days, daynr=  (long) args[1]->val_int();
 
@@ -3469,6 +3569,7 @@ err:
 
 bool Item_func_add_time::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   enum_field_types arg0_field_type;
 
   if (!args[0]->type_handler()->is_traditional_scalar_type() ||
@@ -3523,6 +3624,7 @@ bool Item_func_add_time::fix_length_and_dec(THD *thd)
 
 bool Item_func_timediff::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   int l_sign= 1;
   MYSQL_TIME l_time1,l_time2,l_time3;
@@ -3555,6 +3657,7 @@ bool Item_func_timediff::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzy
 
 bool Item_func_maketime::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   Longlong_hybrid hour(args[0]->val_int(), args[0]->unsigned_flag);
   longlong minute= args[1]->val_int();
@@ -3596,6 +3699,7 @@ bool Item_func_maketime::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzy
 
 longlong Item_func_microsecond::val_int()
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   THD *thd= current_thd;
   Time tm(thd, args[0], Time::Options_for_cast(thd));
@@ -3606,6 +3710,7 @@ longlong Item_func_microsecond::val_int()
 
 longlong Item_func_timestamp_diff::val_int()
 {
+  APPENDFUNC;
   MYSQL_TIME ltime1, ltime2;
   ulonglong seconds;
   ulong microseconds;
@@ -3714,6 +3819,7 @@ null_date:
 
 void Item_func_timestamp_diff::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(func_name_cstring());
   str->append('(');
 
@@ -3760,6 +3866,7 @@ void Item_func_timestamp_diff::print(String *str, enum_query_type query_type)
 
 String *Item_func_get_format::val_str_ascii(String *str)
 {
+  APPENDFUNC;
   DBUG_ASSERT(fixed());
   const char *format_name;
   KNOWN_DATE_TIME_FORMAT *format;
@@ -3793,6 +3900,7 @@ String *Item_func_get_format::val_str_ascii(String *str)
 
 void Item_func_get_format::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(func_name_cstring());
   str->append('(');
 
@@ -3836,6 +3944,7 @@ void Item_func_get_format::print(String *str, enum_query_type query_type)
 static const Item_handled_func::Handler *
 get_date_time_result_type(const char *format, uint length)
 {
+  APPENDFUNC;
   const char *time_part_frms= "HISThiklrs";
   const char *date_part_frms= "MVUXYWabcjmvuxyw";
   bool date_part_used= 0, time_part_used= 0, frac_second_used= 0;
@@ -3880,6 +3989,7 @@ get_date_time_result_type(const char *format, uint length)
 
 bool Item_func_str_to_date::fix_length_and_dec(THD *thd)
 {
+  APPENDFUNC;
   if (!args[0]->type_handler()->is_traditional_scalar_type() ||
       !args[1]->type_handler()->is_traditional_scalar_type())
   {
@@ -3912,6 +4022,7 @@ bool Item_func_str_to_date::get_date_common(THD *thd, MYSQL_TIME *ltime,
                                             date_mode_t fuzzydate,
                                             timestamp_type tstype)
 {
+  APPENDFUNC;
   DATE_TIME_FORMAT date_time_format;
   StringBuffer<64> val_string, format_str;
   String *val, *format;
@@ -3934,6 +4045,7 @@ bool Item_func_str_to_date::get_date_common(THD *thd, MYSQL_TIME *ltime,
 
 bool Item_func_last_day::get_date(THD *thd, MYSQL_TIME *ltime, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   Datetime::Options opt(date_conv_mode_t(fuzzydate & ~TIME_TIME_ONLY),
                         time_round_mode_t(fuzzydate));
   Datetime *d= new(ltime) Datetime(thd, args[0], opt);

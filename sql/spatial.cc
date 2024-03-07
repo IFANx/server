@@ -20,6 +20,7 @@
 #include "spatial.h"
 #include "gstream.h"                            // Gis_read_stream
 #include "sql_string.h"                         // String
+#include "sql_profile.h"
 
 /* This is from item_func.h. Didn't want to #include the whole file. */
 double my_double_round(double value, longlong dec, bool dec_unsigned,
@@ -52,6 +53,7 @@ double my_double_round(double value, longlong dec, bool dec_unsigned,
 
 int MBR::within(const MBR *mbr)
 {
+
   /*
     We have to take into account the 'dimension' of
     the MBR, where the dimension of a single point is 0,
@@ -156,6 +158,7 @@ Geometry::Class_info::Class_info(const char *name, const char *geojson_name,
                                  int type_id, create_geom_t create_func):
   m_type_id(type_id), m_create_func(create_func)
 {
+
   m_name.str= (char *) name;
   m_name.length= strlen(name);
   m_geojson_name.str= (char *) geojson_name;
@@ -166,36 +169,43 @@ Geometry::Class_info::Class_info(const char *name, const char *geojson_name,
 
 static Geometry *create_point(char *buffer)
 {
+
   return new (buffer) Gis_point;
 }
 
 static Geometry *create_linestring(char *buffer)
 {
+
   return new (buffer) Gis_line_string;
 }
 
 static Geometry *create_polygon(char *buffer)
 {
+
   return new (buffer) Gis_polygon;
 }
 
 static Geometry *create_multipoint(char *buffer)
 {
+
   return new (buffer) Gis_multi_point;
 }
 
 static Geometry *create_multipolygon(char *buffer)
 {
+
   return new (buffer) Gis_multi_polygon;
 }
 
 static Geometry *create_multilinestring(char *buffer)
 {
+
   return new (buffer) Gis_multi_line_string;
 }
 
 static Geometry *create_geometrycollection(char *buffer)
 {
+
   return new (buffer) Gis_geometry_collection;
 }
 
@@ -226,6 +236,7 @@ geometrycollection_class("GEOMETRYCOLLECTION", "GeometryCollection",
 
 static void get_point(double *x, double *y, const char *data)
 {
+
   float8get(*x, data);
   float8get(*y, data + SIZEOF_STORED_DOUBLE);
 }
@@ -234,6 +245,7 @@ static void get_point(double *x, double *y, const char *data)
 
 Geometry::Class_info *Geometry::find_class(const char *name, size_t len)
 {
+
   for (Class_info **cur_rt= ci_collection;
        cur_rt < ci_collection_end; cur_rt++)
   {
@@ -249,6 +261,7 @@ Geometry::Class_info *Geometry::find_class(const char *name, size_t len)
 
 Geometry *Geometry::create_by_typeid(Geometry_buffer *buffer, int type_id)
 {
+  APPENDFUNC;
   Class_info *ci;
   if (!(ci= find_class(type_id)))
     return NULL;
@@ -259,6 +272,7 @@ Geometry *Geometry::create_by_typeid(Geometry_buffer *buffer, int type_id)
 Geometry *Geometry::construct(Geometry_buffer *buffer,
                               const char *data, uint32 data_len)
 {
+  APPENDFUNC;
   uint32 geom_type;
   Geometry *result;
 
@@ -276,6 +290,7 @@ Geometry *Geometry::construct(Geometry_buffer *buffer,
 
 uint Geometry::get_key_image_itMBR(LEX_CSTRING &src, uchar *buff, uint length)
 {
+  APPENDFUNC;
   const char *dummy;
   MBR mbr;
   Geometry_buffer buffer;
@@ -305,6 +320,7 @@ Geometry *Geometry::create_from_wkt(Geometry_buffer *buffer,
 				    Gis_read_stream *trs, String *wkt,
 				    bool init_stream)
 {
+  APPENDFUNC;
   LEX_STRING name;
   Class_info *ci;
   char next_sym;
@@ -339,6 +355,7 @@ Geometry *Geometry::create_from_wkt(Geometry_buffer *buffer,
 
 int Geometry::as_wkt(String *wkt, const char **end)
 {
+  APPENDFUNC;
   uint32 len= (uint) get_class_info()->m_name.length;
   if (wkt->reserve(len + 2, 512))
     return 1;
@@ -376,6 +393,7 @@ static const int bbox_keyname_len= 4;
 
 int Geometry::as_json(String *wkt, uint max_dec_digits, const char **end)
 {
+  APPENDFUNC;
   uint32 len= (uint) get_class_info()->m_geojson_name.length;
   if (wkt->reserve(4 + type_keyname_len + 2 + len + 2 + 2 +
                    coord_keyname_len + 4, 512))
@@ -400,6 +418,7 @@ int Geometry::as_json(String *wkt, uint max_dec_digits, const char **end)
 
 int Geometry::bbox_as_json(String *wkt)
 {
+  APPENDFUNC;
   MBR mbr;
   const char *end;
   if (wkt->reserve(5 + bbox_keyname_len + (FLOATING_POINT_DECIMALS+2)*4, 512))
@@ -426,6 +445,7 @@ int Geometry::bbox_as_json(String *wkt)
 
 static double wkb_get_double(const char *ptr, Geometry::wkbByteOrder bo)
 {
+  APPENDFUNC;
   double res;
   if (bo != Geometry::wkb_xdr)
   {
@@ -450,6 +470,7 @@ static double wkb_get_double(const char *ptr, Geometry::wkbByteOrder bo)
 
 static uint32 wkb_get_uint(const char *ptr, Geometry::wkbByteOrder bo)
 {
+  APPENDFUNC;
   if (bo != Geometry::wkb_xdr)
     return uint4korr(ptr);
   /* else */
@@ -467,6 +488,7 @@ static uint32 wkb_get_uint(const char *ptr, Geometry::wkbByteOrder bo)
 Geometry *Geometry::create_from_wkb(Geometry_buffer *buffer,
                                     const char *wkb, uint32 len, String *res)
 {
+  APPENDFUNC;
   uint32 geom_type;
   Geometry *geom;
 
@@ -488,6 +510,7 @@ Geometry *Geometry::create_from_wkb(Geometry_buffer *buffer,
 Geometry *Geometry::create_from_json(Geometry_buffer *buffer,
                       json_engine_t *je, bool er_on_3D, String *res)
 {
+  APPENDFUNC;
   Class_info *ci= NULL;
   const uchar *coord_start= NULL, *geom_start= NULL,
               *features_start= NULL, *geometry_start= NULL;
@@ -686,6 +709,7 @@ err_return:
 Geometry *Geometry::create_from_opresult(Geometry_buffer *g_buf,
                                    String *res, Gcalc_result_receiver &rr)
 {
+  APPENDFUNC;
   uint32 geom_type= rr.get_result_typeid();
   Geometry *obj= create_by_typeid(g_buf, geom_type);
 
@@ -700,6 +724,7 @@ Geometry *Geometry::create_from_opresult(Geometry_buffer *g_buf,
 
 bool Geometry::envelope(String *result) const
 {
+  APPENDFUNC;
   MBR mbr;
   const char *end;
 
@@ -753,6 +778,7 @@ bool Geometry::envelope(String *result) const
 
 bool Geometry::create_point(String *result, const char *data) const
 {
+  APPENDFUNC;
   if (no_data(data, POINT_DATA_SIZE) ||
       result->reserve(1 + 4 + POINT_DATA_SIZE))
     return 1;
@@ -779,6 +805,7 @@ bool Geometry::create_point(String *result, const char *data) const
 
 bool Geometry::create_point(String *result, double x, double y)
 {
+  APPENDFUNC;
   if (result->reserve(1 + 4 + POINT_DATA_SIZE))
     return 1;
 
@@ -806,6 +833,7 @@ bool Geometry::create_point(String *result, double x, double y)
 const char *Geometry::append_points(String *txt, uint32 n_points,
 				    const char *data, uint32 offset) const
 {			     
+  APPENDFUNC;
   while (n_points--)
   {
     double x,y;
@@ -823,6 +851,7 @@ const char *Geometry::append_points(String *txt, uint32 n_points,
 
 static void append_json_point(String *txt, uint max_dec, const char *data)
 {
+  APPENDFUNC;
   double x,y;
   get_point(&x, &y, data);
   if (max_dec < FLOATING_POINT_DECIMALS)
@@ -855,6 +884,7 @@ static void append_json_point(String *txt, uint max_dec, const char *data)
 static const char *append_json_points(String *txt, uint max_dec,
     uint32 n_points, const char *data, uint32 offset)
 {			     
+  APPENDFUNC;
   txt->qs_append('[');
   while (n_points--)
   {
@@ -885,6 +915,7 @@ static const char *append_json_points(String *txt, uint max_dec,
 const char *Geometry::get_mbr_for_points(MBR *mbr, const char *data,
 					 uint offset) const
 {
+  APPENDFUNC;
   uint32 points;
   /* read number of points */
   if (no_data(data, 4))
@@ -910,12 +941,14 @@ const char *Geometry::get_mbr_for_points(MBR *mbr, const char *data,
 
 uint32 Gis_point::get_data_size() const
 {
+  APPENDFUNC;
   return POINT_DATA_SIZE;
 }
 
 
 bool Gis_point::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   double x, y;
   if (trs->get_next_number(&x) || trs->get_next_number(&y) ||
       wkb->reserve(POINT_DATA_SIZE, 512))
@@ -929,6 +962,7 @@ bool Gis_point::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_point::init_from_wkb(const char *wkb, uint len,
                               wkbByteOrder bo, String *res)
 {
+  APPENDFUNC;
   double x, y;
   if (len < POINT_DATA_SIZE || res->reserve(POINT_DATA_SIZE))
     return 0;
@@ -943,6 +977,7 @@ uint Gis_point::init_from_wkb(const char *wkb, uint len,
 static int read_point_from_json(json_engine_t *je, bool er_on_3D,
                                 double *x, double *y)
 {
+  APPENDFUNC;
   int n_coord= 0, err;
   double tmp, *d;
   char *endptr;
@@ -975,6 +1010,7 @@ bad_coordinates:
 
 bool Gis_point::init_from_json(json_engine_t *je, bool er_on_3D, String *wkb)
 {
+  APPENDFUNC;
   double x, y;
   if (json_read_value(je))
     return TRUE;
@@ -997,6 +1033,7 @@ bool Gis_point::init_from_json(json_engine_t *je, bool er_on_3D, String *wkb)
 
 bool Gis_point::get_data_as_wkt(String *txt, const char **end) const
 {
+  APPENDFUNC;
   double x, y;
   if (get_xy(&x, &y))
     return 1;
@@ -1013,6 +1050,7 @@ bool Gis_point::get_data_as_wkt(String *txt, const char **end) const
 bool Gis_point::get_data_as_json(String *txt, uint max_dec_digits,
                                  const char **end) const
 {
+  APPENDFUNC;
   if (txt->reserve(MAX_DIGITS_IN_DOUBLE * 2 + 4))
     return 1;
   append_json_point(txt, max_dec_digits, m_data);
@@ -1023,6 +1061,7 @@ bool Gis_point::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_point::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   double x, y;
   if (get_xy(&x, &y))
     return 1;
@@ -1034,6 +1073,7 @@ bool Gis_point::get_mbr(MBR *mbr, const char **end) const
 
 int Gis_point::area(double *ar, const char **end) const
 {
+  APPENDFUNC;
   *ar= 0;
   *end= m_data+ POINT_DATA_SIZE;
   return 0;
@@ -1042,6 +1082,7 @@ int Gis_point::area(double *ar, const char **end) const
 
 int Gis_point::geom_length(double *len, const char **end) const
 {
+  APPENDFUNC;
   *len= 0;
   *end= m_data+ POINT_DATA_SIZE;
   return 0;
@@ -1050,6 +1091,7 @@ int Gis_point::geom_length(double *len, const char **end) const
 
 int Gis_point::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   double x, y;
 
   return get_xy(&x, &y) || trn->single_point(x, y);
@@ -1058,6 +1100,7 @@ int Gis_point::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_point::get_class_info() const
 {
+  APPENDFUNC;
   return &point_class;
 }
 
@@ -1079,6 +1122,7 @@ double Gis_point::calculate_haversine(const Geometry *g,
                                       const double sphere_radius,
                                       int *error)
 {
+  APPENDFUNC;
   DBUG_ASSERT(sphere_radius > 0);
   double x1r, x2r, y1r, y2r;
 
@@ -1150,6 +1194,7 @@ double Gis_point::calculate_haversine(const Geometry *g,
 int Gis_point::spherical_distance_multipoints(Geometry *g, const double r,
                                               double *result, int *err)
 {  
+  APPENDFUNC;
   uint32 num_of_points2;
     // To find the minimum radius it cannot be greater than Earth radius
   double res= 6370986.0;
@@ -1192,6 +1237,7 @@ int Gis_point::spherical_distance_multipoints(Geometry *g, const double r,
 
 uint32 Gis_line_string::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_points;
   if (no_data(m_data, 4))
     return GET_SIZE_ERROR;
@@ -1207,6 +1253,7 @@ uint32 Gis_line_string::get_data_size() const
 
 bool Gis_line_string::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_points= 0;
   uint32 np_pos= wkb->length();
   Gis_point p;
@@ -1236,6 +1283,7 @@ bool Gis_line_string::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_line_string::init_from_wkb(const char *wkb, uint len,
                                     wkbByteOrder bo, String *res)
 {
+  APPENDFUNC;
   uint32 n_points, proper_length;
   const char *wkb_end;
   Gis_point p;
@@ -1263,6 +1311,7 @@ uint Gis_line_string::init_from_wkb(const char *wkb, uint len,
 bool Gis_line_string::init_from_json(json_engine_t *je, bool er_on_3D,
                                      String *wkb)
 {
+  APPENDFUNC;
   uint32 n_points= 0;
   uint32 np_pos= wkb->length();
   Gis_point p;
@@ -1300,6 +1349,7 @@ bool Gis_line_string::init_from_json(json_engine_t *je, bool er_on_3D,
 
 bool Gis_line_string::get_data_as_wkt(String *txt, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   const char *data= m_data;
 
@@ -1332,6 +1382,7 @@ bool Gis_line_string::get_data_as_wkt(String *txt, const char **end) const
 bool Gis_line_string::get_data_as_json(String *txt, uint max_dec_digits,
                                        const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   const char *data= m_data;
 
@@ -1353,12 +1404,14 @@ bool Gis_line_string::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_line_string::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   return (*end=get_mbr_for_points(mbr, m_data, 0)) == 0;
 }
 
 
 int Gis_line_string::geom_length(double *len, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   double prev_x, prev_y;
   const char *data= m_data;
@@ -1389,6 +1442,7 @@ int Gis_line_string::geom_length(double *len, const char **end) const
 
 int Gis_line_string::area(double *ar, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   *ar= 0.0;
 
@@ -1403,6 +1457,7 @@ int Gis_line_string::area(double *ar, const char **end) const
 
 int Gis_line_string::is_closed(int *closed) const
 {
+  APPENDFUNC;
   uint32 n_points;
   double x1, y1, x2, y2;
   const char *data= m_data;
@@ -1433,6 +1488,7 @@ int Gis_line_string::is_closed(int *closed) const
 
 int Gis_line_string::num_points(uint32 *n_points) const
 {
+  APPENDFUNC;
   *n_points= uint4korr(m_data);
   return 0;
 }
@@ -1440,6 +1496,7 @@ int Gis_line_string::num_points(uint32 *n_points) const
 
 int Gis_line_string::start_point(String *result) const
 {
+  APPENDFUNC;
   /* +4 is for skipping over number of points */
   return create_point(result, m_data + 4);
 }
@@ -1447,6 +1504,7 @@ int Gis_line_string::start_point(String *result) const
 
 int Gis_line_string::end_point(String *result) const
 {
+  APPENDFUNC;
   uint32 n_points;
   if (no_data(m_data, 4))
     return 1;
@@ -1459,6 +1517,7 @@ int Gis_line_string::end_point(String *result) const
 
 int Gis_line_string::point_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   uint32 n_points;
   if (no_data(m_data, 4))
     return 1;
@@ -1473,6 +1532,7 @@ int Gis_line_string::point_n(uint32 num, String *result) const
 
 int Gis_line_string::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_points;
   double x, y;
   double UNINIT_VAR(prev_x), UNINIT_VAR(prev_y);
@@ -1506,6 +1566,7 @@ int Gis_line_string::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_line_string::get_class_info() const
 {
+  APPENDFUNC;
   return &linestring_class;
 }
 
@@ -1514,6 +1575,7 @@ const Geometry::Class_info *Gis_line_string::get_class_info() const
 
 uint32 Gis_polygon::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   uint32 n_points;
   const char *data= m_data;
@@ -1538,6 +1600,7 @@ uint32 Gis_polygon::get_data_size() const
 
 bool Gis_polygon::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_linear_rings= 0;
   uint32 lr_pos= wkb->length();
   int closed;
@@ -1572,6 +1635,7 @@ bool Gis_polygon::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_polygon::init_from_opresult(String *bin,
                                      const char *opres, uint res_len)
 {
+  APPENDFUNC;
   const char *opres_orig= opres;
   uint32 position= bin->length();
   uint32 poly_shapes= 0;
@@ -1618,6 +1682,7 @@ uint Gis_polygon::init_from_opresult(String *bin,
 uint Gis_polygon::init_from_wkb(const char *wkb, uint len, wkbByteOrder bo,
                                 String *res)
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   const char *wkb_orig= wkb;
 
@@ -1656,6 +1721,7 @@ uint Gis_polygon::init_from_wkb(const char *wkb, uint len, wkbByteOrder bo,
 
 bool Gis_polygon::init_from_json(json_engine_t *je, bool er_on_3D, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_linear_rings= 0;
   uint32 lr_pos= wkb->length();
   int closed;
@@ -1705,6 +1771,7 @@ bool Gis_polygon::init_from_json(json_engine_t *je, bool er_on_3D, String *wkb)
 
 bool Gis_polygon::get_data_as_wkt(String *txt, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   const char *data= m_data;
 
@@ -1738,6 +1805,7 @@ bool Gis_polygon::get_data_as_wkt(String *txt, const char **end) const
 bool Gis_polygon::get_data_as_json(String *txt, uint max_dec_digits,
                                    const char **end) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   const char *data= m_data;
 
@@ -1770,6 +1838,7 @@ bool Gis_polygon::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_polygon::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   const char *data= m_data;
 
@@ -1790,6 +1859,7 @@ bool Gis_polygon::get_mbr(MBR *mbr, const char **end) const
 
 int Gis_polygon::area(double *ar, const char **end_of_data) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   double result= -1.0;
   const char *data= m_data;
@@ -1837,6 +1907,7 @@ int Gis_polygon::area(double *ar, const char **end_of_data) const
 
 int Gis_polygon::exterior_ring(String *result) const
 {
+  APPENDFUNC;
   uint32 n_points, length;
   const char *data= m_data + 4; // skip n_linerings
 
@@ -1858,6 +1929,7 @@ int Gis_polygon::exterior_ring(String *result) const
 
 int Gis_polygon::num_interior_ring(uint32 *n_int_rings) const
 {
+  APPENDFUNC;
   if (no_data(m_data, 4))
     return 1;
   *n_int_rings= uint4korr(m_data)-1;
@@ -1867,6 +1939,7 @@ int Gis_polygon::num_interior_ring(uint32 *n_int_rings) const
 
 int Gis_polygon::interior_ring_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   const char *data= m_data;
   uint32 n_linear_rings;
   uint32 n_points;
@@ -1905,6 +1978,7 @@ int Gis_polygon::interior_ring_n(uint32 num, String *result) const
 
 int Gis_polygon::centroid_xy(double *x, double *y) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   double UNINIT_VAR(res_area);
   double UNINIT_VAR(res_cx), UNINIT_VAR(res_cy);
@@ -1986,6 +2060,7 @@ int Gis_polygon::centroid_xy(double *x, double *y) const
 
 int Gis_polygon::centroid(String *result) const
 {
+  APPENDFUNC;
   double x, y;
   if (centroid_xy(&x, &y))
     return 1;
@@ -1995,6 +2070,7 @@ int Gis_polygon::centroid(String *result) const
 
 int Gis_polygon::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_linear_rings;
   const char *data= m_data;
   double first_x, first_y;
@@ -2068,6 +2144,7 @@ single_point_ring:
 
 const Geometry::Class_info *Gis_polygon::get_class_info() const
 {
+  APPENDFUNC;
   return &polygon_class;
 }
 
@@ -2076,6 +2153,7 @@ const Geometry::Class_info *Gis_polygon::get_class_info() const
 
 uint32 Gis_multi_point::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_points;
 
   if (no_data(m_data, 4) ||
@@ -2088,6 +2166,7 @@ uint32 Gis_multi_point::get_data_size() const
 
 bool Gis_multi_point::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_points= 0;
   uint32 np_pos= wkb->length();
   Gis_point p;
@@ -2116,6 +2195,7 @@ bool Gis_multi_point::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_multi_point::init_from_opresult(String *bin,
                                          const char *opres, uint res_len)
 {
+  APPENDFUNC;
   uint bin_size, n_points;
   Gis_point p;
   const char *opres_end;
@@ -2142,6 +2222,7 @@ uint Gis_multi_point::init_from_opresult(String *bin,
 uint Gis_multi_point::init_from_wkb(const char *wkb, uint len, wkbByteOrder bo,
                                     String *res)
 {
+  APPENDFUNC;
   uint32 n_points;
   uint proper_size;
   Gis_point p;
@@ -2172,6 +2253,7 @@ uint Gis_multi_point::init_from_wkb(const char *wkb, uint len, wkbByteOrder bo,
 bool Gis_multi_point::init_from_json(json_engine_t *je, bool er_on_3D,
                                      String *wkb)
 {
+  APPENDFUNC;
   uint32 n_points= 0;
   uint32 np_pos= wkb->length();
   Gis_point p;
@@ -2219,6 +2301,7 @@ bool Gis_multi_point::init_from_json(json_engine_t *je, bool er_on_3D,
 
 bool Gis_multi_point::get_data_as_wkt(String *txt, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   if (no_data(m_data, 4))
     return 1;
@@ -2237,6 +2320,7 @@ bool Gis_multi_point::get_data_as_wkt(String *txt, const char **end) const
 bool Gis_multi_point::get_data_as_json(String *txt, uint max_dec_digits,
                                        const char **end) const
 {
+  APPENDFUNC;
   uint32 n_points;
   if (no_data(m_data, 4))
     return 1;
@@ -2254,12 +2338,14 @@ bool Gis_multi_point::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_multi_point::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   return (*end= get_mbr_for_points(mbr, m_data, WKB_HEADER_SIZE)) == 0;
 }
 
 
 int Gis_multi_point::num_geometries(uint32 *num) const
 {
+  APPENDFUNC;
   *num= uint4korr(m_data);
   return 0;
 }
@@ -2267,6 +2353,7 @@ int Gis_multi_point::num_geometries(uint32 *num) const
 
 int Gis_multi_point::geometry_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   const char *data= m_data;
   uint32 n_points;
 
@@ -2287,6 +2374,7 @@ int Gis_multi_point::geometry_n(uint32 num, String *result) const
 
 int Gis_multi_point::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_points;
   Gis_point pt;
   const char *data= m_data;
@@ -2315,6 +2403,7 @@ int Gis_multi_point::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_multi_point::get_class_info() const
 {
+  APPENDFUNC;
   return &multipoint_class;
 }
 
@@ -2336,6 +2425,7 @@ const Geometry::Class_info *Gis_multi_point::get_class_info() const
 int Gis_multi_point::spherical_distance_multipoints(Geometry *g, const double r,
                                                     double *result, int *err)
 {
+  APPENDFUNC;
   const uint32 len= 4 + WKB_HEADER_SIZE + POINT_DATA_SIZE + 1;
   // Check how many points are stored in Multipoints
   uint32 num_of_points1, num_of_points2;
@@ -2406,6 +2496,7 @@ int Gis_multi_point::spherical_distance_multipoints(Geometry *g, const double r,
 
 uint32 Gis_multi_line_string::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   uint32 n_points;
   const char *data= m_data;
@@ -2431,6 +2522,7 @@ uint32 Gis_multi_line_string::get_data_size() const
 
 bool Gis_multi_line_string::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_line_strings= 0;
   uint32 ls_pos= wkb->length();
 
@@ -2462,6 +2554,7 @@ bool Gis_multi_line_string::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_multi_line_string::init_from_opresult(String *bin,
                                                const char *opres, uint res_len)
 {
+  APPENDFUNC;
   const char *opres_orig= opres;
   int ns_pos= bin->length();
   uint n_linestring= 0;
@@ -2495,6 +2588,7 @@ uint Gis_multi_line_string::init_from_opresult(String *bin,
 uint Gis_multi_line_string::init_from_wkb(const char *wkb, uint len,
                                           wkbByteOrder bo, String *res)
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *wkb_orig= wkb;
 
@@ -2533,6 +2627,7 @@ uint Gis_multi_line_string::init_from_wkb(const char *wkb, uint len,
 bool Gis_multi_line_string::init_from_json(json_engine_t *je, bool er_on_3D,
                                            String *wkb)
 {
+  APPENDFUNC;
   uint32 n_line_strings= 0;
   uint32 ls_pos= wkb->length();
 
@@ -2582,6 +2677,7 @@ bool Gis_multi_line_string::init_from_json(json_engine_t *je, bool er_on_3D,
 bool Gis_multi_line_string::get_data_as_wkt(String *txt, 
 					     const char **end) const
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *data= m_data;
 
@@ -2614,6 +2710,7 @@ bool Gis_multi_line_string::get_data_as_wkt(String *txt,
 bool Gis_multi_line_string::get_data_as_json(String *txt, uint max_dec_digits,
                                              const char **end) const
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *data= m_data;
 
@@ -2645,6 +2742,7 @@ bool Gis_multi_line_string::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_multi_line_string::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *data= m_data;
 
@@ -2666,6 +2764,7 @@ bool Gis_multi_line_string::get_mbr(MBR *mbr, const char **end) const
 
 int Gis_multi_line_string::num_geometries(uint32 *num) const
 {
+  APPENDFUNC;
   *num= uint4korr(m_data);
   return 0;
 }
@@ -2673,6 +2772,7 @@ int Gis_multi_line_string::num_geometries(uint32 *num) const
 
 int Gis_multi_line_string::geometry_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   uint32 n_line_strings, n_points, length;
   const char *data= m_data;
 
@@ -2702,6 +2802,7 @@ int Gis_multi_line_string::geometry_n(uint32 num, String *result) const
 
 int Gis_multi_line_string::geom_length(double *len, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *data= m_data;
   const char *line_end;
@@ -2734,6 +2835,7 @@ int Gis_multi_line_string::geom_length(double *len, const char **end) const
 
 int Gis_multi_line_string::is_closed(int *closed) const
 {
+  APPENDFUNC;
   uint32 n_line_strings;
   const char *data= m_data;
 
@@ -2764,6 +2866,7 @@ int Gis_multi_line_string::is_closed(int *closed) const
 
 int Gis_multi_line_string::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_lines;
   Gis_line_string ls;
   const char *data= m_data;
@@ -2792,6 +2895,7 @@ int Gis_multi_line_string::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_multi_line_string::get_class_info() const
 {
+  APPENDFUNC;
   return &multilinestring_class;
 }
 
@@ -2800,6 +2904,7 @@ const Geometry::Class_info *Gis_multi_line_string::get_class_info() const
 
 uint32 Gis_multi_polygon::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_polygons;
   uint32 n_points;
   const char *data= m_data;
@@ -2834,6 +2939,7 @@ uint32 Gis_multi_polygon::get_data_size() const
 
 bool Gis_multi_polygon::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_polygons= 0;
   int np_pos= wkb->length();
   Gis_polygon p;
@@ -2865,6 +2971,7 @@ bool Gis_multi_polygon::init_from_wkt(Gis_read_stream *trs, String *wkb)
 uint Gis_multi_polygon::init_from_wkb(const char *wkb, uint len,
                                       wkbByteOrder bo, String *res)
 {
+  APPENDFUNC;
   uint32 n_poly;
   const char *wkb_orig= wkb;
 
@@ -2902,6 +3009,7 @@ uint Gis_multi_polygon::init_from_wkb(const char *wkb, uint len,
 uint Gis_multi_polygon::init_from_opresult(String *bin,
                                            const char *opres, uint res_len)
 {
+  APPENDFUNC;
   Gis_polygon p;
   const char *opres_orig= opres;
   uint p_len;
@@ -2932,6 +3040,7 @@ uint Gis_multi_polygon::init_from_opresult(String *bin,
 bool Gis_multi_polygon::init_from_json(json_engine_t *je, bool er_on_3D,
                                        String *wkb)
 {
+  APPENDFUNC;
   uint32 n_polygons= 0;
   int np_pos= wkb->length();
   Gis_polygon p;
@@ -2979,6 +3088,7 @@ bool Gis_multi_polygon::init_from_json(json_engine_t *je, bool er_on_3D,
 
 bool Gis_multi_polygon::get_data_as_wkt(String *txt, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   const char *data= m_data;
 
@@ -3024,6 +3134,7 @@ bool Gis_multi_polygon::get_data_as_wkt(String *txt, const char **end) const
 bool Gis_multi_polygon::get_data_as_json(String *txt, uint max_dec_digits,
                                          const char **end) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   const char *data= m_data;
 
@@ -3068,6 +3179,7 @@ bool Gis_multi_polygon::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_multi_polygon::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   const char *data= m_data;
 
@@ -3097,6 +3209,7 @@ bool Gis_multi_polygon::get_mbr(MBR *mbr, const char **end) const
 
 int Gis_multi_polygon::num_geometries(uint32 *num) const
 {
+  APPENDFUNC;
   *num= uint4korr(m_data);
   return 0;
 }
@@ -3104,6 +3217,7 @@ int Gis_multi_polygon::num_geometries(uint32 *num) const
 
 int Gis_multi_polygon::geometry_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   const char *data= m_data, *start_of_polygon;
 
@@ -3145,6 +3259,7 @@ int Gis_multi_polygon::geometry_n(uint32 num, String *result) const
 
 int Gis_multi_polygon::area(double *ar,  const char **end_of_data) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   const char *data= m_data;
   double result= 0;
@@ -3173,6 +3288,7 @@ int Gis_multi_polygon::area(double *ar,  const char **end_of_data) const
 
 int Gis_multi_polygon::centroid(String *result) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   Gis_polygon p;
   double res_area= 0.0, res_cx= 0.0, res_cy= 0.0;
@@ -3206,6 +3322,7 @@ int Gis_multi_polygon::centroid(String *result) const
 
 int Gis_multi_polygon::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_polygons;
   Gis_polygon p;
   const char *data= m_data;
@@ -3234,6 +3351,7 @@ int Gis_multi_polygon::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_multi_polygon::get_class_info() const
 {
+  APPENDFUNC;
   return &multipolygon_class;
 }
 
@@ -3242,6 +3360,7 @@ const Geometry::Class_info *Gis_multi_polygon::get_class_info() const
 
 uint32 Gis_geometry_collection::get_data_size() const 
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3274,6 +3393,7 @@ uint32 Gis_geometry_collection::get_data_size() const
 
 bool Gis_geometry_collection::init_from_wkt(Gis_read_stream *trs, String *wkb)
 {
+  APPENDFUNC;
   uint32 n_objects= 0;
   uint32 no_pos= wkb->length();
   Geometry_buffer buffer;
@@ -3322,6 +3442,7 @@ uint Gis_geometry_collection::init_from_opresult(String *bin,
                                                  const char *opres,
                                                  uint res_len)
 {
+  APPENDFUNC;
   const char *opres_orig= opres;
   Geometry_buffer buffer;
   Geometry *geom;
@@ -3373,6 +3494,7 @@ empty_geom:
 uint Gis_geometry_collection::init_from_wkb(const char *wkb, uint len,
                                             wkbByteOrder bo, String *res)
 {
+  APPENDFUNC;
   uint32 n_geom;
   const char *wkb_orig= wkb;
 
@@ -3415,6 +3537,7 @@ uint Gis_geometry_collection::init_from_wkb(const char *wkb, uint len,
 bool Gis_geometry_collection::init_from_json(json_engine_t *je, bool er_on_3D,
                                              String *wkb)
 {
+  APPENDFUNC;
   uint32 n_objects= 0;
   uint32 no_pos= wkb->length();
   Geometry_buffer buffer;
@@ -3457,6 +3580,7 @@ bool Gis_geometry_collection::init_from_json(json_engine_t *je, bool er_on_3D,
 bool Gis_geometry_collection::get_data_as_wkt(String *txt,
 					     const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   Geometry_buffer buffer;
   Geometry *geom;
@@ -3501,6 +3625,7 @@ exit:
 bool Gis_geometry_collection::get_data_as_json(String *txt, uint max_dec_digits,
                                                const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   Geometry_buffer buffer;
   Geometry *geom;
@@ -3540,6 +3665,7 @@ bool Gis_geometry_collection::get_data_as_json(String *txt, uint max_dec_digits,
 
 bool Gis_geometry_collection::get_mbr(MBR *mbr, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3575,6 +3701,7 @@ exit:
 
 int Gis_geometry_collection::area(double *ar,  const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3615,6 +3742,7 @@ exit:
 
 int Gis_geometry_collection::geom_length(double *len, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3656,6 +3784,7 @@ exit:
 
 int Gis_geometry_collection::num_geometries(uint32 *num) const
 {
+  APPENDFUNC;
   if (no_data(m_data, 4))
     return 1;
   *num= uint4korr(m_data);
@@ -3665,6 +3794,7 @@ int Gis_geometry_collection::num_geometries(uint32 *num) const
 
 int Gis_geometry_collection::geometry_n(uint32 num, String *result) const
 {
+  APPENDFUNC;
   uint32 n_objects, wkb_type, length;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3717,6 +3847,7 @@ int Gis_geometry_collection::geometry_n(uint32 num, String *result) const
 
 bool Gis_geometry_collection::dimension(uint32 *res_dim, const char **end) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3757,6 +3888,7 @@ bool Gis_geometry_collection::dimension(uint32 *res_dim, const char **end) const
 
 int Gis_geometry_collection::store_shapes(Gcalc_shape_transporter *trn) const
 {
+  APPENDFUNC;
   uint32 n_objects;
   const char *data= m_data;
   Geometry_buffer buffer;
@@ -3798,6 +3930,7 @@ int Gis_geometry_collection::store_shapes(Gcalc_shape_transporter *trn) const
 
 const Geometry::Class_info *Gis_geometry_collection::get_class_info() const
 {
+  APPENDFUNC;
   return &geometrycollection_class;
 }
 

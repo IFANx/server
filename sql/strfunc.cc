@@ -50,6 +50,7 @@ ulonglong find_set(const TYPELIB *lib,
                    const char *str, size_t length, CHARSET_INFO *cs,
                    char **err_pos, uint *err_len, bool *set_warning)
 {
+  APPENDFUNC;
   CHARSET_INFO *strip= cs ? cs : &my_charset_latin1;
   const char *end= str + strip->lengthsp(str, length);
   ulonglong found= 0;
@@ -120,6 +121,7 @@ ulonglong find_set(const TYPELIB *lib,
 uint find_type(const TYPELIB *lib, const char *find, size_t length,
                bool part_match)
 {
+  APPENDFUNC;
   uint found_count=0, found_pos=0;
   const char *end= find+length;
   const char *i;
@@ -161,6 +163,7 @@ uint find_type(const TYPELIB *lib, const char *find, size_t length,
 uint find_type2(const TYPELIB *typelib, const char *x, size_t length,
                 CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   int pos;
   const char *j;
   DBUG_ENTER("find_type2");
@@ -198,6 +201,7 @@ uint find_type2(const TYPELIB *typelib, const char *x, size_t length,
 
 void unhex_type2(TYPELIB *interval)
 {
+  APPENDFUNC;
   for (uint pos= 0; pos < interval->count; pos++)
   {
     char *from, *to;
@@ -239,6 +243,7 @@ void unhex_type2(TYPELIB *interval)
 uint check_word(TYPELIB *lib, const char *val, const char *end,
 		const char **end_of_word)
 {
+  APPENDFUNC;
   int res;
   const char *ptr;
 
@@ -274,6 +279,7 @@ uint check_word(TYPELIB *lib, const char *val, const char *end,
 uint strconvert(CHARSET_INFO *from_cs, const char *from, size_t from_length,
                 CHARSET_INFO *to_cs, char *to, size_t to_length, uint *errors)
 {
+  APPENDFUNC;
   int cnvres;
   my_wc_t wc;
   char *to_start= to;
@@ -340,6 +346,7 @@ outp:
 int find_string_in_array(LEX_CSTRING * const haystack, LEX_CSTRING * const needle,
                          CHARSET_INFO * const cs)
 {
+  APPENDFUNC;
   const LEX_CSTRING *pos;
   for (pos= haystack; pos->str; pos++)
     if (!cs->strnncollsp(pos->str, pos->length,
@@ -354,6 +361,7 @@ int find_string_in_array(LEX_CSTRING * const haystack, LEX_CSTRING * const needl
 const char *set_to_string(THD *thd, LEX_CSTRING *result, ulonglong set,
                           const char *lib[])
 {
+  APPENDFUNC;
   char buff[STRING_BUFFER_USUAL_SIZE*8];
   String tmp(buff, sizeof(buff), &my_charset_latin1);
   LEX_CSTRING unused;
@@ -385,6 +393,7 @@ const char *set_to_string(THD *thd, LEX_CSTRING *result, ulonglong set,
 const char *flagset_to_string(THD *thd, LEX_CSTRING *result, ulonglong set,
                               const char *lib[])
 {
+  APPENDFUNC;
   char buff[STRING_BUFFER_USUAL_SIZE*8];
   String tmp(buff, sizeof(buff), &my_charset_latin1);
   LEX_CSTRING unused;

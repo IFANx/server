@@ -79,6 +79,7 @@ static int maxmin_in_range(bool max_fl, Field* field, COND *cond);
 
 static ulonglong get_exact_record_count(List<TABLE_LIST> &tables)
 {
+  APPENDFUNC;
   ulonglong count= 1;
   TABLE_LIST *tl;
   List_iterator<TABLE_LIST> ti(tables);
@@ -111,6 +112,7 @@ static int get_index_min_value(TABLE *table, TABLE_REF *ref,
                                Item_field *item_field, uint range_fl,
                                uint prefix_len)
 {
+  APPENDFUNC;
   int error;
   
   if (!ref->key_length)
@@ -202,6 +204,7 @@ static int get_index_min_value(TABLE *table, TABLE_REF *ref,
 
 static int get_index_max_value(TABLE *table, TABLE_REF *ref, uint range_fl)
 {
+  APPENDFUNC;
   return (ref->key_length ?
           table->file->ha_index_read_map(table->record[0], ref->key_buff,
                                          make_prev_keypart_map(ref->key_parts),
@@ -241,6 +244,7 @@ static int get_index_max_value(TABLE *table, TABLE_REF *ref, uint range_fl)
 int opt_sum_query(THD *thd,
                   List<TABLE_LIST> &tables, List<Item> &all_fields, COND *conds)
 {
+  APPENDFUNC;
   List_iterator_fast<Item> it(all_fields);
   List_iterator<TABLE_LIST> ti(tables);
   TABLE_LIST *tl;
@@ -511,6 +515,7 @@ int opt_sum_query(THD *thd,
 
 static bool check_item1_shorter_item2(Item *item1, Item *item2)
 {
+  APPENDFUNC;
   if (item1->cmp_type() == STRING_RESULT &&
       item2->cmp_type() == STRING_RESULT)
   {
@@ -539,6 +544,7 @@ static bool check_item1_shorter_item2(Item *item1, Item *item2)
 
 bool simple_pred(Item_func *func_item, Item **args, bool *inv_order)
 {
+  APPENDFUNC;
   Item *item;
   *inv_order= 0;
   switch (func_item->argument_count()) {
@@ -674,6 +680,7 @@ static bool matching_cond(bool max_fl, TABLE_REF *ref, KEY *keyinfo,
                           key_part_map *key_part_used, uint *range_fl,
                           uint *prefix_len)
 {
+  APPENDFUNC;
   DBUG_ENTER("matching_cond");
   if (!cond)
     DBUG_RETURN(TRUE);
@@ -916,6 +923,7 @@ static bool find_key_for_maxmin(bool max_fl, TABLE_REF *ref,
                                 Field* field, COND *cond,
                                 uint *range_fl, uint *prefix_len)
 {
+  APPENDFUNC;
   if (!(field->flags & PART_KEY_FLAG))
     return FALSE;                               // Not key field
 
@@ -1025,6 +1033,7 @@ static bool find_key_for_maxmin(bool max_fl, TABLE_REF *ref,
 static int reckey_in_range(bool max_fl, TABLE_REF *ref, Field* field,
                             COND *cond, uint range_fl, uint prefix_len)
 {
+  APPENDFUNC;
   if (key_cmp_if_same(field->table, ref->key_buff, ref->key, prefix_len))
     return 1;
   if (!cond || (range_fl & (max_fl ? NO_MIN_RANGE : NO_MAX_RANGE)))
@@ -1048,6 +1057,7 @@ static int reckey_in_range(bool max_fl, TABLE_REF *ref, Field* field,
 
 static int maxmin_in_range(bool max_fl, Field* field, COND *cond)
 {
+  APPENDFUNC;
   /* If AND/OR condition */
   if (cond->type() == Item::COND_ITEM)
   {

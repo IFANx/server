@@ -222,6 +222,7 @@ class Dep_analysis_context;
 
 class Dep_value : public Sql_alloc
 {
+
 public:
   Dep_value(): bound(FALSE) {}
   virtual ~Dep_value() = default; /* purecov: inspected */
@@ -248,6 +249,7 @@ protected:
 
 class Dep_value_field : public Dep_value
 {
+
 public:
   Dep_value_field(Dep_value_table *table_arg, Field *field_arg) :
     table(table_arg), field(field_arg)
@@ -308,6 +310,7 @@ const size_t Dep_value_field::iterator_size=
 
 class Dep_value_table : public Dep_value
 {
+
 public:
   Dep_value_table(TABLE *table_arg) : 
     table(table_arg), fields(NULL), keys(NULL), pseudo_key(NULL)
@@ -357,6 +360,7 @@ const size_t Dep_value::iterator_size=
 
 class Dep_module : public Sql_alloc
 {
+
 public:
   virtual ~Dep_module() = default;  /* purecov: inspected */
   
@@ -402,6 +406,7 @@ protected:
 
 class Dep_module_expr : public Dep_module
 {
+
 public:
   Dep_value_field *field;
   Item  *expr;
@@ -434,6 +439,7 @@ const size_t Dep_module_expr::iterator_size=
 
 class Dep_module_key: public Dep_module
 {
+
 public:
   Dep_module_key(Dep_value_table *table_arg, uint keyno_arg, uint n_parts_arg) :
     table(table_arg), keyno(keyno_arg), next_table_key(NULL)
@@ -470,6 +476,7 @@ const size_t Dep_module_key::iterator_size=
 
 class Dep_module_pseudo_key : public Dep_module
 {
+
 public:
   Dep_module_pseudo_key(Dep_value_table *table_arg,
                         MY_BITMAP *exposed_fields,
@@ -524,6 +531,7 @@ const size_t Dep_module::iterator_size=
 
 class Dep_module_goal: public Dep_module
 {
+
 public:
   Dep_module_goal(uint n_children)  
   {
@@ -553,6 +561,7 @@ public:
 */
 class Dep_analysis_context
 {
+
 public:
   bool setup_equality_modules_deps(List<Dep_module> *bound_modules);
   bool run_wave(List<Dep_module> *new_bound_modules);
@@ -673,6 +682,7 @@ void add_module_expr(Dep_analysis_context *dac, Dep_module_expr **eq_mod,
 
 void eliminate_tables(JOIN *join)
 {
+  APPENDFUNC;
   THD* thd= join->thd;
   Item *item;
   table_map used_tables;
@@ -813,6 +823,7 @@ eliminate_tables_for_list(JOIN *join, List<TABLE_LIST> *join_list,
                           table_map tables_used_elsewhere,
                           Json_writer_array *trace_eliminate_tables)
 {
+  APPENDFUNC;
   TABLE_LIST *tbl;
   List_iterator<TABLE_LIST> it(*join_list);
   table_map tables_used_on_left= 0;
@@ -906,6 +917,7 @@ bool check_func_dependency(JOIN *join,
                            TABLE_LIST *oj_tbl,
                            Item* cond)
 {
+  APPENDFUNC;
   Dep_analysis_context dac;
   
   /* 
@@ -989,6 +1001,7 @@ bool check_func_dependency(JOIN *join,
 
 bool Dep_analysis_context::run_wave(List<Dep_module> *new_bound_modules)
 {
+  APPENDFUNC;
   List<Dep_value> new_bound_values;
   
   Dep_value *value;
@@ -1053,6 +1066,7 @@ bool Dep_analysis_context::run_wave(List<Dep_module> *new_bound_modules)
 
 class Field_dependency_recorder : public Field_enumerator
 {
+
 public:
   Field_dependency_recorder(Dep_analysis_context *ctx_arg): ctx(ctx_arg)
   {}
@@ -1119,6 +1133,7 @@ public:
 bool Dep_analysis_context::setup_equality_modules_deps(List<Dep_module> 
                                                        *bound_modules)
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   DBUG_ENTER("setup_equality_modules_deps");
  
@@ -1201,6 +1216,7 @@ bool Dep_analysis_context::setup_equality_modules_deps(List<Dep_module>
 static 
 int compare_field_values(Dep_value_field *a, Dep_value_field *b, void *unused)
 {
+  APPENDFUNC;
   uint a_ratio= a->field->table->tablenr*MAX_FIELDS +
                 a->field->field_index;
 
@@ -1256,6 +1272,7 @@ void build_eq_mods_for_cond(THD *thd, Dep_analysis_context *ctx,
                             Dep_module_expr **eq_mod,
                             uint *and_level, Item *cond)
 {
+  APPENDFUNC;
   if (cond->type() == Item_func::COND_ITEM)
   {
     List_iterator_fast<Item> li(*((Item_cond*) cond)->argument_list());
@@ -1433,6 +1450,7 @@ Dep_module_expr *merge_eq_mods(Dep_module_expr *start,
                                Dep_module_expr *new_fields,
                                Dep_module_expr *end, uint and_level)
 {
+  APPENDFUNC;
   if (start == new_fields)
     return start;  /*  (nothing) OR (...) -> (nothing) */
   if (new_fields == end)
@@ -1588,6 +1606,7 @@ void check_equality(Dep_analysis_context *ctx, Dep_module_expr **eq_mod,
                     uint and_level, Item_bool_func *cond,
                     Item *left, Item *right)
 {
+  APPENDFUNC;
   if ((left->used_tables() & ctx->usable_tables) &&
       !(right->used_tables() & RAND_TABLE_BIT) &&
       left->real_item()->type() == Item::FIELD_ITEM)
@@ -1616,6 +1635,7 @@ void add_module_expr(Dep_analysis_context *ctx, Dep_module_expr **eq_mod,
                      uint and_level, Dep_value_field *field_val, 
                      Item *right, List<Dep_value_field>* mult_equal_fields)
 {
+  APPENDFUNC;
   if (*eq_mod == ctx->equality_mods + ctx->n_equality_mods_alloced)
   {
     /* 
@@ -1664,6 +1684,7 @@ void add_module_expr(Dep_analysis_context *ctx, Dep_module_expr **eq_mod,
 Dep_value_table *
 Dep_analysis_context::create_table_value(TABLE_LIST *table_list)
 {
+  APPENDFUNC;
   Dep_value_table *tbl_dep;
   if (!(tbl_dep= new Dep_value_table(table_list->table)))
     return NULL; /* purecov: inspected */
@@ -1705,6 +1726,7 @@ Dep_analysis_context::create_table_value(TABLE_LIST *table_list)
 void Dep_analysis_context::create_unique_pseudo_key_if_needed(
     TABLE_LIST *table_list, Dep_value_table *tbl_dep)
 {
+  APPENDFUNC;
   auto select_unit= table_list->get_unit();
   SELECT_LEX *first_select= nullptr;
   if (select_unit)
@@ -1794,6 +1816,7 @@ void Dep_analysis_context::create_unique_pseudo_key_if_needed(
 int Dep_analysis_context::find_field_in_list(List<Item> &fields_list,
                                              Item *field)
 {
+  APPENDFUNC;
   List_iterator<Item> it(fields_list);
   int field_idx= 0;
   while (auto next_field= it++)
@@ -1826,6 +1849,7 @@ int Dep_analysis_context::find_field_in_list(List<Item> &fields_list,
 
 Dep_value_field *Dep_analysis_context::get_field_value(Field *field)
 {
+  APPENDFUNC;
   TABLE *table= field->table;
   Dep_value_table *tbl_dep= table_deps[table->tablenr];
 
@@ -1855,6 +1879,7 @@ Dep_value_field *Dep_analysis_context::get_field_value(Field *field)
 */
 char *Dep_value_table::init_unbound_modules_iter(char *buf)
 {
+  APPENDFUNC;
   Module_iter *iter= ALIGN_PTR(my_ptrdiff_t(buf), Module_iter);
   iter->field_dep= fields;
   if (fields)
@@ -1871,6 +1896,7 @@ Dep_module*
 Dep_value_table::get_next_unbound_module(Dep_analysis_context *dac,
                                          char *iter)
 {
+  APPENDFUNC;
   Module_iter *di= (Module_iter*)iter;
   while (di->field_dep)
   {
@@ -1896,6 +1922,7 @@ Dep_value_table::get_next_unbound_module(Dep_analysis_context *dac,
 
 char *Dep_module_expr::init_unbound_values_iter(char *buf)
 {
+  APPENDFUNC;
   Value_iter *iter= ALIGN_PTR(my_ptrdiff_t(buf), Value_iter);
   iter->field= field;
   if (!field)
@@ -1909,6 +1936,7 @@ char *Dep_module_expr::init_unbound_values_iter(char *buf)
 Dep_value* Dep_module_expr::get_next_unbound_value(Dep_analysis_context *dac,
                                                    char *buf)
 {
+  APPENDFUNC;
   Dep_value *res;
   if (field)
   {
@@ -1930,6 +1958,7 @@ Dep_value* Dep_module_expr::get_next_unbound_value(Dep_analysis_context *dac,
 
 char *Dep_module_key::init_unbound_values_iter(char *buf)
 {
+  APPENDFUNC;
   Value_iter *iter= ALIGN_PTR(my_ptrdiff_t(buf), Value_iter);
   iter->table= table;
   return (char*)iter;
@@ -1939,6 +1968,7 @@ char *Dep_module_key::init_unbound_values_iter(char *buf)
 Dep_value* Dep_module_key::get_next_unbound_value(Dep_analysis_context *dac,
                                                   Dep_module::Iterator iter)
 {
+  APPENDFUNC;
   Dep_value* res= ((Value_iter*)iter)->table;
   ((Value_iter*)iter)->table= NULL;
   return res;
@@ -1947,6 +1977,7 @@ Dep_value* Dep_module_key::get_next_unbound_value(Dep_analysis_context *dac,
 
 char *Dep_module_pseudo_key::init_unbound_values_iter(char *buf)
 {
+  APPENDFUNC;
   Value_iter *iter= ALIGN_PTR(my_ptrdiff_t(buf), Value_iter);
   iter->table= table;
   return (char *) iter;
@@ -1956,6 +1987,7 @@ Dep_value *
 Dep_module_pseudo_key::get_next_unbound_value(Dep_analysis_context *dac,
                                                   Dep_module::Iterator iter)
 {
+  APPENDFUNC;
   Dep_value *res= ((Value_iter *) iter)->table;
   ((Value_iter *) iter)->table= NULL;
   return res;
@@ -1968,12 +2000,14 @@ Dep_module_pseudo_key::get_next_unbound_value(Dep_analysis_context *dac,
 
 bool Dep_module_pseudo_key::covers_field(int field_no)
 {
+  APPENDFUNC;
   return bitmap_is_set(exposed_fields_map, field_no) > 0;
 }
 
 
 Dep_value::Iterator Dep_value_field::init_unbound_modules_iter(char *buf)
 {
+  APPENDFUNC;
   Module_iter *iter= ALIGN_PTR(my_ptrdiff_t(buf), Module_iter);
   iter->key_dep= table->keys;
   iter->equality_no= 0;
@@ -1985,6 +2019,7 @@ Dep_value::Iterator Dep_value_field::init_unbound_modules_iter(char *buf)
 void 
 Dep_value_field::make_unbound_modules_iter_skip_keys(Dep_value::Iterator iter)
 {
+  APPENDFUNC;
   ((Module_iter*) iter)->key_dep= NULL;
   ((Module_iter*) iter)->pseudo_key_dep= NULL;
 }
@@ -1993,6 +2028,7 @@ Dep_value_field::make_unbound_modules_iter_skip_keys(Dep_value::Iterator iter)
 Dep_module* Dep_value_field::get_next_unbound_module(Dep_analysis_context *dac,
                                                      Dep_value::Iterator iter)
 {
+  APPENDFUNC;
   Module_iter *di= (Module_iter*)iter;
   Dep_module_key *key_dep= di->key_dep;
   
@@ -2054,6 +2090,7 @@ Dep_module* Dep_value_field::get_next_unbound_module(Dep_analysis_context *dac,
 static void mark_as_eliminated(JOIN *join, TABLE_LIST *tbl,
                                Json_writer_array* trace_eliminate_tables)
 {
+  APPENDFUNC;
   TABLE *table;
   /*
     NOTE: there are TABLE_LIST object that have
@@ -2090,6 +2127,7 @@ static void mark_as_eliminated(JOIN *join, TABLE_LIST *tbl,
 /* purecov: begin inspected */
 void Dep_analysis_context::dbug_print_deps()
 {
+  APPENDFUNC;
   DBUG_ENTER("dbug_print_deps");
   DBUG_LOCK_FILE;
   

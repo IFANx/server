@@ -60,6 +60,7 @@ const LEX_CSTRING filesort_names[]=
 
 double get_qsort_sort_cost(ha_rows num_rows, bool with_addon_fields)
 {
+  APPENDFUNC;
   const double row_copy_cost= with_addon_fields ? DEFAULT_ROW_COPY_COST :
                                                   DEFAULT_KEY_COPY_COST;
   const double key_cmp_cost= DEFAULT_KEY_COMPARE_COST;
@@ -85,6 +86,7 @@ double get_qsort_sort_cost(ha_rows num_rows, bool with_addon_fields)
 double get_pq_sort_cost(size_t num_rows, size_t queue_size,
                         bool with_addon_fields)
 {
+  APPENDFUNC;
   const double row_copy_cost= with_addon_fields ? DEFAULT_ROW_COPY_COST :
                                                   DEFAULT_KEY_COPY_COST;
   const double key_cmp_cost= DEFAULT_KEY_COMPARE_COST;
@@ -108,6 +110,7 @@ double get_merge_cost(ha_rows num_elements, ha_rows num_buffers,
                       size_t elem_size, double compare_cost,
                       double disk_read_cost)
 {
+  APPENDFUNC;
   /* 2 -> 1 read + 1 write */
   const double io_cost= (2.0 * (num_elements * elem_size +
                                 DISK_CHUNK_SIZE - 1) /
@@ -134,6 +137,7 @@ double get_merge_many_buffs_cost_fast(ha_rows num_rows,
                                       double disk_read_cost,
                                       bool with_addon_fields)
 {
+  APPENDFUNC;
   DBUG_ASSERT(num_keys_per_buffer != 0);
 
   ha_rows num_buffers= num_rows / num_keys_per_buffer;
@@ -187,6 +191,7 @@ double get_merge_many_buffs_cost_fast(ha_rows num_rows,
 
 void Sort_costs::compute_fastest_sort()
 {
+  APPENDFUNC;
   lowest_cost= DBL_MAX;
   uint min_idx= NO_SORT_POSSIBLE_OUT_OF_MEM;
   for (uint i= 0; i < FINAL_SORT_TYPE; i++)
@@ -210,6 +215,7 @@ void Sort_costs::compute_pq_sort_costs(Sort_param *param, ha_rows num_rows,
                                        size_t memory_available,
                                        bool with_addon_fields)
 {
+  APPENDFUNC;
   /*
     Implementation detail of PQ. To be able to keep a PQ of size N we need
     N+1 elements allocated so we can use the last element as "swap" space
@@ -264,6 +270,7 @@ void Sort_costs::compute_merge_sort_costs(Sort_param *param,
                                           size_t memory_available,
                                           bool with_addon_fields)
 {
+  APPENDFUNC;
   size_t row_length= param->sort_length + param->ref_length + sizeof(char *);
   size_t num_available_keys= memory_available / row_length;
 
@@ -305,6 +312,7 @@ void Sort_costs::compute_sort_costs(Sort_param *param, ha_rows num_rows,
                                     size_t memory_available,
                                     bool with_addon_fields)
 {
+  APPENDFUNC;
   compute_pq_sort_costs(param, num_rows, memory_available,
                         with_addon_fields);
   compute_merge_sort_costs(param, num_rows, memory_available,
@@ -326,6 +334,7 @@ void Sort_costs::compute_sort_costs(Sort_param *param, ha_rows num_rows,
 uchar *Filesort_buffer::alloc_sort_buffer(uint num_records,
                                           uint record_length)
 {
+  APPENDFUNC;
   size_t buff_size;
   DBUG_ENTER("alloc_sort_buffer");
   DBUG_EXECUTE_IF("alloc_sort_buffer_fail",
@@ -378,6 +387,7 @@ uchar *Filesort_buffer::alloc_sort_buffer(uint num_records,
 
 void Filesort_buffer::free_sort_buffer()
 {
+  APPENDFUNC;
   my_free(m_rawmem);
   *this= Filesort_buffer();
 }
@@ -385,6 +395,7 @@ void Filesort_buffer::free_sort_buffer()
 
 void Filesort_buffer::sort_buffer(const Sort_param *param, uint count)
 {
+  APPENDFUNC;
   size_t size= param->sort_length;
   m_sort_keys= get_sort_keys();
 
@@ -415,6 +426,7 @@ void Filesort_buffer::sort_buffer(const Sort_param *param, uint count)
 static
 size_t get_sort_length(THD *thd, Item_field *item)
 {
+  APPENDFUNC;
   SORT_FIELD_ATTR sort_attr;
   sort_attr.type= ((item->field)->is_packable() ?
                    SORT_FIELD_ATTR::VARIABLE_SIZE :
@@ -441,6 +453,7 @@ size_t get_sort_length(THD *thd, Item_field *item)
 double cost_of_filesort(TABLE *table, ORDER *order_by, ha_rows rows_to_read,
                         ha_rows limit_rows, enum sort_type *used_sort_type)
 {
+  APPENDFUNC;
   THD *thd= table->in_use;
   Sort_costs costs;
   Sort_param param;

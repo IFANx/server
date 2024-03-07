@@ -209,6 +209,7 @@ typedef fp_except fp_except_t;
 
 inline void setup_fpu()
 {
+  APPENDFUNC;
 #if defined(__FreeBSD__) && defined(HAVE_IEEEFP_H) && !defined(HAVE_FEDISABLEEXCEPT)
   /* We can't handle floating point exceptions with threads, so disable
      this on freebsd
@@ -659,6 +660,7 @@ static mysql_mutex_t LOCK_temp_pool;
 
 void temp_pool_clear_bit(uint bit)
 {
+  APPENDFUNC;
   mysql_mutex_lock(&LOCK_temp_pool);
   bitmap_clear_bit(&temp_pool, bit);
   mysql_mutex_unlock(&LOCK_temp_pool);
@@ -666,6 +668,7 @@ void temp_pool_clear_bit(uint bit)
 
 uint temp_pool_set_next()
 {
+  APPENDFUNC;
   mysql_mutex_lock(&LOCK_temp_pool);
   uint res= bitmap_set_next(&temp_pool);
   mysql_mutex_unlock(&LOCK_temp_pool);
@@ -1177,6 +1180,7 @@ PSI_statement_info stmt_info_new_packet;
 #ifndef EMBEDDED_LIBRARY
 void net_before_header_psi(struct st_net *net, void *thd, size_t /* unused: count */)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd);
   /*
     We only come where when the server is IDLE, waiting for the next command.
@@ -1193,6 +1197,7 @@ void net_before_header_psi(struct st_net *net, void *thd, size_t /* unused: coun
 void net_after_header_psi(struct st_net *net, void *user_data,
                           size_t /* unused: count */, my_bool rc)
 {
+  APPENDFUNC;
   THD *thd;
   thd= static_cast<THD*> (user_data);
   DBUG_ASSERT(thd != NULL);
@@ -1230,6 +1235,7 @@ void net_after_header_psi(struct st_net *net, void *user_data,
 
 void init_net_server_extension(THD *thd)
 {
+  APPENDFUNC;
   /* Start with a clean state for connection events. */
   thd->m_idle_psi= NULL;
   thd->m_statement_psi= NULL;
@@ -1243,6 +1249,7 @@ void init_net_server_extension(THD *thd)
 #else
 void init_net_server_extension(THD *thd)
 {
+  APPENDFUNC;
 }
 #endif /* EMBEDDED_LIBRARY */
 
@@ -1276,6 +1283,7 @@ private:
 Buffered_log::Buffered_log(enum loglevel level, const char *message)
   : m_level(level), m_message()
 {
+  APPENDFUNC;
   m_message.copy(message, strlen(message), &my_charset_latin1);
 }
 
@@ -1284,6 +1292,7 @@ Buffered_log::Buffered_log(enum loglevel level, const char *message)
 */
 void Buffered_log::print()
 {
+  APPENDFUNC;
   /*
     Since messages are buffered, they can be printed out
     of order with other entries in the log.
@@ -1340,11 +1349,13 @@ private:
 
 void Buffered_logs::init()
 {
+  APPENDFUNC;
   init_alloc_root(PSI_NOT_INSTRUMENTED, &m_root, 1024, 0, MYF(0));
 }
 
 void Buffered_logs::cleanup()
 {
+  APPENDFUNC;
   m_list.delete_elements();
   free_root(&m_root, MYF(0));
 }
@@ -1354,6 +1365,7 @@ void Buffered_logs::cleanup()
 */
 void Buffered_logs::buffer(enum loglevel level, const char *msg)
 {
+  APPENDFUNC;
   /*
     Do not let Sql_alloc::operator new(size_t) allocate memory,
     there is no memory root associated with the main() thread.
@@ -1370,6 +1382,7 @@ void Buffered_logs::buffer(enum loglevel level, const char *msg)
 */
 void Buffered_logs::print()
 {
+  APPENDFUNC;
   Buffered_log *log;
   List_iterator_fast<Buffered_log> it(m_list);
   while ((log= it++))
@@ -1398,6 +1411,7 @@ C_MODE_START
 static void buffered_option_error_reporter(enum loglevel level,
                                            const char *format, ...)
 {
+  APPENDFUNC;
   va_list args;
   char buffer[1024];
 
@@ -1428,6 +1442,7 @@ static void buffered_option_error_reporter(enum loglevel level,
 static void charset_error_reporter(enum loglevel level,
                                    const char *format, ...)
 {
+  APPENDFUNC;
   va_list args;
   va_start(args, format);
   vprint_msg_to_log(level, format, args);
@@ -1483,6 +1498,7 @@ scheduler_functions *thread_scheduler= &thread_scheduler_struct,
 #if defined(HAVE_OPENSSL10) && !defined(HAVE_WOLFSSL)
 typedef struct CRYPTO_dynlock_value
 {
+  APPENDFUNC;
   mysql_rwlock_t lock;
 } openssl_lock_t;
 
@@ -1546,6 +1562,7 @@ extern Atomic_counter<uint32_t> local_connection_thread_count;
 
 uint THD_count::connection_thd_count()
 {
+  APPENDFUNC;
   return value() -
     binlog_dump_thread_count -
     local_connection_thread_count;
@@ -1559,6 +1576,7 @@ uint THD_count::connection_thd_count()
 /* common callee of two shutdown phases */
 static void kill_thread(THD *thd)
 {
+  APPENDFUNC;
   mysql_mutex_lock(&thd->LOCK_thd_kill);
   thd->abort_current_cond_wait(true);
   mysql_mutex_unlock(&thd->LOCK_thd_kill);
@@ -1570,6 +1588,7 @@ static void kill_thread(THD *thd)
 */
 static my_bool kill_thread_phase_1(THD *thd, int *n_threads_awaiting_ack)
 {
+  APPENDFUNC;
   DBUG_PRINT("quit", ("Informing thread %ld that it's time to die",
                       (ulong) thd->thread_id));
 
@@ -1594,6 +1613,7 @@ static my_bool kill_thread_phase_1(THD *thd, int *n_threads_awaiting_ack)
 */
 static my_bool kill_thread_phase_2(THD *thd, void *)
 {
+  APPENDFUNC;
   if (shutdown_wait_for_slaves && thd->is_binlog_dump_thread())
   {
     thd->set_killed(KILL_SERVER);
@@ -1611,6 +1631,7 @@ static my_bool kill_thread_phase_2(THD *thd, void *)
 /* associated with the kill thread phase 1 */
 static my_bool warn_threads_active_after_phase_1(THD *thd, void *)
 {
+  APPENDFUNC;
   if (!thd->is_binlog_dump_thread() && thd->vio_ok())
     sql_print_warning("%s: Thread %llu (user : '%s') did not exit\n", my_progname,
                       (ulonglong) thd->thread_id,
@@ -1623,6 +1644,7 @@ static my_bool warn_threads_active_after_phase_1(THD *thd, void *)
 /* associated with the kill thread phase 2 */
 static my_bool warn_threads_active_after_phase_2(THD *thd, void *)
 {
+  APPENDFUNC;
   mysql_mutex_lock(&thd->LOCK_thd_data);
   // dump thread may not have yet (or already) current_linfo set
   sql_print_warning("Dump thread %llu last sent to server %lu "
@@ -1647,6 +1669,7 @@ static my_bool warn_threads_active_after_phase_2(THD *thd, void *)
 
 static void break_connect_loop()
 {
+  APPENDFUNC;
 #ifdef EXTRA_DEBUG
   int count=0;
 #endif
@@ -1701,6 +1724,7 @@ static void break_connect_loop()
 
 void kill_mysql(THD *thd)
 {
+  APPENDFUNC;
   char user_host_buff[MAX_USER_HOST_SIZE + 1];
   char *user, *expected_shutdown_user= 0;
 
@@ -1738,6 +1762,7 @@ void kill_mysql(THD *thd)
 
 static void close_connections(void)
 {
+  APPENDFUNC;
   DBUG_ENTER("close_connections");
 
   /* Clear thread cache */
@@ -1870,6 +1895,7 @@ static void close_connections(void)
 
 extern "C" sig_handler print_signal_warning(int sig)
 {
+  APPENDFUNC;
   if (global_system_variables.log_warnings)
     sql_print_warning("Got signal %d from thread %u", sig,
                       (uint)my_thread_id());
@@ -1892,6 +1918,7 @@ static report_svc_status_t my_report_svc_status= dummy_svc_status;
 #ifndef EMBEDDED_LIBRARY
 extern "C" void unireg_abort(int exit_code)
 {
+  APPENDFUNC;
   DBUG_ENTER("unireg_abort");
 
   if (opt_help)
@@ -1936,6 +1963,7 @@ extern "C" void unireg_abort(int exit_code)
 
 static void mysqld_exit(int exit_code)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysqld_exit");
   /*
     Important note: we wait for the signal thread to end,
@@ -1975,6 +2003,7 @@ static void mysqld_exit(int exit_code)
 
 static void clean_up(bool print_message)
 {
+  APPENDFUNC;
   DBUG_PRINT("exit",("clean_up"));
   if (cleanup_done++)
     return; /* purecov: inspected */
@@ -2098,6 +2127,7 @@ static void clean_up(bool print_message)
 */
 static void wait_for_signal_thread_to_end()
 {
+  APPENDFUNC;
   uint i;
   /*
     Wait up to 10 seconds for signal thread to die. We use this mainly to
@@ -2114,6 +2144,7 @@ static void wait_for_signal_thread_to_end()
 
 static void clean_up_mutexes()
 {
+  APPENDFUNC;
   DBUG_ENTER("clean_up_mutexes");
   server_threads.destroy();
   thread_cache.destroy();
@@ -2175,10 +2206,12 @@ static void clean_up_mutexes()
 #ifdef EMBEDDED_LIBRARY
 void close_connection(THD *thd, uint sql_errno)
 {
+  APPENDFUNC;
 }
 #else
 static void set_ports()
 {
+  APPENDFUNC;
   char	*env;
   if (!mysqld_port && !opt_disable_networking)
   {					// Get port if not from commandline
@@ -2226,6 +2259,7 @@ static void set_ports()
 
 static struct passwd *check_user(const char *user)
 {
+  APPENDFUNC;
   myf flags= 0;
   if (global_system_variables.log_warnings)
     flags|= MY_WME;
@@ -2242,6 +2276,7 @@ static struct passwd *check_user(const char *user)
 
 static inline void allow_coredumps()
 {
+  APPENDFUNC;
 #ifdef PR_SET_DUMPABLE
   if (test_flags & TEST_CORE_ON_SIGNAL)
   {
@@ -2254,6 +2289,7 @@ static inline void allow_coredumps()
 
 static void set_user(const char *user, struct passwd *user_info_arg)
 {
+  APPENDFUNC;
   /*
     We can get a SIGSEGV when calling initgroups() on some systems when NSS
     is configured to use LDAP and the server is statically linked.  We set
@@ -2271,6 +2307,7 @@ static void set_user(const char *user, struct passwd *user_info_arg)
 #if !defined(_WIN32)
 static void set_effective_user(struct passwd *user_info_arg)
 {
+  APPENDFUNC;
   DBUG_ASSERT(user_info_arg != 0);
   if (setregid((gid_t)-1, user_info_arg->pw_gid) == -1)
   {
@@ -2289,6 +2326,7 @@ static void set_effective_user(struct passwd *user_info_arg)
 /** Change root user if started with @c --chroot . */
 static void set_root(const char *path)
 {
+  APPENDFUNC;
 #if !defined(_WIN32)
   if (chroot(path) == -1)
   {
@@ -2307,6 +2345,7 @@ static void activate_tcp_port(uint port,
                               Dynamic_array<MYSQL_SOCKET> *sockets,
                               bool is_extra_port= false)
 {
+  APPENDFUNC;
   struct addrinfo *ai, *a = NULL, *head = NULL;
   struct addrinfo hints;
   int error;
@@ -2524,6 +2563,7 @@ static void activate_tcp_port(uint port,
 
 static void use_systemd_activated_sockets()
 {
+  APPENDFUNC;
 #ifndef __linux__
   return;
 #else
@@ -2664,6 +2704,7 @@ err:
 
 static void network_init(void)
 {
+  APPENDFUNC;
 #ifdef HAVE_SYS_UN_H
   struct sockaddr_un	UNIXaddr;
   int	arg;
@@ -2788,6 +2829,7 @@ static void network_init(void)
 
 void close_connection(THD *thd, uint sql_errno)
 {
+  APPENDFUNC;
   int lvl= (thd->main_security_ctx.user ? 3 : 1);
   DBUG_ENTER("close_connection");
 
@@ -2817,6 +2859,7 @@ void close_connection(THD *thd, uint sql_errno)
 /* ARGSUSED */
 extern "C" sig_handler end_mysqld_signal(int sig __attribute__((unused)))
 {
+  APPENDFUNC;
   DBUG_ENTER("end_mysqld_signal");
   /* Don't kill if signal thread is not running */
   if (signal_thread_in_use)
@@ -2836,6 +2879,7 @@ extern "C" sig_handler end_mysqld_signal(int sig __attribute__((unused)))
 
 void unlink_thd(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("unlink_thd");
   DBUG_PRINT("enter", ("thd: %p", thd));
 
@@ -2865,11 +2909,13 @@ void unlink_thd(THD *thd)
 */
 void mysqld_set_service_status_callback(void (*r)(DWORD, DWORD, DWORD))
 {
+  APPENDFUNC;
   my_report_svc_status= r;
 }
 
 static bool startup_complete()
 {
+  APPENDFUNC;
   return hEventShutdown != NULL;
 }
 
@@ -2882,6 +2928,7 @@ static bool startup_complete()
 */
 void mysqld_win_initiate_shutdown()
 {
+  APPENDFUNC;
   if (startup_complete())
   {
     my_report_svc_status(SERVICE_STOP_PENDING, 0, 0);
@@ -2902,6 +2949,7 @@ void mysqld_win_initiate_shutdown()
 */
 void mysqld_win_set_startup_complete()
 {
+  APPENDFUNC;
   my_report_svc_status(SERVICE_RUNNING, 0, 0);
   DBUG_ASSERT(startup_complete());
 }
@@ -2909,12 +2957,14 @@ void mysqld_win_set_startup_complete()
 
 void mysqld_win_extend_service_timeout(DWORD sec)
 {
+  APPENDFUNC;
   my_report_svc_status((DWORD)-1, 0, 2*1000*sec);
 }
 
 
 void mysqld_win_set_service_name(const char *name)
 {
+  APPENDFUNC;
   if (stricmp(name, "mysql"))
     load_default_groups[array_elements(load_default_groups) - 2]= name;
 }
@@ -2930,6 +2980,7 @@ void mysqld_win_set_service_name(const char *name)
 
 static BOOL WINAPI console_event_handler( DWORD type )
 {
+  APPENDFUNC;
   static const char *names[]= {
    "CTRL_C_EVENT","CTRL_BREAK_EVENT", "CTRL_CLOSE_EVENT", "", "",
    "CTRL_LOGOFF_EVENT", "CTRL_SHUTDOWN_EVENT"};
@@ -2960,6 +3011,7 @@ static BOOL WINAPI console_event_handler( DWORD type )
 */
 static void wait_for_debugger(int timeout_sec)
 {
+  APPENDFUNC;
    if(!IsDebuggerPresent())
    {
      int i;
@@ -2984,6 +3036,7 @@ static void wait_for_debugger(int timeout_sec)
 
 static LONG WINAPI my_unhandler_exception_filter(EXCEPTION_POINTERS *ex_pointers)
 {
+  APPENDFUNC;
    static BOOL first_time= TRUE;
    if(!first_time)
    {
@@ -3029,6 +3082,7 @@ static LONG WINAPI my_unhandler_exception_filter(EXCEPTION_POINTERS *ex_pointers
 
 void init_signals(void)
 {
+  APPENDFUNC;
    SetConsoleCtrlHandler(console_event_handler,TRUE);
 
    /* Avoid MessageBox()es*/
@@ -3055,6 +3109,7 @@ void init_signals(void)
 
 static void start_signal_handler(void)
 {
+  APPENDFUNC;
 #ifndef EMBEDDED_LIBRARY
   // Save vm id of this process
   if (!opt_bootstrap)
@@ -3065,6 +3120,7 @@ static void start_signal_handler(void)
 
 static void check_data_home(const char *path)
 {}
+  APPENDFUNC;
 
 #endif /* _WIN32 */
 
@@ -3073,6 +3129,7 @@ static void check_data_home(const char *path)
 #include <cxxabi.h>
 extern "C" char *my_demangle(const char *mangled_name, int *status)
 {
+  APPENDFUNC;
   return abi::__cxa_demangle(mangled_name, NULL, NULL, status);
 }
 #endif
@@ -3083,6 +3140,7 @@ extern "C" void
 mariadb_dbug_assert_failed(const char *assert_expr, const char *file,
                            unsigned long line)
 {
+  APPENDFUNC;
   fprintf(stderr, "Warning: assertion failed: %s at %s line %lu\n",
           assert_expr, file, line);
   if (opt_stack_trace)
@@ -3105,6 +3163,7 @@ mariadb_dbug_assert_failed(const char *assert_expr, const char *file,
 
 void init_signals(void)
 {
+  APPENDFUNC;
   sigset_t set;
   struct sigaction sa;
   DBUG_ENTER("init_signals");
@@ -3181,6 +3240,7 @@ void init_signals(void)
 
 static void start_signal_handler(void)
 {
+  APPENDFUNC;
   int error;
   pthread_attr_t thr_attr;
   DBUG_ENTER("start_signal_handler");
@@ -3210,6 +3270,7 @@ static void start_signal_handler(void)
 #if defined(USE_ONE_SIGNAL_HAND)
 pthread_handler_t kill_server_thread(void *arg __attribute__((unused)))
 {
+  APPENDFUNC;
   my_thread_init();				// Initialize new thread
   break_connect_loop();
   my_thread_end();
@@ -3223,6 +3284,7 @@ pthread_handler_t kill_server_thread(void *arg __attribute__((unused)))
 /* ARGSUSED */
 pthread_handler_t signal_hand(void *arg __attribute__((unused)))
 {
+  APPENDFUNC;
   sigset_t set;
   int sig;
   my_thread_init();				// Init new thread
@@ -3371,6 +3433,7 @@ extern "C" void my_message_sql(uint error, const char *str, myf MyFlags);
 
 void my_message_sql(uint error, const char *str, myf MyFlags)
 {
+  APPENDFUNC;
   THD *thd= MyFlags & ME_ERROR_LOG_ONLY ? NULL : current_thd;
   Sql_condition::enum_warning_level level;
   sql_print_message_func func;
@@ -3421,6 +3484,7 @@ extern "C" void *my_str_malloc_mysqld(size_t size);
 
 void *my_str_malloc_mysqld(size_t size)
 {
+  APPENDFUNC;
   return my_malloc(key_memory_my_str_malloc, size, MYF(MY_FAE));
 }
 
@@ -3429,6 +3493,7 @@ void *my_str_malloc_mysqld(size_t size)
 extern "C" void *my_str_realloc_mysqld(void *ptr, size_t size);
 void *my_str_realloc_mysqld(void *ptr, size_t size)
 {
+  APPENDFUNC;
   return my_realloc(key_memory_my_str_malloc, ptr, size, MYF(MY_FAE));
 }
 #endif
@@ -3443,6 +3508,7 @@ void *my_str_realloc_mysqld(void *ptr, size_t size)
 extern "C" int
 check_enough_stack_size_slow()
 {
+  APPENDFUNC;
   uchar stack_top;
   THD *my_thd= current_thd;
   if (my_thd != NULL)
@@ -3460,6 +3526,7 @@ check_enough_stack_size_slow()
 extern "C" int
 check_enough_stack_size(int recurse_level)
 {
+  APPENDFUNC;
   if (recurse_level % 16 != 0)
     return 0;
   return check_enough_stack_size_slow();
@@ -3468,6 +3535,7 @@ check_enough_stack_size(int recurse_level)
 
 static void init_libstrings()
 {
+  APPENDFUNC;
 #ifndef EMBEDDED_LIBRARY
   my_string_stack_guard= check_enough_stack_size;
 #endif
@@ -3671,6 +3739,7 @@ PSI_statement_info com_statement_info[(uint) COM_END + 1];
 */
 void init_sql_statement_info()
 {
+  APPENDFUNC;
   size_t first_com= offsetof(STATUS_VAR, com_stat[0]);
   size_t last_com=  offsetof(STATUS_VAR, com_stat[(uint) SQLCOM_END]);
   int record_size= offsetof(STATUS_VAR, com_stat[1])
@@ -3707,6 +3776,7 @@ void init_sql_statement_info()
 
 void init_com_statement_info()
 {
+  APPENDFUNC;
   uint index;
 
   for (index= 0; index < (uint) COM_END + 1; index++)
@@ -3729,6 +3799,7 @@ void init_com_statement_info()
 
 extern "C" my_thread_id mariadb_dbug_id()
 {
+  APPENDFUNC;
   THD *thd;
   if ((thd= current_thd) && thd->thread_dbug_id)
   {
@@ -3742,6 +3813,7 @@ extern "C" my_thread_id mariadb_dbug_id()
 extern "C" {
 static void my_malloc_size_cb_func(long long size, my_bool is_thread_specific)
 {
+  APPENDFUNC;
   THD *thd= current_thd;
 
 #ifndef DBUG_OFF
@@ -3800,6 +3872,7 @@ static void my_malloc_size_cb_func(long long size, my_bool is_thread_specific)
 int json_escape_string(const char *str,const char *str_end,
                        char *json, char *json_end)
 {
+  APPENDFUNC;
   return json_escape(system_charset_info,
                      (const uchar *) str, (const uchar *) str_end,
                      &my_charset_utf8mb4_bin,
@@ -3810,6 +3883,7 @@ int json_escape_string(const char *str,const char *str_end,
 int json_unescape_json(const char *json_str, const char *json_end,
                        char *res, char *res_end)
 {
+  APPENDFUNC;
   return json_unescape(&my_charset_utf8mb4_bin,
                        (const uchar *) json_str, (const uchar *) json_end,
                        system_charset_info, (uchar *) res, (uchar *) res_end);
@@ -3831,6 +3905,7 @@ int json_unescape_json(const char *json_str, const char *json_end,
 static const char *rpl_make_log_name(PSI_memory_key key, const char *opt,
                                      const char *def, const char *ext)
 {
+  APPENDFUNC;
   DBUG_ENTER("rpl_make_log_name");
   DBUG_PRINT("enter", ("opt: %s, def: %s, ext: %s", opt ? opt : "(null)",
                        def, ext));
@@ -3857,6 +3932,7 @@ static const char *rpl_make_log_name(PSI_memory_key key, const char *opt,
 
 static int init_early_variables()
 {
+  APPENDFUNC;
   set_current_thd(0);
   set_malloc_size_cb(my_malloc_size_cb_func);
   global_status_var.global_memory_used= 0;
@@ -3869,6 +3945,7 @@ static int init_early_variables()
 #ifdef _WIN32
 static void get_win_tzname(char* buf, size_t size)
 {
+  APPENDFUNC;
   static struct
   {
     const wchar_t* windows_name;
@@ -3902,6 +3979,7 @@ static void get_win_tzname(char* buf, size_t size)
 
 static int init_common_variables()
 {
+  APPENDFUNC;
   umask(((~my_umask) & 0666));
   connection_errors_select= 0;
   connection_errors_accept= 0;
@@ -4471,6 +4549,7 @@ static int init_common_variables()
 
 static int init_thread_environment()
 {
+  APPENDFUNC;
   DBUG_ENTER("init_thread_environment");
   server_threads.init();
   mysql_mutex_init(key_LOCK_start_thread, &LOCK_start_thread, MY_MUTEX_INIT_FAST);
@@ -4565,6 +4644,7 @@ static int init_thread_environment()
 #if defined(HAVE_OPENSSL10) && !defined(HAVE_WOLFSSL)
 static openssl_lock_t *openssl_dynlock_create(const char *file, int line)
 {
+  APPENDFUNC;
   openssl_lock_t *lock= new openssl_lock_t;
   mysql_rwlock_init(key_rwlock_openssl, &lock->lock);
   return lock;
@@ -4574,6 +4654,7 @@ static openssl_lock_t *openssl_dynlock_create(const char *file, int line)
 static void openssl_dynlock_destroy(openssl_lock_t *lock, const char *file,
 				    int line)
 {
+  APPENDFUNC;
   mysql_rwlock_destroy(&lock->lock);
   delete lock;
 }
@@ -4581,6 +4662,7 @@ static void openssl_dynlock_destroy(openssl_lock_t *lock, const char *file,
 
 static void openssl_lock_function(int mode, int n, const char *file, int line)
 {
+  APPENDFUNC;
   if (n < 0 || n > CRYPTO_num_locks())
   {
     /* Lock number out of bounds. */
@@ -4594,6 +4676,7 @@ static void openssl_lock_function(int mode, int n, const char *file, int line)
 static void openssl_lock(int mode, openssl_lock_t *lock, const char *file,
 			 int line)
 {
+  APPENDFUNC;
   int err;
   char const *what;
 
@@ -4673,6 +4756,7 @@ struct SSL_ACCEPTOR_STATS
 static SSL_ACCEPTOR_STATS ssl_acceptor_stats;
 void ssl_acceptor_stats_update(int sslaccept_ret)
 {
+  APPENDFUNC;
   statistic_increment(ssl_acceptor_stats.accept, &LOCK_status);
   if (!sslaccept_ret)
     statistic_increment(ssl_acceptor_stats.accept_good,&LOCK_status);
@@ -4680,6 +4764,7 @@ void ssl_acceptor_stats_update(int sslaccept_ret)
 
 static void init_ssl()
 {
+  APPENDFUNC;
 #if !defined(EMBEDDED_LIBRARY)
 /*
   Not need to check require_secure_transport on the Linux,
@@ -4746,6 +4831,7 @@ static void init_ssl()
 /* Reinitialize SSL (FLUSH SSL) */
 int reinit_ssl()
 {
+  APPENDFUNC;
 #if defined(HAVE_OPENSSL) && !defined(EMBEDDED_LIBRARY)
   if (!opt_use_ssl)
     return 0;
@@ -4773,6 +4859,7 @@ int reinit_ssl()
 
 static void end_ssl()
 {
+  APPENDFUNC;
 #ifdef HAVE_OPENSSL
 #ifndef EMBEDDED_LIBRARY
   if (ssl_acceptor_fd)
@@ -4792,6 +4879,7 @@ static void end_ssl()
 #include <werapi.h>
 static void add_file_to_crash_report(char *file)
 {
+  APPENDFUNC;
   wchar_t wfile[MAX_PATH+1]= {0};
   if (mbstowcs(wfile, file, MAX_PATH) != (size_t)-1)
   {
@@ -4806,6 +4894,7 @@ static void add_file_to_crash_report(char *file)
 static int init_default_storage_engine_impl(const char *opt_name,
                                             char *engine_name, plugin_ref *res)
 {
+  APPENDFUNC;
   if (!engine_name)
   {
     *res= 0;
@@ -4849,6 +4938,7 @@ static int init_default_storage_engine_impl(const char *opt_name,
 static int
 init_gtid_pos_auto_engines(void)
 {
+  APPENDFUNC;
   plugin_ref *plugins;
 
   /*
@@ -4876,6 +4966,7 @@ init_gtid_pos_auto_engines(void)
 #define us_to_ms(X) if (X > 0) X/= 1000;
 static int adjust_optimizer_costs(void *, OPTIMIZER_COSTS *oc, void *)
 {
+  APPENDFUNC;
   us_to_ms(oc->disk_read_cost);
   us_to_ms(oc->index_block_copy_cost);
   us_to_ms(oc->key_cmp_cost);
@@ -4909,6 +5000,7 @@ static int adjust_optimizer_costs(void *, OPTIMIZER_COSTS *oc, void *)
 
 static int init_server_components()
 {
+  APPENDFUNC;
   DBUG_ENTER("init_server_components");
   /*
     We need to call each of these following functions to ensure that
@@ -5611,6 +5703,7 @@ static int init_server_components()
 */
 static void test_lc_time_sz()
 {
+  APPENDFUNC;
   DBUG_ENTER("test_lc_time_sz");
   for (MY_LOCALE **loc= my_locales; *loc; loc++)
   {
@@ -5643,6 +5736,7 @@ static void test_lc_time_sz()
 
 int mysqld_main(int argc, char **argv)
 {
+  APPENDFUNC;
 #ifndef _WIN32
   /* We can't close stdin just now, because it may be booststrap mode. */
   bool please_close_stdin= fcntl(STDIN_FILENO, F_GETFD) >= 0;
@@ -6095,6 +6189,7 @@ int mysqld_main(int argc, char **argv)
 
 static bool read_init_file(char *file_name)
 {
+  APPENDFUNC;
   MYSQL_FILE *file;
   DBUG_ENTER("read_init_file");
   DBUG_PRINT("enter",("name: %s",file_name));
@@ -6112,6 +6207,7 @@ static bool read_init_file(char *file_name)
 */
 void inc_thread_created(void)
 {
+  APPENDFUNC;
   statistic_increment(thread_created, &LOCK_status);
 }
 
@@ -6127,6 +6223,7 @@ void inc_thread_created(void)
 
 void handle_connection_in_main_thread(CONNECT *connect)
 {
+  APPENDFUNC;
   do_handle_one_connection(connect, false);
 }
 
@@ -6137,6 +6234,7 @@ void handle_connection_in_main_thread(CONNECT *connect)
 
 void create_thread_to_handle_connection(CONNECT *connect)
 {
+  APPENDFUNC;
   DBUG_ENTER("create_thread_to_handle_connection");
 
   if (thread_cache.enqueue(connect))
@@ -6183,6 +6281,7 @@ void create_thread_to_handle_connection(CONNECT *connect)
 
 void create_new_thread(CONNECT *connect)
 {
+  APPENDFUNC;
   DBUG_ENTER("create_new_thread");
 
   /*
@@ -6223,6 +6322,7 @@ void create_new_thread(CONNECT *connect)
 
 void handle_accepted_socket(MYSQL_SOCKET new_sock, MYSQL_SOCKET sock)
 {
+  APPENDFUNC;
 #ifdef HAVE_LIBWRAP
   {
     if (!sock.is_unix_domain_socket)
@@ -6285,6 +6385,7 @@ void handle_accepted_socket(MYSQL_SOCKET new_sock, MYSQL_SOCKET sock)
 #ifndef _WIN32
 static void set_non_blocking_if_supported(MYSQL_SOCKET sock)
 {
+  APPENDFUNC;
 #if !defined(NO_FCNTL_NONBLOCK)
   if (!(test_flags & TEST_BLOCKING))
   {
@@ -6301,6 +6402,7 @@ static void set_non_blocking_if_supported(MYSQL_SOCKET sock)
 
 void handle_connections_sockets()
 {
+  APPENDFUNC;
   MYSQL_SOCKET sock= mysql_socket_invalid();
   uint error_count=0;
   struct sockaddr_storage cAddr;
@@ -6441,6 +6543,7 @@ void handle_connections_sockets()
 
 int handle_early_options()
 {
+  APPENDFUNC;
   int ho_error;
   DYNAMIC_ARRAY all_early_options;
 
@@ -6478,7 +6581,7 @@ int handle_early_options()
 
 struct my_option my_long_options[]=
 {
-  {"help", '?', "Display this help and exit.", 
+  {"help", '?', "Display this help and exit.",
    &opt_help, &opt_help, 0, GET_BOOL, NO_ARG, 0, 0, 0, 0,
    0, 0},
   {"ansi", 'a', "Use ANSI SQL syntax instead of MySQL syntax. This mode "
@@ -6906,6 +7009,7 @@ struct my_option my_long_options[]=
 static int show_queries(THD *thd, SHOW_VAR *var, char *buff,
                         enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONGLONG;
   var->value= &thd->query_id;
   return 0;
@@ -6915,6 +7019,7 @@ static int show_queries(THD *thd, SHOW_VAR *var, char *buff,
 static int show_net_compression(THD *thd, SHOW_VAR *var, char *buff,
                                 enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_MY_BOOL;
   var->value= &thd->net.compress;
   return 0;
@@ -6923,6 +7028,7 @@ static int show_net_compression(THD *thd, SHOW_VAR *var, char *buff,
 static int show_starttime(THD *thd, SHOW_VAR *var, char *buff,
                           enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   *((long *)buff)= (long) (thd->query_start() - server_start_time);
@@ -6933,6 +7039,7 @@ static int show_starttime(THD *thd, SHOW_VAR *var, char *buff,
 static int show_flushstatustime(THD *thd, SHOW_VAR *var, char *buff,
                                 enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   *((long *)buff)= (long) (thd->query_start() - flush_status_time);
@@ -6944,6 +7051,7 @@ static int show_flushstatustime(THD *thd, SHOW_VAR *var, char *buff,
 static int show_rpl_status(THD *thd, SHOW_VAR *var, char *buff,
                            enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   var->value= const_cast<char*>(rpl_status_type[(int)rpl_status]);
   return 0;
@@ -6952,6 +7060,7 @@ static int show_rpl_status(THD *thd, SHOW_VAR *var, char *buff,
 static int show_slave_running(THD *thd, SHOW_VAR *var, char *buff,
                               enum enum_var_type scope)
 {
+  APPENDFUNC;
   Master_info *mi= NULL;
   bool UNINIT_VAR(tmp);
 
@@ -6978,6 +7087,7 @@ static int show_slave_running(THD *thd, SHOW_VAR *var, char *buff,
 
 static int show_slaves_running(THD *thd, SHOW_VAR *var, char *buff)
 {
+  APPENDFUNC;
   var->type= SHOW_LONGLONG;
   var->value= buff;
 
@@ -6990,6 +7100,7 @@ static int show_slaves_running(THD *thd, SHOW_VAR *var, char *buff)
 static int show_slave_received_heartbeats(THD *thd, SHOW_VAR *var, char *buff,
                                           enum enum_var_type scope)
 {
+  APPENDFUNC;
   Master_info *mi;
 
   var->type= SHOW_LONGLONG;
@@ -7010,6 +7121,7 @@ static int show_slave_received_heartbeats(THD *thd, SHOW_VAR *var, char *buff,
 static int show_heartbeat_period(THD *thd, SHOW_VAR *var, char *buff,
                                  enum enum_var_type scope)
 {
+  APPENDFUNC;
   Master_info *mi;
 
   var->type= SHOW_CHAR;
@@ -7032,6 +7144,7 @@ static int show_heartbeat_period(THD *thd, SHOW_VAR *var, char *buff,
 static int show_max_used_connections_time(THD *thd, SHOW_VAR *var, char *buff,
                                  enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   var->value= buff;
 
@@ -7043,6 +7156,7 @@ static int show_max_used_connections_time(THD *thd, SHOW_VAR *var, char *buff,
 static int show_open_tables(THD *thd, SHOW_VAR *var, char *buff,
                             enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   *((long *) buff)= (long) tc_records();
@@ -7052,6 +7166,7 @@ static int show_open_tables(THD *thd, SHOW_VAR *var, char *buff,
 static int show_prepared_stmt_count(THD *thd, SHOW_VAR *var, char *buff,
                                     enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   mysql_mutex_lock(&LOCK_prepared_stmt_count);
@@ -7063,6 +7178,7 @@ static int show_prepared_stmt_count(THD *thd, SHOW_VAR *var, char *buff,
 static int show_table_definitions(THD *thd, SHOW_VAR *var, char *buff,
                                   enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   *((long *) buff)= (long) tdc_records();
@@ -7083,6 +7199,7 @@ static int show_table_definitions(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_version(THD *thd, SHOW_VAR *var, char *buff,
                                 enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   if( thd->vio_ok() && thd->net.vio->ssl_arg )
     var->value= const_cast<char*>(SSL_get_version((SSL*) thd->net.vio->ssl_arg));
@@ -7094,6 +7211,7 @@ static int show_ssl_get_version(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_default_timeout(THD *thd, SHOW_VAR *var, char *buff,
                                         enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   if( thd->vio_ok() && thd->net.vio->ssl_arg )
@@ -7106,6 +7224,7 @@ static int show_ssl_get_default_timeout(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_verify_mode(THD *thd, SHOW_VAR *var, char *buff,
                                     enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
 #ifndef HAVE_WOLFSSL
@@ -7122,6 +7241,7 @@ static int show_ssl_get_verify_mode(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_verify_depth(THD *thd, SHOW_VAR *var, char *buff,
                                      enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   if( thd->vio_ok() && thd->net.vio->ssl_arg )
@@ -7135,6 +7255,7 @@ static int show_ssl_get_verify_depth(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_cipher(THD *thd, SHOW_VAR *var, char *buff,
                                enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   if( thd->vio_ok() && thd->net.vio->ssl_arg )
     var->value= const_cast<char*>(SSL_get_cipher((SSL*) thd->net.vio->ssl_arg));
@@ -7146,6 +7267,7 @@ static int show_ssl_get_cipher(THD *thd, SHOW_VAR *var, char *buff,
 static int show_ssl_get_cipher_list(THD *thd, SHOW_VAR *var, char *buff,
                                     enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   var->value= buff;
   if (thd->vio_ok() && thd->net.vio->ssl_arg)
@@ -7194,6 +7316,7 @@ DEF_SHOW_FUNC(avg_trx_wait_time, SHOW_LONG)
 static char *
 my_asn1_time_to_string(const ASN1_TIME *time, char *buf, size_t len)
 {
+  APPENDFUNC;
   int n_read;
   char *res= NULL;
   BIO *bio= BIO_new(BIO_s_mem());
@@ -7233,6 +7356,7 @@ static int
 show_ssl_get_server_not_before(THD *thd, SHOW_VAR *var, char *buff,
                                enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   if(thd->vio_ok() && thd->net.vio->ssl_arg)
   {
@@ -7267,6 +7391,7 @@ static int
 show_ssl_get_server_not_after(THD *thd, SHOW_VAR *var, char *buff,
                               enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_CHAR;
   if(thd->vio_ok() && thd->net.vio->ssl_arg)
   {
@@ -7289,6 +7414,7 @@ show_ssl_get_server_not_after(THD *thd, SHOW_VAR *var, char *buff,
 static int show_default_keycache(THD *thd, SHOW_VAR *var, void *buff,
                                  system_status_var *, enum_var_type)
 {
+  APPENDFUNC;
   struct st_data {
     KEY_CACHE_STATISTICS stats;
     SHOW_VAR var[9];
@@ -7332,6 +7458,7 @@ static int show_memory_used(THD *thd, SHOW_VAR *var, char *buff,
                             struct system_status_var *status_var,
                             enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONGLONG;
   var->value= buff;
   if (scope == OPT_GLOBAL)
@@ -7350,6 +7477,7 @@ static int show_memory_used(THD *thd, SHOW_VAR *var, char *buff,
 static int debug_status_func(THD *thd, SHOW_VAR *var, void *buff,
                              system_status_var *, enum_var_type)
 {
+  APPENDFUNC;
 #define add_var(X,Y,Z)                  \
   v->name= X;                           \
   v->value= (char*)Y;                   \
@@ -7387,6 +7515,7 @@ static int debug_status_func(THD *thd, SHOW_VAR *var, void *buff,
 static int show_threadpool_idle_threads(THD *thd, SHOW_VAR *var, char *buff,
                                  enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_INT;
   var->value= buff;
   *(int *)buff= tp_get_idle_thread_count(); 
@@ -7397,6 +7526,7 @@ static int show_threadpool_idle_threads(THD *thd, SHOW_VAR *var, char *buff,
 static int show_threadpool_threads(THD *thd, SHOW_VAR *var, char *buff,
                                    enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_INT;
   var->value= buff;
   *(reinterpret_cast<int*>(buff))= tp_get_thread_count();
@@ -7408,6 +7538,7 @@ static int show_threadpool_threads(THD *thd, SHOW_VAR *var, char *buff,
 static int show_cached_thread_count(THD *thd, SHOW_VAR *var, char *buff,
                                     enum enum_var_type scope)
 {
+  APPENDFUNC;
   var->type= SHOW_LONG;
   var->value= buff;
   *(reinterpret_cast<ulong*>(buff))= thread_cache.size();
@@ -7678,6 +7809,7 @@ SHOW_VAR status_vars[]= {
 
 static bool add_terminator(DYNAMIC_ARRAY *options)
 {
+  APPENDFUNC;
   my_option empty_element= {0, 0, 0, 0, 0, 0, GET_NO_ARG, NO_ARG, 0, 0, 0, 0, 0, 0};
   return insert_dynamic(options, (uchar *)&empty_element);
 }
@@ -7685,6 +7817,7 @@ static bool add_terminator(DYNAMIC_ARRAY *options)
 static bool add_many_options(DYNAMIC_ARRAY *options, my_option *list,
                             size_t elements)
 {
+  APPENDFUNC;
   for (my_option *opt= list; opt < list + elements; opt++)
     if (insert_dynamic(options, opt))
       return 1;
@@ -7694,6 +7827,7 @@ static bool add_many_options(DYNAMIC_ARRAY *options, my_option *list,
 #ifndef EMBEDDED_LIBRARY
 static void print_version(void)
 {
+  APPENDFUNC;
   if (IS_SYSVAR_AUTOSIZE(&server_version_ptr))
     set_server_version(server_version, sizeof(server_version));
 
@@ -7704,6 +7838,7 @@ static void print_version(void)
 /** Compares two options' names, treats - and _ the same */
 static int option_cmp(my_option *a, my_option *b)
 {
+  APPENDFUNC;
   const char *sa= a->name;
   const char *sb= b->name;
   for (; *sa || *sb; sa++, sb++)
@@ -7728,6 +7863,7 @@ static int option_cmp(my_option *a, my_option *b)
 
 static void print_help()
 {
+  APPENDFUNC;
   MEM_ROOT mem_root;
   init_alloc_root(PSI_NOT_INSTRUMENTED, &mem_root, 4096, 4096, MYF(0));
 
@@ -7754,6 +7890,7 @@ static void print_help()
 
 static void usage(void)
 {
+  APPENDFUNC;
   DBUG_ENTER("usage");
   myf utf8_flag= global_system_variables.old_behavior &
                  OLD_MODE_UTF8_IS_UTF8MB3 ? MY_UTF8_IS_UTF8MB3 : 0;
@@ -7818,6 +7955,7 @@ static void usage(void)
 
 static int mysql_init_variables(void)
 {
+  APPENDFUNC;
   /* Things reset to zero */
   opt_skip_slave_start= opt_reckless_slave = 0;
   mysql_home[0]= pidfile_name[0]= log_error_file[0]= 0;
@@ -8032,6 +8170,7 @@ my_bool
 mysqld_get_one_option(const struct my_option *opt, const char *argument,
                       const char *filename)
 {
+  APPENDFUNC;
   if (opt->app_type)
   {
     sys_var *var= (sys_var*) opt->app_type;
@@ -8457,6 +8596,7 @@ static void *
 mysql_getopt_value(const char *name, uint length,
 		   const struct my_option *option, int *error)
 {
+  APPENDFUNC;
   if (error)
     *error= 0;
   switch (option->id) {
@@ -8577,6 +8717,7 @@ mysql_getopt_value(const char *name, uint length,
 
 static void option_error_reporter(enum loglevel level, const char *format, ...)
 {
+  APPENDFUNC;
   va_list args;
   va_start(args, format);
 
@@ -8609,6 +8750,7 @@ C_MODE_END
 */
 static int get_options(int *argc_ptr, char ***argv_ptr)
 {
+  APPENDFUNC;
   int ho_error;
 
   my_getopt_get_addr= mysql_getopt_value;
@@ -8880,6 +9022,7 @@ static int get_options(int *argc_ptr, char ***argv_ptr)
 
 void set_server_version(char *buf, size_t size)
 {
+  APPENDFUNC;
   bool is_log= opt_log || global_system_variables.sql_log_slow || opt_bin_log;
   bool is_debug= IF_DBUG(!strstr(MYSQL_SERVER_SUFFIX_STR, "-debug"), 0);
   const char *is_valgrind=
@@ -8900,6 +9043,7 @@ void set_server_version(char *buf, size_t size)
 
 static char *get_relative_path(const char *path)
 {
+  APPENDFUNC;
   if (test_if_hard_path(path) &&
       is_prefix(path,DEFAULT_MYSQL_HOME) &&
       strcmp(DEFAULT_MYSQL_HOME,FN_ROOTDIR))
@@ -8923,6 +9067,7 @@ bool
 fn_format_relative_to_data_home(char * to, const char *name,
 				const char *dir, const char *extension)
 {
+  APPENDFUNC;
   char tmp_path[FN_REFLEN];
   if (!test_if_hard_path(dir))
   {
@@ -8948,6 +9093,7 @@ fn_format_relative_to_data_home(char * to, const char *name,
 
 bool is_secure_file_path(char *path)
 {
+  APPENDFUNC;
   char buff1[FN_REFLEN], buff2[FN_REFLEN];
   size_t opt_secure_file_priv_len;
   /*
@@ -8992,6 +9138,7 @@ bool is_secure_file_path(char *path)
 
 static int fix_paths(void)
 {
+  APPENDFUNC;
   char buff[FN_REFLEN],*pos;
   DBUG_ENTER("fix_paths");
 
@@ -9095,6 +9242,7 @@ static int fix_paths(void)
 
 static int test_if_case_insensitive(const char *dir_name)
 {
+  APPENDFUNC;
   int result= 0;
   File file;
   char buff[FN_REFLEN], buff2[FN_REFLEN];
@@ -9129,6 +9277,7 @@ static int test_if_case_insensitive(const char *dir_name)
 */
 static void create_pid_file()
 {
+  APPENDFUNC;
   File file;
   if ((file= mysql_file_create(key_file_pid, pidfile_name, 0664,
                                O_WRONLY | O_TRUNC, MYF(MY_WME))) >= 0)
@@ -9159,6 +9308,7 @@ static void create_pid_file()
 
 static void delete_pid_file(myf flags)
 {
+  APPENDFUNC;
 #ifndef EMBEDDED_LIBRARY
   if (pid_file_created)
   {
@@ -9173,6 +9323,7 @@ static void delete_pid_file(myf flags)
 /** Clear most status variables. */
 void refresh_status(THD *thd)
 {
+  APPENDFUNC;
   mysql_mutex_lock(&LOCK_status);
 
 #ifdef WITH_PERFSCHEMA_STORAGE_ENGINE
@@ -9788,6 +9939,7 @@ static PSI_memory_info all_server_memory[]=
 */
 void init_server_psi_keys(void)
 {
+  APPENDFUNC;
   const char* category= "sql";
   int count;
 
@@ -9910,6 +10062,7 @@ static my_thread_id thread_id_max= UINT_MAX32;
 
 static my_bool recalculate_callback(THD *thd, std::vector<my_thread_id> *ids)
 {
+  APPENDFUNC;
   ids->push_back(thd->thread_id);
   return 0;
 }
@@ -9917,6 +10070,7 @@ static my_bool recalculate_callback(THD *thd, std::vector<my_thread_id> *ids)
 
 static void recalculate_thread_id_range(my_thread_id *low, my_thread_id *high)
 {
+  APPENDFUNC;
   std::vector<my_thread_id> ids;
 
   // Add sentinels
@@ -9949,6 +10103,7 @@ static void recalculate_thread_id_range(my_thread_id *low, my_thread_id *high)
 
 my_thread_id next_thread_id(void)
 {
+  APPENDFUNC;
   my_thread_id retval;
   DBUG_EXECUTE_IF("thread_id_overflow", global_thread_id= thread_id_max-2;);
 

@@ -43,6 +43,7 @@
   
 bool With_clause::add_with_element(With_element *elem)
 { 
+  APPENDFUNC;
   if (with_list.elements == max_number_of_elements_in_with_clause)
   {
     my_error(ER_TOO_MANY_DEFINITIONS_IN_WITH_CLAUSE, MYF(0));
@@ -58,6 +59,7 @@ bool With_clause::add_with_element(With_element *elem)
 
 void  st_select_lex_unit::set_with_clause(With_clause *with_cl)
 { 
+  APPENDFUNC;
   with_clause= with_cl;
   if (with_clause)
     with_clause->set_owner(this);
@@ -86,6 +88,7 @@ void  st_select_lex_unit::set_with_clause(With_clause *with_cl)
 
 bool LEX::check_dependencies_in_with_clauses()
 {
+  APPENDFUNC;
   for (With_clause *with_clause= with_clauses_list;
        with_clause;
        with_clause= with_clause->next_with_clause)
@@ -149,6 +152,7 @@ bool LEX::check_dependencies_in_with_clauses()
 bool LEX::resolve_references_to_cte(TABLE_LIST *tables,
                                     TABLE_LIST **tables_last)
 {
+  APPENDFUNC;
   With_element *with_elem= 0;
 
   for (TABLE_LIST *tbl= tables; tbl != *tables_last; tbl= tbl->next_global)
@@ -240,6 +244,7 @@ bool LEX::resolve_references_to_cte(TABLE_LIST *tables,
 bool
 LEX::check_cte_dependencies_and_resolve_references()
 {
+  APPENDFUNC;
   if (check_dependencies_in_with_clauses())
     return true;
   if (!with_cte_resolution)
@@ -270,6 +275,7 @@ LEX::check_cte_dependencies_and_resolve_references()
 
 bool With_clause::check_dependencies()
 {
+  APPENDFUNC;
   if (dependencies_are_checked)
     return false;
   /* 
@@ -363,6 +369,7 @@ struct st_unit_ctxt_elem
 
 bool With_element::check_dependencies_in_spec()
 { 
+  APPENDFUNC;
   for (st_select_lex *sl=  spec->first_select(); sl; sl= sl->next_select())
   {
     if (owner->with_recursive)
@@ -403,6 +410,7 @@ bool With_element::check_dependencies_in_spec()
 With_element *With_clause::find_table_def(TABLE_LIST *table,
                                           With_element *barrier)
 {
+  APPENDFUNC;
   for (With_element *with_elem= with_list.first; 
        with_elem != barrier;
        with_elem= with_elem->next)
@@ -443,6 +451,7 @@ With_element *With_clause::find_table_def(TABLE_LIST *table,
 With_element *find_table_def_in_with_clauses(TABLE_LIST *tbl,
                                              st_unit_ctxt_elem *ctxt)
 {
+  APPENDFUNC;
   With_element *found= 0;
   st_select_lex_unit *top_unit= 0;
   for (st_unit_ctxt_elem *unit_ctxt_elem= ctxt;
@@ -502,6 +511,7 @@ void With_element::check_dependencies_in_select(st_select_lex *sl,
                                                 bool in_subq,
                                                 table_map *dep_map)
 {
+  APPENDFUNC;
   bool is_spec_select= sl->get_with_element() == this;
 
   for (TABLE_LIST *tbl= sl->table_list.first; tbl; tbl= tbl->next_local)
@@ -578,6 +588,7 @@ void With_element::check_dependencies_in_select(st_select_lex *sl,
 
 TABLE_LIST *With_element::find_first_sq_rec_ref_in_select(st_select_lex *sel)
 {
+  APPENDFUNC;
   TABLE_LIST *rec_ref= NULL;
   st_select_lex_unit *inner_unit= sel->first_inner_unit();
   for (; inner_unit; inner_unit= inner_unit->next_unit())
@@ -630,6 +641,7 @@ void With_element::check_dependencies_in_unit(st_select_lex_unit *unit,
                                               bool in_subq,
                                               table_map *dep_map)
 {
+  APPENDFUNC;
   st_unit_ctxt_elem unit_ctxt_elem= {ctxt, unit};
   if (unit->with_clause)
   {
@@ -675,6 +687,7 @@ With_element::check_dependencies_in_with_clause(With_clause *with_clause,
                                                 bool in_subq,
                                                 table_map *dep_map)
 {
+  APPENDFUNC;
   for (With_element *with_elem= with_clause->with_list.first;
        with_elem;
        with_elem= with_elem->next)
@@ -705,6 +718,7 @@ With_element::check_dependencies_in_with_clause(With_clause *with_clause,
 
 bool With_clause::check_anchors()
 {
+  APPENDFUNC;
   for (With_element *with_elem= with_list.first;
        with_elem;
        with_elem= with_elem->next)
@@ -844,6 +858,7 @@ bool With_clause::check_anchors()
 
 void With_clause::move_anchors_ahead()
 {
+  APPENDFUNC;
   for (With_element *with_elem= with_list.first;
        with_elem;
        with_elem= with_elem->next)
@@ -869,6 +884,7 @@ void With_clause::move_anchors_ahead()
 
 void With_element::move_anchors_ahead()
 {
+  APPENDFUNC;
   st_select_lex *next_sl;
   st_select_lex *new_pos= spec->first_select();
   new_pos->set_linkage(UNION_TYPE);
@@ -917,6 +933,7 @@ void With_element::move_anchors_ahead()
 
 bool With_clause::prepare_unreferenced_elements(THD *thd)
 {
+  APPENDFUNC;
   for (With_element *with_elem= with_list.first; 
        with_elem;
        with_elem= with_elem->next)
@@ -954,6 +971,7 @@ bool With_element::set_unparsed_spec(THD *thd,
                                      const char *spec_end,
                                      my_ptrdiff_t spec_offset)
 {
+  APPENDFUNC;
   stmt_prepare_mode= thd->m_parser_state->m_lip.stmt_prepare_mode;
   unparsed_spec.length= spec_end - spec_start;
 
@@ -1013,6 +1031,7 @@ bool With_element::set_unparsed_spec(THD *thd,
 st_select_lex_unit *With_element::clone_parsed_spec(LEX *old_lex,
                                                     TABLE_LIST *with_table)
 {
+  APPENDFUNC;
   THD *thd= old_lex->thd;
   LEX *lex;
   st_select_lex_unit *res= NULL;
@@ -1177,6 +1196,7 @@ bool
 With_element::process_columns_of_derived_unit(THD *thd,
                                               st_select_lex_unit *unit)
 {
+  APPENDFUNC;
   if (unit->columns_are_renamed)
     return false;
 
@@ -1272,6 +1292,7 @@ With_element::process_columns_of_derived_unit(THD *thd,
 
 bool With_element::prepare_unreferenced(THD *thd)
 {
+  APPENDFUNC;
   bool rc= false;
   st_select_lex *first_sl= spec->first_select();
 
@@ -1295,6 +1316,7 @@ bool With_element::prepare_unreferenced(THD *thd)
 
 bool With_element::is_anchor(st_select_lex *sel)
 {
+  APPENDFUNC;
   return !(mutually_recursive & sel->with_dep);
 }   
 
@@ -1318,6 +1340,7 @@ bool With_element::is_anchor(st_select_lex *sel)
 
 With_element *st_select_lex::find_table_def_in_with_clauses(TABLE_LIST *table)
 {
+  APPENDFUNC;
   With_element *found= NULL;
   With_clause *containing_with_clause= NULL;
   st_select_lex_unit *master_unit;
@@ -1358,6 +1381,7 @@ With_element *st_select_lex::find_table_def_in_with_clauses(TABLE_LIST *table)
 
 bool TABLE_LIST::is_recursive_with_table()
 {
+  APPENDFUNC;
   return with && with->is_recursive;
 }
 
@@ -1370,6 +1394,7 @@ bool TABLE_LIST::is_recursive_with_table()
 
 bool TABLE_LIST::is_with_table_recursive_reference()
 {
+  APPENDFUNC;
   return (with_internal_reference_map &&
           (with->get_mutually_recursive() & with_internal_reference_map));
 }
@@ -1425,6 +1450,7 @@ bool TABLE_LIST::is_with_table_recursive_reference()
 
 bool st_select_lex::check_unrestricted_recursive(bool only_standard_compliant)
 {
+  APPENDFUNC;
   With_element *with_elem= get_with_element();
   if (!with_elem ||!with_elem->is_recursive)
   {
@@ -1486,6 +1512,7 @@ bool With_element::check_unrestricted_recursive(st_select_lex *sel,
 					        table_map &unrestricted, 
 						table_map &encountered)
 {
+  APPENDFUNC;
   /* Check conditions 1 for restricted specification*/
   List_iterator<TABLE_LIST> ti(sel->leaf_tables);
   TABLE_LIST *tbl;
@@ -1578,6 +1605,7 @@ bool With_element::check_unrestricted_recursive(st_select_lex *sel,
 
 bool st_select_lex::check_subqueries_with_recursive_references()
 {
+  APPENDFUNC;
   List_iterator<TABLE_LIST> ti(leaf_tables);
   TABLE_LIST *tbl;
   while ((tbl= ti++))
@@ -1622,6 +1650,7 @@ bool st_select_lex::check_subqueries_with_recursive_references()
 
 void With_clause::print(THD *thd, String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   /*
     Any with clause contains just definitions of CTE tables.
     No data expansion is applied to these definitions.
@@ -1644,6 +1673,7 @@ void With_clause::print(THD *thd, String *str, enum_query_type query_type)
 
 static void list_strlex_print(THD *thd, String *str, List<Lex_ident_sys> *list)
 {
+  APPENDFUNC;
   List_iterator_fast<Lex_ident_sys> li(*list);
   bool first= TRUE;
   while(Lex_ident_sys *col_name= li++)
@@ -1672,6 +1702,7 @@ static void list_strlex_print(THD *thd, String *str, List<Lex_ident_sys> *list)
 
 void With_element::print(THD *thd, String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(get_name());
   if (column_list.elements)
   {
@@ -1696,6 +1727,7 @@ void With_element::print(THD *thd, String *str, enum_query_type query_type)
 
 bool With_element::instantiate_tmp_tables()
 {
+  APPENDFUNC;
   List_iterator_fast<TABLE_LIST> li(rec_result->rec_table_refs);
   TABLE_LIST *rec_tbl;
   while ((rec_tbl= li++))
@@ -1717,6 +1749,7 @@ bool With_element::instantiate_tmp_tables()
 
 void With_element::set_cycle_list(List<Lex_ident_sys> *cycle_list_arg)
 {
+  APPENDFUNC;
   cycle_list= cycle_list_arg;
 
   /*

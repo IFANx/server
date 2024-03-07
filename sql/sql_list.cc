@@ -20,12 +20,14 @@
 
 #include "mariadb.h"
 #include "sql_list.h"
+#include "sql_profile.h"
 
 list_node end_of_list;
 
 
 void free_list(I_List <i_string> *list)
 {
+  APPENDFUNC;
   i_string *tmp;
   while ((tmp= list->get()))
     delete tmp;
@@ -34,6 +36,7 @@ void free_list(I_List <i_string> *list)
 
 bool base_list::copy(const base_list *rhs, MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   bool error= 0;
   if (rhs->elements)
   {

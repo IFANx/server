@@ -39,6 +39,7 @@
 
 bool Sql_cmd_partition_unsupported::execute(THD *)
 {
+  APPENDFUNC;
   DBUG_ENTER("Sql_cmd_partition_unsupported::execute");
   /* error, partitioning support not compiled in... */
   my_error(ER_FEATURE_DISABLED, MYF(0), "partitioning",
@@ -50,6 +51,7 @@ bool Sql_cmd_partition_unsupported::execute(THD *)
 
 static bool return_with_logging(THD *thd)
 {
+  APPENDFUNC;
   if (thd->slave_thread &&
       write_bin_log_with_if_exists(thd, true, false, true))
     return(true);
@@ -60,6 +62,7 @@ static bool return_with_logging(THD *thd)
 
 bool Sql_cmd_alter_table_exchange_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   /* Moved from mysql_execute_command */
   LEX *lex= thd->lex;
   /* first SELECT_LEX (have special meaning for many of non-SELECTcommands) */
@@ -127,6 +130,7 @@ bool Sql_cmd_alter_table_exchange_partition::execute(THD *thd)
 
 static bool check_exchange_partition(TABLE *table, TABLE *part_table)
 {
+  APPENDFUNC;
   DBUG_ENTER("check_exchange_partition");
 
   /* Both tables must exist */
@@ -196,6 +200,7 @@ static bool check_exchange_partition(TABLE *table, TABLE *part_table)
 bool compare_table_with_partition(THD *thd, TABLE *table, TABLE *part_table,
                                   partition_element *part_elem, uint part_id)
 {
+  APPENDFUNC;
   HA_CREATE_INFO table_create_info;
   Table_specification_st part_create_info;
   Alter_info part_alter_info;
@@ -348,6 +353,7 @@ static bool exchange_name_with_ddl_log(THD *thd,
                                        const char *tmp_name,
                                        handlerton *ht)
 {
+  APPENDFUNC;
   DDL_LOG_ENTRY exchange_entry;
   DDL_LOG_MEMORY_ENTRY *log_entry= NULL;
   DDL_LOG_MEMORY_ENTRY *exec_log_entry= NULL;
@@ -503,6 +509,7 @@ err_no_action_written:
 bool Sql_cmd_alter_table_exchange_partition::
   exchange_partition(THD *thd, TABLE_LIST *table_list, Alter_info *alter_info)
 {
+  APPENDFUNC;
   TABLE *part_table, *swap_table;
   TABLE_LIST *swap_table_list;
   handlerton *table_hton;
@@ -774,6 +781,7 @@ err:
 
 bool Sql_cmd_alter_table_analyze_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   bool res;
   DBUG_ENTER("Sql_cmd_alter_table_analyze_partition::execute");
 
@@ -791,6 +799,7 @@ bool Sql_cmd_alter_table_analyze_partition::execute(THD *thd)
 
 bool Sql_cmd_alter_table_check_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   bool res;
   DBUG_ENTER("Sql_cmd_alter_table_check_partition::execute");
 
@@ -808,6 +817,7 @@ bool Sql_cmd_alter_table_check_partition::execute(THD *thd)
 
 bool Sql_cmd_alter_table_optimize_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   bool res;
   DBUG_ENTER("Alter_table_optimize_partition_statement::execute");
 
@@ -825,6 +835,7 @@ bool Sql_cmd_alter_table_optimize_partition::execute(THD *thd)
 
 bool Sql_cmd_alter_table_repair_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   bool res;
   DBUG_ENTER("Sql_cmd_alter_table_repair_partition::execute");
 
@@ -842,6 +853,7 @@ bool Sql_cmd_alter_table_repair_partition::execute(THD *thd)
 
 bool Sql_cmd_alter_table_truncate_partition::execute(THD *thd)
 {
+  APPENDFUNC;
   int error;
   ha_partition *partition;
   ulong timeout= thd->variables.lock_wait_timeout;
@@ -1015,6 +1027,7 @@ bool Sql_cmd_alter_table_truncate_partition::execute(THD *thd)
 
 bool alter_partition_convert_in(ALTER_PARTITION_PARAM_TYPE *lpt)
 {
+  APPENDFUNC;
   char part_file_name[2*FN_REFLEN+1];
   THD *thd= lpt->thd;
   const char *path= lpt->table_list->table->s->path.str;

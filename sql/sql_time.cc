@@ -64,6 +64,7 @@ LEX_CSTRING interval_type_to_name[INTERVAL_LAST] = {
 
 int append_interval(String *str, interval_type int_type, const INTERVAL &interval)
 {
+  APPENDFUNC;
   char buf[64];
   size_t len;
   switch (int_type) {
@@ -150,6 +151,7 @@ int append_interval(String *str, interval_type int_type, const INTERVAL &interva
 
 int calc_weekday(long daynr,bool sunday_first_day_of_week)
 {
+  APPENDFUNC;
   DBUG_ENTER("calc_weekday");
   DBUG_RETURN ((int) ((daynr + 5L + (sunday_first_day_of_week ? 1L : 0L)) % 7));
 }
@@ -185,6 +187,7 @@ int calc_weekday(long daynr,bool sunday_first_day_of_week)
 
 uint calc_week(const MYSQL_TIME *l_time, uint week_behaviour, uint *year)
 {
+  APPENDFUNC;
   uint days;
   ulong daynr=calc_daynr(l_time->year,l_time->month,l_time->day);
   ulong first_daynr=calc_daynr(l_time->year,1,1);
@@ -232,6 +235,7 @@ uint calc_week(const MYSQL_TIME *l_time, uint week_behaviour, uint *year)
 bool get_date_from_daynr(long daynr,uint *ret_year,uint *ret_month,
 			 uint *ret_day)
 {
+  APPENDFUNC;
   uint year,temp,leap_day,day_of_year,days_in_year;
   uchar *month_pos;
   DBUG_ENTER("get_date_from_daynr");
@@ -271,6 +275,7 @@ bool get_date_from_daynr(long daynr,uint *ret_year,uint *ret_month,
 
 ulong convert_period_to_month(ulong period)
 {
+  APPENDFUNC;
   ulong a,b;
   if (period == 0 || period > 999912)
     return 0L;
@@ -285,6 +290,7 @@ ulong convert_period_to_month(ulong period)
 
 ulong convert_month_to_period(ulong month)
 {
+  APPENDFUNC;
   ulong year;
   if (month == 0L)
     return 0L;
@@ -300,6 +306,7 @@ bool
 check_date_with_warn(THD *thd, const MYSQL_TIME *ltime,
                      date_conv_mode_t fuzzydate, timestamp_type ts_type)
 {
+  APPENDFUNC;
   int unused;
   if (check_date(ltime, fuzzydate, &unused))
   {
@@ -315,6 +322,7 @@ check_date_with_warn(THD *thd, const MYSQL_TIME *ltime,
 bool
 adjust_time_range_with_warn(THD *thd, MYSQL_TIME *ltime, uint dec)
 {
+  APPENDFUNC;
   MYSQL_TIME copy= *ltime;
   ErrConvTime str(&copy);
   int warnings= 0;
@@ -341,6 +349,7 @@ to_ascii(CHARSET_INFO *cs,
          char *dst, size_t dst_length)
                      
 {
+  APPENDFUNC;
   int cnvres;
   my_wc_t wc;
   const char *srcend= src + src_length;
@@ -385,6 +394,7 @@ bool Temporal::str_to_datetime_or_date_or_time(THD *thd, MYSQL_TIME_STATUS *st,
                                                CHARSET_INFO *cs,
                                                date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   TemporalAsciiBuffer tmp(str, length, cs);
   return ascii_to_datetime_or_date_or_time(st, tmp.str, tmp.length, fuzzydate)||
          add_nanoseconds(thd, &st->warnings, fuzzydate, st->nanoseconds);
@@ -397,6 +407,7 @@ bool Temporal::str_to_datetime_or_date(THD *thd, MYSQL_TIME_STATUS *status,
                                        CHARSET_INFO *cs,
                                        date_mode_t flags)
 {
+  APPENDFUNC;
   TemporalAsciiBuffer tmp(str, length, cs);
   return ascii_to_datetime_or_date(status, tmp.str, tmp.length, flags) ||
          add_nanoseconds(thd, &status->warnings, flags, status->nanoseconds);
@@ -408,6 +419,7 @@ bool Temporal::str_to_temporal(THD *thd, MYSQL_TIME_STATUS *status,
                                const char *str, size_t length, CHARSET_INFO *cs,
                                date_mode_t flags)
 {
+  APPENDFUNC;
   TemporalAsciiBuffer tmp(str, length, cs);
   return ascii_to_temporal(status, tmp.str, tmp.length, flags) ||
          add_nanoseconds(thd, &status->warnings, flags, status->nanoseconds);
@@ -419,6 +431,7 @@ bool Interval_DDhhmmssff::str_to_DDhhmmssff(MYSQL_TIME_STATUS *status,
                                             const char *str, size_t length,
                                             CHARSET_INFO *cs, ulong max_hour)
 {
+  APPENDFUNC;
   TemporalAsciiBuffer tmp(str, length, cs);
   bool rc= ::str_to_DDhhmmssff(tmp.str, tmp.length, this, UINT_MAX32, status);
   DBUG_ASSERT(status->warnings || !rc);
@@ -439,6 +452,7 @@ str_to_datetime_with_warn(THD *thd, CHARSET_INFO *cs,
                           const char *str, size_t length, MYSQL_TIME *to,
                           date_mode_t mode)
 {
+  APPENDFUNC;
   Temporal::Warn_push warn(thd, nullptr, nullptr, nullptr, to, mode);
   Temporal_hybrid *t= new(to) Temporal_hybrid(thd, &warn, str, length, cs, mode);
   return !t->is_valid_temporal();
@@ -449,6 +463,7 @@ bool double_to_datetime_with_warn(THD *thd, double value, MYSQL_TIME *ltime,
                                   date_mode_t fuzzydate,
                                   const TABLE_SHARE *s, const char *field_name)
 {
+  APPENDFUNC;
   Temporal::Warn_push warn(thd, s ? s->db.str : nullptr,
                            s ? s->table_name.str : nullptr,
                            field_name, ltime, fuzzydate);
@@ -462,6 +477,7 @@ bool decimal_to_datetime_with_warn(THD *thd, const my_decimal *value,
                                    date_mode_t fuzzydate,
                                    const TABLE_SHARE *s, const char *field_name)
 {
+  APPENDFUNC;
   Temporal::Warn_push warn(thd, s ? s->db.str : nullptr,
                            s ? s->table_name.str : nullptr,
                            field_name, ltime, fuzzydate);
@@ -475,6 +491,7 @@ bool int_to_datetime_with_warn(THD *thd, const Longlong_hybrid &nr,
                                date_mode_t fuzzydate,
                                const TABLE_SHARE *s, const char *field_name)
 {
+  APPENDFUNC;
   /*
     Note: conversion from an integer to TIME can overflow to '838:59:59.999999',
     so the conversion result can have fractional digits.
@@ -508,6 +525,7 @@ bool int_to_datetime_with_warn(THD *thd, const Longlong_hybrid &nr,
 
 my_time_t TIME_to_timestamp(THD *thd, const MYSQL_TIME *t, uint *error_code)
 {
+  APPENDFUNC;
   thd->used|= THD::TIME_ZONE_USED;
   return thd->variables.time_zone->TIME_to_gmt_sec(t, error_code);
 }
@@ -519,6 +537,7 @@ my_time_t TIME_to_timestamp(THD *thd, const MYSQL_TIME *t, uint *error_code)
 
 void localtime_to_TIME(MYSQL_TIME *to, struct tm *from)
 {
+  APPENDFUNC;
   to->neg=0;
   to->second_part=0;
   to->year=	(int) ((from->tm_year+1900) % 10000);
@@ -532,6 +551,7 @@ void localtime_to_TIME(MYSQL_TIME *to, struct tm *from)
 
 void calc_time_from_sec(MYSQL_TIME *to, ulong seconds, ulong microseconds)
 {
+  APPENDFUNC;
   long t_seconds;
   // to->neg is not cleared, it may already be set to a useful value
   to->time_type= MYSQL_TIMESTAMP_TIME;
@@ -560,6 +580,7 @@ KNOWN_DATE_TIME_FORMAT known_date_time_formats[6]=
 const char *get_date_time_format_str(KNOWN_DATE_TIME_FORMAT *format,
 				     timestamp_type type)
 {
+  APPENDFUNC;
   switch (type) {
   case MYSQL_TIMESTAMP_DATE:
     return format->date_format;
@@ -582,6 +603,7 @@ const char *get_date_time_format_str(KNOWN_DATE_TIME_FORMAT *format,
 */
 bool my_TIME_to_str(const MYSQL_TIME *ltime, String *str, uint dec)
 {
+  APPENDFUNC;
   if (str->alloc(MAX_DATE_STRING_REP_LENGTH))
     return true;
   str->set_charset(&my_charset_numeric);
@@ -597,6 +619,7 @@ void make_truncated_value_warning(THD *thd,
                                   const char *db_name, const char *table_name,
                                   const char *field_name)
 {
+  APPENDFUNC;
   const char *type_str= Temporal::type_name_by_timestamp_type(time_type);
   return thd->push_warning_wrong_or_truncated_value
     (level, time_type <= MYSQL_TIMESTAMP_ERROR, type_str, sval->ptr(),
@@ -614,6 +637,7 @@ void make_truncated_value_warning(THD *thd,
 bool date_add_interval(THD *thd, MYSQL_TIME *ltime, interval_type int_type,
                        const INTERVAL &interval, bool push_warn)
 {
+  APPENDFUNC;
   long period, sign;
 
   sign= (interval.neg == (bool)ltime->neg ? 1 : -1);
@@ -768,6 +792,7 @@ bool
 calc_time_diff(const MYSQL_TIME *l_time1, const MYSQL_TIME *l_time2,
                int l_sign, ulonglong *seconds_out, ulong *microseconds_out)
 {
+  APPENDFUNC;
   long days;
   bool neg;
   longlong microseconds;
@@ -817,6 +842,7 @@ calc_time_diff(const MYSQL_TIME *l_time1, const MYSQL_TIME *l_time2,
 bool calc_time_diff(const MYSQL_TIME *l_time1, const MYSQL_TIME *l_time2,
                     int l_sign, MYSQL_TIME *l_time3, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   ulonglong seconds;
   ulong microseconds;
   bzero((char *) l_time3, sizeof(*l_time3));
@@ -861,6 +887,7 @@ bool calc_time_diff(const MYSQL_TIME *l_time1, const MYSQL_TIME *l_time2,
 
 int my_time_compare(const MYSQL_TIME *a, const MYSQL_TIME *b)
 {
+  APPENDFUNC;
   ulonglong a_t= pack_time(a);
   ulonglong b_t= pack_time(b);
 
@@ -880,6 +907,7 @@ int my_time_compare(const MYSQL_TIME *a, const MYSQL_TIME *b)
 */
 bool time_to_datetime(MYSQL_TIME *ltime)
 {
+  APPENDFUNC;
   DBUG_ASSERT(ltime->time_type == MYSQL_TIMESTAMP_TIME);
   DBUG_ASSERT(ltime->year == 0);
   DBUG_ASSERT(ltime->month == 0);
@@ -903,6 +931,7 @@ bool time_to_datetime(MYSQL_TIME *ltime)
 static void
 mix_date_and_time_simple(MYSQL_TIME *ldate, const MYSQL_TIME *ltime)
 {
+  APPENDFUNC;
   DBUG_ASSERT(ldate->time_type == MYSQL_TIMESTAMP_DATE ||
               ldate->time_type == MYSQL_TIMESTAMP_DATETIME);
   ldate->hour= ltime->hour;
@@ -919,6 +948,7 @@ mix_date_and_time_simple(MYSQL_TIME *ldate, const MYSQL_TIME *ltime)
 static void
 mix_date_and_time_complex(MYSQL_TIME *ldate, const MYSQL_TIME *ltime)
 {
+  APPENDFUNC;
   DBUG_ASSERT(ldate->time_type == MYSQL_TIMESTAMP_DATE ||
               ldate->time_type == MYSQL_TIMESTAMP_DATETIME);
   ulonglong seconds;
@@ -945,6 +975,7 @@ mix_date_and_time_complex(MYSQL_TIME *ldate, const MYSQL_TIME *ltime)
 static void
 mix_date_and_time(MYSQL_TIME *to, const MYSQL_TIME *from)
 {
+  APPENDFUNC;
   if (!from->neg && from->hour < 24)
     mix_date_and_time_simple(to, from);
   else
@@ -957,6 +988,7 @@ mix_date_and_time(MYSQL_TIME *to, const MYSQL_TIME *from)
 */
 void set_current_date(THD *thd, MYSQL_TIME *to)
 {
+  APPENDFUNC;
   thd->variables.time_zone->gmt_sec_to_TIME(to, thd->query_start());
   thd->used|= THD::TIME_ZONE_USED;
   datetime_to_date(to);
@@ -969,6 +1001,7 @@ void set_current_date(THD *thd, MYSQL_TIME *to)
 static bool
 time_to_datetime_old(THD *thd, const MYSQL_TIME *from, MYSQL_TIME *to)
 {
+  APPENDFUNC;
   DBUG_ASSERT(from->time_type == MYSQL_TIMESTAMP_TIME);
 
   if (from->neg)
@@ -1001,6 +1034,7 @@ time_to_datetime_old(THD *thd, const MYSQL_TIME *from, MYSQL_TIME *to)
 bool
 time_to_datetime(THD *thd, const MYSQL_TIME *from, MYSQL_TIME *to)
 {
+  APPENDFUNC;
   if (thd->variables.old_behavior & OLD_MODE_ZERO_DATE_TIME_CAST)
     return time_to_datetime_old(thd, from, to);
   set_current_date(thd, to);
@@ -1014,6 +1048,7 @@ time_to_datetime_with_warn(THD *thd,
                            const MYSQL_TIME *from, MYSQL_TIME *to,
                            date_conv_mode_t fuzzydate)
 {
+  APPENDFUNC;
   int warn= 0;
   DBUG_ASSERT(from->time_type == MYSQL_TIMESTAMP_TIME);
   /*
@@ -1037,6 +1072,7 @@ time_to_datetime_with_warn(THD *thd,
 
 longlong pack_time(const MYSQL_TIME *my_time)
 {
+  APPENDFUNC;
   return  ((((((my_time->year     * 13ULL +
                my_time->month)    * 32ULL +
                my_time->day)      * 24ULL +
@@ -1051,6 +1087,7 @@ longlong pack_time(const MYSQL_TIME *my_time)
 void unpack_time(longlong packed, MYSQL_TIME *my_time,
                      enum_mysql_timestamp_type ts_type)
 {
+  APPENDFUNC;
   if ((my_time->neg= packed < 0))
     packed= -packed;
   get_one(my_time->second_part, 1000000ULL);

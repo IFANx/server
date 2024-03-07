@@ -28,6 +28,7 @@
 
 bool Item_func_history::val_bool()
 {
+  APPENDFUNC;
   Item_field *f= static_cast<Item_field *>(args[0]);
   DBUG_ASSERT(f->fixed());
   DBUG_ASSERT(f->field->flags & VERS_ROW_END);
@@ -36,6 +37,7 @@ bool Item_func_history::val_bool()
 
 void Item_func_history::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append(func_name_cstring());
   str->append('(');
   args[0]->print(str, query_type);
@@ -46,6 +48,7 @@ Item_func_trt_ts::Item_func_trt_ts(THD *thd, Item* a, TR_table::field_id_t _trt_
   Item_datetimefunc(thd, a),
   trt_field(_trt_field)
 {
+  APPENDFUNC;
   decimals= 6;
   null_value= true;
   DBUG_ASSERT(arg_count == 1 && args[0]);
@@ -55,6 +58,7 @@ Item_func_trt_ts::Item_func_trt_ts(THD *thd, Item* a, TR_table::field_id_t _trt_
 bool
 Item_func_trt_ts::get_date(THD *thd, MYSQL_TIME *res, date_mode_t fuzzydate)
 {
+  APPENDFUNC;
   DBUG_ASSERT(thd);
   DBUG_ASSERT(args[0]);
   if (args[0]->result_type() != INT_RESULT)
@@ -89,6 +93,7 @@ Item_func_trt_id::Item_func_trt_id(THD *thd, Item* a, TR_table::field_id_t _trt_
   trt_field(_trt_field),
   backwards(_backwards)
 {
+  APPENDFUNC;
   decimals= 0;
   unsigned_flag= 1;
   null_value= true;
@@ -100,6 +105,7 @@ Item_func_trt_id::Item_func_trt_id(THD *thd, Item* a, Item* b, TR_table::field_i
   trt_field(_trt_field),
   backwards(false)
 {
+  APPENDFUNC;
   decimals= 0;
   unsigned_flag= 1;
   null_value= true;
@@ -109,6 +115,7 @@ Item_func_trt_id::Item_func_trt_id(THD *thd, Item* a, Item* b, TR_table::field_i
 longlong
 Item_func_trt_id::get_by_trx_id(ulonglong trx_id)
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   DBUG_ASSERT(thd);
 
@@ -129,6 +136,7 @@ Item_func_trt_id::get_by_trx_id(ulonglong trx_id)
 longlong
 Item_func_trt_id::get_by_commit_ts(MYSQL_TIME &commit_ts, bool backwards)
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   DBUG_ASSERT(thd);
 
@@ -143,6 +151,7 @@ Item_func_trt_id::get_by_commit_ts(MYSQL_TIME &commit_ts, bool backwards)
 longlong
 Item_func_trt_id::val_int()
 {
+  APPENDFUNC;
   if (args[0]->is_null())
   {
     if (arg_count < 2 || trt_field == TR_table::FLD_TRX_ID)
@@ -175,6 +184,7 @@ Item_func_trt_trx_sees::Item_func_trt_trx_sees(THD *thd, Item* a, Item* b) :
   Item_bool_func(thd, a, b),
   accept_eq(false)
 {
+  APPENDFUNC;
   null_value= true;
   DBUG_ASSERT(arg_count == 2 && args[0] && args[1]);
 }
@@ -182,6 +192,7 @@ Item_func_trt_trx_sees::Item_func_trt_trx_sees(THD *thd, Item* a, Item* b) :
 longlong
 Item_func_trt_trx_sees::val_int()
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   DBUG_ASSERT(thd);
 

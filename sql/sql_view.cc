@@ -67,6 +67,7 @@ static void make_unique_view_field_name(THD *thd, Item *target,
                                         List<Item> &item_list,
                                         Item *last_element)
 {
+  APPENDFUNC;
   const char *name= (target->orig_name.str ?
                      target->orig_name.str :
                      target->name.str);
@@ -131,6 +132,7 @@ static void make_unique_view_field_name(THD *thd, Item *target,
 
 bool check_duplicate_names(THD *thd, List<Item> &item_list, bool gen_unique_view_name)
 {
+  APPENDFUNC;
   Item *item;
   List_iterator_fast<Item> it(item_list);
   List_iterator_fast<Item> itc(item_list);
@@ -175,6 +177,7 @@ err:
 
 void make_valid_column_names(THD *thd, List<Item> &item_list)
 {
+  APPENDFUNC;
   Item *item;
   size_t name_len;
   List_iterator_fast<Item> it(item_list);
@@ -217,6 +220,7 @@ void make_valid_column_names(THD *thd, List<Item> &item_list)
 static bool
 fill_defined_view_parts (THD *thd, TABLE_LIST *view)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   TABLE_LIST decoy;
 
@@ -257,6 +261,7 @@ fill_defined_view_parts (THD *thd, TABLE_LIST *view)
 bool create_view_precheck(THD *thd, TABLE_LIST *tables, TABLE_LIST *view,
                           enum_view_create_mode mode)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   /* first table in list is target VIEW name => cut off it */
   TABLE_LIST *tbl;
@@ -378,6 +383,7 @@ err:
 bool create_view_precheck(THD *thd, TABLE_LIST *tables, TABLE_LIST *view,
                           enum_view_create_mode mode)
 {
+  APPENDFUNC;
   return FALSE;
 }
 
@@ -400,6 +406,7 @@ bool create_view_precheck(THD *thd, TABLE_LIST *tables, TABLE_LIST *view,
 bool mysql_create_view(THD *thd, TABLE_LIST *views,
                        enum_view_create_mode mode)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
   bool link_to_local;
   /* first table in list is target VIEW name => cut off it */
@@ -787,6 +794,7 @@ static void make_view_filename(LEX_CSTRING *dir, char *dir_buff,
                                LEX_CSTRING *file,
                                TABLE_LIST *view)
 {
+  APPENDFUNC;
   /* print file name */
   dir->length= build_table_filename(dir_buff, dir_buff_len - 1,
                                    view->db.str, "", "", 0);
@@ -874,6 +882,7 @@ static LEX_CSTRING view_file_type[]= {{STRING_WITH_LEN("VIEW") }};
 int mariadb_fix_view(THD *thd, TABLE_LIST *view, bool wrong_checksum,
                      bool swap_alg)
 {
+  APPENDFUNC;
   char dir_buff[FN_REFLEN + 1], path_buff[FN_REFLEN + 1];
   LEX_CSTRING dir, file, path;
   DBUG_ENTER("mariadb_fix_view");
@@ -953,6 +962,7 @@ static int mysql_register_view(THD *thd, DDL_LOG_STATE *ddl_log_state,
                                TABLE_LIST *view, enum_view_create_mode mode,
                                char *backup_file_name)
 {
+  APPENDFUNC;
   LEX *lex= thd->lex;
 
   /*
@@ -1247,6 +1257,7 @@ err:
 
 bool mariadb_view_version_get(TABLE_SHARE *share)
 {
+  APPENDFUNC;
   DBUG_ASSERT(share->is_view);
   DBUG_ASSERT(share->tabledef_version.length == 0);
 
@@ -1285,6 +1296,7 @@ bool mariadb_view_version_get(TABLE_SHARE *share)
 bool mysql_make_view(THD *thd, TABLE_SHARE *share, TABLE_LIST *table,
                      bool open_view_no_parse)
 {
+  APPENDFUNC;
   SELECT_LEX_NODE *end;
   SELECT_LEX *UNINIT_VAR(view_select);
   LEX *old_lex, *lex;
@@ -1905,6 +1917,7 @@ err:
 
 bool mysql_drop_view(THD *thd, TABLE_LIST *views, enum_drop_mode drop_mode)
 {
+  APPENDFUNC;
   char path[FN_REFLEN + 1];
   TABLE_LIST *view;
   String non_existant_views;
@@ -2051,6 +2064,7 @@ bool mysql_drop_view(THD *thd, TABLE_LIST *views, enum_drop_mode drop_mode)
 
 bool check_key_in_view(THD *thd, TABLE_LIST *view)
 {
+  APPENDFUNC;
   TABLE *table;
   Field_translator *trans, *end_of_trans;
   KEY *key_info, *key_info_end;
@@ -2173,6 +2187,7 @@ bool check_key_in_view(THD *thd, TABLE_LIST *view)
 
 bool insert_view_fields(THD *thd, List<Item> *list, TABLE_LIST *view)
 {
+  APPENDFUNC;
   Field_translator *trans_end;
   Field_translator *trans;
   DBUG_ENTER("insert_view_fields");
@@ -2219,6 +2234,7 @@ bool insert_view_fields(THD *thd, List<Item> *list, TABLE_LIST *view)
 
 int view_checksum(THD *thd, TABLE_LIST *view)
 {
+  APPENDFUNC;
   char md5[MD5_BUFF_LENGTH];
   if (!view->view || view->md5.length != VIEW_MD5_LEN)
     return HA_ADMIN_NOT_IMPLEMENTED;
@@ -2241,6 +2257,7 @@ int view_checksum(THD *thd, TABLE_LIST *view)
 */
 int view_check(THD *thd, TABLE_LIST *view, HA_CHECK_OPT *check_opt)
 {
+  APPENDFUNC;
   DBUG_ENTER("view_check");
 
   int res= view_checksum(thd, view);
@@ -2268,6 +2285,7 @@ int view_check(THD *thd, TABLE_LIST *view, HA_CHECK_OPT *check_opt)
 
 int view_repair(THD *thd, TABLE_LIST *view, HA_CHECK_OPT *check_opt)
 {
+  APPENDFUNC;
   DBUG_ENTER("view_repair");
   bool swap_alg= (check_opt->sql_flags & TT_FROM_MYSQL);
   bool wrong_checksum= view_checksum(thd, view) != HA_ADMIN_OK;
@@ -2303,6 +2321,7 @@ mysql_rename_view(THD *thd,
                   const LEX_CSTRING *old_db,
                   const LEX_CSTRING *old_name)
 {
+  APPENDFUNC;
   LEX_CSTRING pathstr;
   File_parser *parser;
   char path_buff[FN_REFLEN + 1];

@@ -43,6 +43,7 @@ Named_type_handler<Type_handler_long_blob_json>
 const Type_handler *
 Type_handler_json_common::json_type_handler_from_generic(const Type_handler *th)
 {
+  APPENDFUNC;
   // Test in the order of likelyhood.
   if (th == &type_handler_long_blob)
     return &type_handler_long_blob_json;
@@ -68,6 +69,7 @@ Type_handler_json_common::json_type_handler_from_generic(const Type_handler *th)
 const Type_handler *
 Type_handler_json_common::json_type_handler(uint max_octet_length)
 {
+  APPENDFUNC;
   if (max_octet_length >= 16777216)
     return &type_handler_long_blob_json;
   else if (max_octet_length >= 65536)
@@ -85,6 +87,7 @@ Type_handler_json_common::json_type_handler(uint max_octet_length)
 const Type_handler *
 Type_handler_json_common::json_blob_type_handler_by_length_bytes(uint len)
 {
+  APPENDFUNC;
   switch (len) {
   case 1: return &type_handler_tiny_blob_json;
   case 2: return &type_handler_blob_json;
@@ -101,6 +104,7 @@ Type_handler_json_common::json_blob_type_handler_by_length_bytes(uint len)
 const Type_handler *
 Type_handler_json_common::json_type_handler_sum(const Item_sum *item)
 {
+  APPENDFUNC;
   if (item->too_big_for_varchar())
     return &type_handler_blob_json;
   return &type_handler_varchar_json;
@@ -109,6 +113,7 @@ Type_handler_json_common::json_type_handler_sum(const Item_sum *item)
 
 bool Type_handler_json_common::has_json_valid_constraint(const Field *field)
 {
+  APPENDFUNC;
   return field->check_constraint &&
          field->check_constraint->expr &&
          field->check_constraint->expr->type() == Item::FUNC_ITEM &&
@@ -126,6 +131,7 @@ Virtual_column_info *
 Type_handler_json_common::make_json_valid_expr(THD *thd,
                                                const LEX_CSTRING *field_name)
 {
+  APPENDFUNC;
   Lex_ident_sys_st str;
   Item *field, *expr;
   str.set_valid_utf8(field_name);
@@ -143,6 +149,7 @@ Type_handler_json_common::make_json_valid_expr(THD *thd,
 bool Type_handler_json_common::make_json_valid_expr_if_needed(THD *thd,
                                                  Column_definition *c)
 {
+  APPENDFUNC;
   return !c->check_constraint &&
          !(c->check_constraint= make_json_valid_expr(thd, &c->field_name));
 }
@@ -238,6 +245,7 @@ public:
 
 const Type_collection *Type_handler_json_common::type_collection()
 {
+  APPENDFUNC;
   static Type_collection_json type_collection_json;
   return &type_collection_json;
 }

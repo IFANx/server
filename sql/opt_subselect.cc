@@ -484,6 +484,7 @@ end_sj_materialize(JOIN *join, JOIN_TAB *join_tab, bool end_of_records);
 bool is_materialization_applicable(THD *thd, Item_in_subselect *in_subs,
                                    st_select_lex *child_select)
 {
+  APPENDFUNC;
   st_select_lex_unit* parent_unit= child_select->master_unit();
   /*
     Check if the subquery predicate can be executed via materialization.
@@ -556,6 +557,7 @@ bool is_materialization_applicable(THD *thd, Item_in_subselect *in_subs,
 
 bool SELECT_LEX::is_sj_conversion_prohibited(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ASSERT(master_unit()->item->substype() == Item_subselect::IN_SUBS);
 
   SELECT_LEX *outer_sl= outer_select();
@@ -602,6 +604,7 @@ bool SELECT_LEX::is_sj_conversion_prohibited(THD *thd)
 
 int check_and_do_in_subquery_rewrites(JOIN *join)
 {
+  APPENDFUNC;
   THD *thd=join->thd;
   st_select_lex *select_lex= join->select_lex;
   st_select_lex_unit* parent_unit= select_lex->master_unit();
@@ -916,6 +919,7 @@ int check_and_do_in_subquery_rewrites(JOIN *join)
 static 
 bool subquery_types_allow_materialization(THD* thd, Item_in_subselect *in_subs)
 {
+  APPENDFUNC;
   Item *left_exp= in_subs->left_exp();
   DBUG_ENTER("subquery_types_allow_materialization");
 
@@ -996,6 +1000,7 @@ bool subquery_types_allow_materialization(THD* thd, Item_in_subselect *in_subs)
 
 bool JOIN::transform_max_min_subquery()
 {
+  APPENDFUNC;
   DBUG_ENTER("JOIN::transform_max_min_subquery");
   Item_subselect *subselect= unit->item;
   if (!subselect || (subselect->substype() != Item_subselect::ALL_SUBS &&
@@ -1019,6 +1024,7 @@ bool JOIN::transform_max_min_subquery()
 
 bool make_in_exists_conversion(THD *thd, JOIN *join, Item_in_subselect *item)
 {
+  APPENDFUNC;
   DBUG_ENTER("make_in_exists_conversion");
   JOIN *child_join= item->unit->first_select()->join;
   bool res;
@@ -1088,6 +1094,7 @@ bool make_in_exists_conversion(THD *thd, JOIN *join, Item_in_subselect *item)
 
 bool check_for_outer_joins(List<TABLE_LIST> *join_list)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   NESTED_JOIN *nested_join;
   List_iterator<TABLE_LIST> li(*join_list);
@@ -1109,6 +1116,7 @@ bool check_for_outer_joins(List<TABLE_LIST> *join_list)
 void find_and_block_conversion_to_sj(Item *to_find,
 				     List_iterator_fast<Item_in_subselect> &li)
 {
+  APPENDFUNC;
   if (to_find->type() == Item::FUNC_ITEM &&
      ((Item_func*)to_find)->functype() == Item_func::IN_OPTIMIZER_FUNC)
     to_find= ((Item_in_optimizer*)to_find)->get_wrapped_in_subselect_item();
@@ -1178,6 +1186,7 @@ void find_and_block_conversion_to_sj(Item *to_find,
 
 bool convert_join_subqueries_to_semijoins(JOIN *join)
 {
+  APPENDFUNC;
   Query_arena *arena, backup;
   Item_in_subselect *in_subq;
   THD *thd= join->thd;
@@ -1517,6 +1526,7 @@ void get_delayed_table_estimates(TABLE *table,
                                  double *scan_time,
                                  double *startup_cost)
 {
+  APPENDFUNC;
   Item_in_subselect *item= table->pos_in_table_list->jtbm_subselect;
   Table_function_json_table *table_function=
                                table->pos_in_table_list->table_function;
@@ -1570,6 +1580,7 @@ static bool replace_where_subcondition(JOIN *join, Item **expr,
                                        Item *old_cond, Item *new_cond,
                                        bool do_fix_fields)
 {
+  APPENDFUNC;
   if (*expr == old_cond)
   {
     *expr= new_cond;
@@ -1613,6 +1624,7 @@ static bool replace_where_subcondition(JOIN *join, Item **expr,
 static int subq_sj_candidate_cmp(Item_in_subselect* el1, Item_in_subselect* el2,
                                  void *arg)
 {
+  APPENDFUNC;
   return (el1->sj_convert_priority > el2->sj_convert_priority) ? -1 : 
          ( (el1->sj_convert_priority == el2->sj_convert_priority)? 0 : 1);
 }
@@ -1657,6 +1669,7 @@ static int subq_sj_candidate_cmp(Item_in_subselect* el1, Item_in_subselect* el2,
 
 static void reset_equality_number_for_subq_conds(Item * cond)
 {
+  APPENDFUNC;
   if (!cond)
     return;
   if (cond->type() == Item::COND_ITEM)
@@ -1709,6 +1722,7 @@ static void reset_equality_number_for_subq_conds(Item * cond)
 
 static bool convert_subq_to_sj(JOIN *parent_join, Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   SELECT_LEX *parent_lex= parent_join->select_lex;
   TABLE_LIST *emb_tbl_nest= NULL;
   TABLE_LIST *orig_tl;
@@ -2114,6 +2128,7 @@ const int SUBQERY_TEMPTABLE_NAME_MAX_LEN= 20;
 
 static void create_subquery_temptable_name(LEX_STRING *str, uint number)
 {
+  APPENDFUNC;
   char *to= str->str;
   DBUG_ASSERT(number < 10000);       
   to= strmov(to, "<subquery");
@@ -2142,6 +2157,7 @@ static bool convert_subq_to_jtbm(JOIN *parent_join,
                                  Item_in_subselect *subq_pred, 
                                  bool *remove_item)
 {
+  APPENDFUNC;
   SELECT_LEX *parent_lex= parent_join->select_lex;
   List<TABLE_LIST> *emb_join_list= &parent_lex->top_join_list;
   TABLE_LIST *emb_tbl_nest= NULL; // will change when we learn to handle outer joins
@@ -2235,6 +2251,7 @@ static bool convert_subq_to_jtbm(JOIN *parent_join,
 
 static TABLE_LIST *alloc_join_nest(THD *thd)
 {
+  APPENDFUNC;
   TABLE_LIST *tbl;
   if (!(tbl= (TABLE_LIST*) thd->calloc(ALIGN_SIZE(sizeof(TABLE_LIST))+
                                        sizeof(NESTED_JOIN))))
@@ -2250,6 +2267,7 @@ static TABLE_LIST *alloc_join_nest(THD *thd)
 
 void fix_list_after_tbl_changes(SELECT_LEX *new_parent, List<TABLE_LIST> *tlist)
 {
+  APPENDFUNC;
   List_iterator<TABLE_LIST> it(*tlist);
   TABLE_LIST *table;
   while ((table= it++))
@@ -2264,6 +2282,7 @@ void fix_list_after_tbl_changes(SELECT_LEX *new_parent, List<TABLE_LIST> *tlist)
 
 static void set_emb_join_nest(List<TABLE_LIST> *tables, TABLE_LIST *emb_sj_nest)
 {
+  APPENDFUNC;
   List_iterator<TABLE_LIST> it(*tables);
   TABLE_LIST *tbl;
   while ((tbl= it++))
@@ -2329,6 +2348,7 @@ static void set_emb_join_nest(List<TABLE_LIST> *tables, TABLE_LIST *emb_sj_nest)
 
 int pull_out_semijoin_tables(JOIN *join)
 {
+  APPENDFUNC;
   TABLE_LIST *sj_nest;
   DBUG_ENTER("pull_out_semijoin_tables");
   List_iterator<TABLE_LIST> sj_list_it(join->select_lex->sj_nests);
@@ -2545,6 +2565,7 @@ int pull_out_semijoin_tables(JOIN *join)
 
 bool optimize_semijoin_nests(JOIN *join, table_map all_table_map)
 {
+  APPENDFUNC;
   DBUG_ENTER("optimize_semijoin_nests");
   THD *thd= join->thd;
   List_iterator<TABLE_LIST> sj_list_it(join->select_lex->sj_nests);
@@ -2703,6 +2724,7 @@ bool optimize_semijoin_nests(JOIN *join, table_map all_table_map)
 static uint get_tmp_table_rec_length(Ref_ptr_array p_items, uint elements,
                                      bool *blobs_used)
 {
+  APPENDFUNC;
   uint len= 0;
   Item *item;
 
@@ -2767,6 +2789,7 @@ TMPTABLE_COSTS
 get_tmp_table_costs(THD *thd, double row_count, uint row_size, bool blobs_used,
                     bool add_copy_cost)
 {
+  APPENDFUNC;
   TMPTABLE_COSTS cost;
   /* From heap_prepare_hp_create_info(), assuming one hash key used */
   row_size+= sizeof(char*)*2;
@@ -2830,6 +2853,7 @@ get_tmp_table_costs(THD *thd, double row_count, uint row_size, bool blobs_used,
 
 bool find_eq_ref_candidate(TABLE *table, table_map sj_inner_tables)
 {
+  APPENDFUNC;
   KEYUSE *keyuse= table->reginfo.join_tab->keyuse;
 
   if (keyuse)
@@ -2927,6 +2951,7 @@ bool find_eq_ref_candidate(TABLE *table, table_map sj_inner_tables)
 
 bool is_multiple_semi_joins(JOIN *join, POSITION *prefix, uint idx, table_map inner_tables)
 {
+  APPENDFUNC;
   for (int i= (int)idx; i >= 0; i--)
   {
     TABLE_LIST *emb_sj_nest;
@@ -2945,6 +2970,7 @@ void optimize_semi_joins(JOIN *join, table_map remaining_tables, uint idx,
                          double *current_record_count,
                          double *current_read_time, POSITION *loose_scan_pos)
 {
+  APPENDFUNC;
   POSITION *pos= join->positions + idx;
   const JOIN_TAB *new_join_tab= pos->table; 
 
@@ -3159,6 +3185,7 @@ void optimize_semi_joins(JOIN *join, table_map remaining_tables, uint idx,
 void update_sj_state(JOIN *join, const JOIN_TAB *new_tab,
                      uint idx, table_map remaining_tables)
 {
+  APPENDFUNC;
   DBUG_ASSERT(!join->emb_sjm_nest);
   if (TABLE_LIST *emb_sj_nest= new_tab->emb_sj_nest)
   {
@@ -3177,6 +3204,7 @@ void update_sj_state(JOIN *join, const JOIN_TAB *new_tab,
 
 void Sj_materialization_picker::set_from_prev(POSITION *prev)
 {
+  APPENDFUNC;
   if (prev->sjmat_picker.is_used)
     set_empty();
   else
@@ -3198,6 +3226,7 @@ bool Sj_materialization_picker::check_qep(JOIN *join,
                                           sj_strategy_enum *strategy,
                                           POSITION *loose_scan_pos)
 {
+  APPENDFUNC;
   bool sjm_scan;
   SJ_MATERIALIZATION_INFO *mat_info;
   THD *thd= join->thd;
@@ -3362,6 +3391,7 @@ bool Sj_materialization_picker::check_qep(JOIN *join,
 
 void LooseScan_picker::set_from_prev(POSITION *prev)
 {
+  APPENDFUNC;
   if (prev->loosescan_picker.is_used)
     set_empty();
   else
@@ -3383,6 +3413,7 @@ bool LooseScan_picker::check_qep(JOIN *join,
                                  sj_strategy_enum *strategy,
                                  POSITION *loose_scan_pos)
 {
+  APPENDFUNC;
   POSITION *first= join->positions + first_loosescan_table; 
   /* 
     LooseScan strategy can't handle interleaving between tables from the 
@@ -3462,6 +3493,7 @@ bool LooseScan_picker::check_qep(JOIN *join,
 
 void Firstmatch_picker::set_from_prev(POSITION *prev)
 {
+  APPENDFUNC;
   if (prev->firstmatch_picker.is_used)
     invalidate_firstmatch_prefix();
   else
@@ -3483,6 +3515,7 @@ bool Firstmatch_picker::check_qep(JOIN *join,
                                   sj_strategy_enum *strategy,
                                   POSITION *loose_scan_pos)
 {
+  APPENDFUNC;
   if (new_join_tab->emb_sj_nest &&
       optimizer_flag(join->thd, OPTIMIZER_SWITCH_FIRSTMATCH) &&
       !join->outer_join)
@@ -3641,6 +3674,7 @@ With Duplicate_weedout we would try to instead do:
 
 void Duplicate_weedout_picker::set_from_prev(POSITION *prev)
 {
+  APPENDFUNC;
   if (prev->dups_weedout_picker.is_used)
     set_empty();
   else
@@ -3663,6 +3697,7 @@ bool Duplicate_weedout_picker::check_qep(JOIN *join,
                                          POSITION *loose_scan_pos
                                          )
 {
+  APPENDFUNC;
   TABLE_LIST *nest;
   if ((nest= new_join_tab->emb_sj_nest))
   {
@@ -3791,6 +3826,7 @@ bool Duplicate_weedout_picker::check_qep(JOIN *join,
 */
 void JOIN::dbug_verify_sj_inner_tables(uint prefix_size) const
 {
+  APPENDFUNC;
   table_map cur_map= const_table_map;
   table_map nests_entered= 0;
   if (emb_sjm_nest)
@@ -3829,6 +3865,7 @@ void JOIN::dbug_verify_sj_inner_tables(uint prefix_size) const
 void restore_prev_sj_state(const table_map remaining_tables, 
                            const JOIN_TAB *tab, uint idx)
 {
+  APPENDFUNC;
   TABLE_LIST *emb_sj_nest;
 
   if ((emb_sj_nest= tab->emb_sj_nest))
@@ -3888,6 +3925,7 @@ void restore_prev_sj_state(const table_map remaining_tables,
 ulonglong get_bound_sj_equalities(TABLE_LIST *sj_nest, 
                                   table_map remaining_tables)
 {
+  APPENDFUNC;
   List_iterator<Item_ptr> li(sj_nest->nested_join->sj_outer_expr_list);
   Item **item;
   uint i= 0;
@@ -3931,6 +3969,7 @@ static SJ_MATERIALIZATION_INFO *
 at_sjmat_pos(const JOIN *join, table_map remaining_tables, const JOIN_TAB *tab,
              uint idx, bool *loose_scan)
 {
+  APPENDFUNC;
   /*
    Check if 
     1. We're in a semi-join nest that can be run with SJ-materialization
@@ -3969,6 +4008,7 @@ at_sjmat_pos(const JOIN *join, table_map remaining_tables, const JOIN_TAB *tab,
 
 static void recalculate_prefix_record_count(JOIN *join, uint start, uint end)
 {
+  APPENDFUNC;
   DBUG_ASSERT(start >= join->const_tables);
 
   for (uint j= start; j < end ;j++)
@@ -4029,6 +4069,7 @@ static void recalculate_prefix_record_count(JOIN *join, uint start, uint end)
 
 void fix_semijoin_strategies_for_picked_join_order(JOIN *join)
 {
+  APPENDFUNC;
   join->sjm_lookup_tables= 0;
   join->sjm_scan_tables= 0;
   if (!join->select_lex->sj_nests.elements)
@@ -4300,6 +4341,7 @@ void fix_semijoin_strategies_for_picked_join_order(JOIN *join)
 
 uint get_number_of_tables_at_top_level(JOIN *join)
 {
+  APPENDFUNC;
   uint j= 0, tables= 0;
   while(j < join->table_count)
   {
@@ -4341,6 +4383,7 @@ uint get_number_of_tables_at_top_level(JOIN *join)
 
 bool setup_sj_materialization_part1(JOIN_TAB *sjm_tab)
 {
+  APPENDFUNC;
   JOIN_TAB *tab= sjm_tab->bush_children->start;
   TABLE_LIST *emb_sj_nest= tab->table->pos_in_table_list->embedding;
   SJ_MATERIALIZATION_INFO *sjm;
@@ -4415,6 +4458,7 @@ bool setup_sj_materialization_part1(JOIN_TAB *sjm_tab)
 
 bool setup_sj_materialization_part2(JOIN_TAB *sjm_tab)
 {
+  APPENDFUNC;
   DBUG_ENTER("setup_sj_materialization_part2");
   JOIN_TAB *tab= sjm_tab->bush_children->start;
   TABLE_LIST *emb_sj_nest= tab->table->pos_in_table_list->embedding;
@@ -4645,6 +4689,7 @@ bool setup_sj_materialization_part2(JOIN_TAB *sjm_tab)
 static Item *create_subq_in_equalities(THD *thd, SJ_MATERIALIZATION_INFO *sjm, 
                                 Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   Item *res= NULL;
   Item *left_exp= subq_pred->left_exp();
   uint ncols= left_exp->cols();
@@ -4679,6 +4724,7 @@ static Item *create_subq_in_equalities(THD *thd, SJ_MATERIALIZATION_INFO *sjm,
 
 static bool remove_sj_conds(THD *thd, Item **tree)
 {
+  APPENDFUNC;
   if (*tree)
   {
     if (is_cond_sj_in_equality(*tree))
@@ -4709,6 +4755,7 @@ static bool remove_sj_conds(THD *thd, Item **tree)
 /* Check if given Item was injected by semi-join equality */
 static bool is_cond_sj_in_equality(Item *item)
 {
+  APPENDFUNC;
   if (item->type() == Item::FUNC_ITEM &&
       ((Item_func*)item)->functype()== Item_func::EQ_FUNC)
   {
@@ -4753,6 +4800,7 @@ static bool is_cond_sj_in_equality(Item *item)
 bool
 SJ_TMP_TABLE::create_sj_weedout_tmp_table(THD *thd)
 {
+  APPENDFUNC;
   MEM_ROOT *mem_root_save, own_root;
   TABLE *table;
   TABLE_SHARE *share;
@@ -5039,6 +5087,7 @@ err:
 
 int SJ_TMP_TABLE::sj_weedout_delete_rows()
 {
+  APPENDFUNC;
   DBUG_ENTER("SJ_TMP_TABLE::sj_weedout_delete_rows");
   if (tmp_table)
   {
@@ -5070,6 +5119,7 @@ int SJ_TMP_TABLE::sj_weedout_delete_rows()
 
 int SJ_TMP_TABLE::sj_weedout_check_row(THD *thd)
 {
+  APPENDFUNC;
   int error;
   SJ_TMP_TABLE::TAB *tab= tabs;
   SJ_TMP_TABLE::TAB *tab_end= tabs_end;
@@ -5148,6 +5198,7 @@ int SJ_TMP_TABLE::sj_weedout_check_row(THD *thd)
 
 int init_dups_weedout(JOIN *join, uint first_table, int first_fanout_table, uint n_tables)
 {
+  APPENDFUNC;
   THD *thd= join->thd;
   DBUG_ENTER("init_dups_weedout");
   SJ_TMP_TABLE::TAB sjtabs[MAX_TABLES];
@@ -5234,6 +5285,7 @@ int init_dups_weedout(JOIN *join, uint first_table, int first_fanout_table, uint
 
 int setup_semijoin_loosescan(JOIN *join)
 {
+  APPENDFUNC;
   uint i;
   DBUG_ENTER("setup_semijoin_loosescan");
 
@@ -5384,6 +5436,7 @@ int setup_semijoin_loosescan(JOIN *join)
 int setup_semijoin_dups_elimination(JOIN *join, ulonglong options, 
                                     uint no_jbuf_after)
 {
+  APPENDFUNC;
   uint i;
   DBUG_ENTER("setup_semijoin_dups_elimination");
   
@@ -5526,6 +5579,7 @@ int setup_semijoin_dups_elimination(JOIN *join, ulonglong options,
 
 void destroy_sj_tmp_tables(JOIN *join)
 {
+  APPENDFUNC;
   List_iterator<TABLE> it(join->sj_tmp_tables);
   TABLE *table;
   while ((table= it++))
@@ -5557,6 +5611,7 @@ void destroy_sj_tmp_tables(JOIN *join)
 
 int clear_sj_tmp_tables(JOIN *join)
 {
+  APPENDFUNC;
   int res;
   List_iterator<TABLE> it(join->sj_tmp_tables);
   TABLE *table;
@@ -5603,6 +5658,7 @@ int clear_sj_tmp_tables(JOIN *join)
 
 static bool sj_table_is_included(JOIN *join, JOIN_TAB *join_tab)
 {
+  APPENDFUNC;
   if (join_tab->emb_sj_nest)
     return FALSE;
   
@@ -5654,6 +5710,7 @@ static bool sj_table_is_included(JOIN *join, JOIN_TAB *join_tab)
 
 static void save_index_subquery_explain_info(JOIN_TAB *join_tab, Item* where)
 {
+  APPENDFUNC;
   join_tab->packed_info= TAB_INFO_HAVE_VALUE;
   if (join_tab->table->covering_keys.is_set(join_tab->ref.key))
     join_tab->packed_info |= TAB_INFO_USING_INDEX;
@@ -5689,6 +5746,7 @@ static void save_index_subquery_explain_info(JOIN_TAB *join_tab, Item* where)
 
 int rewrite_to_index_subquery_engine(JOIN *join)
 {
+  APPENDFUNC;
   THD *thd= join->thd;
   JOIN_TAB* join_tab=join->join_tab;
   SELECT_LEX_UNIT *unit= join->unit;
@@ -5782,6 +5840,7 @@ int rewrite_to_index_subquery_engine(JOIN *join)
 
 static Item *remove_additional_cond(Item* conds)
 {
+  APPENDFUNC;
   if (conds->name.str == in_additional_cond.str)
     return 0;
   if (conds->type() == Item::COND_ITEM)
@@ -5836,6 +5895,7 @@ static Item *remove_additional_cond(Item* conds)
 
 static void remove_subq_pushed_predicates(JOIN *join, Item **where)
 {
+  APPENDFUNC;
   if (join->conds->type() == Item::FUNC_ITEM &&
       ((Item_func *)join->conds)->functype() == Item_func::EQ_FUNC &&
       ((Item_func *)join->conds)->arguments()[0]->type() == Item::REF_ITEM &&
@@ -5870,6 +5930,7 @@ static void remove_subq_pushed_predicates(JOIN *join, Item **where)
 
 bool JOIN::optimize_unflattened_subqueries()
 {
+  APPENDFUNC;
   return select_lex->optimize_unflattened_subqueries(false);
 }
 
@@ -5894,6 +5955,7 @@ bool JOIN::optimize_unflattened_subqueries()
  
 bool JOIN::optimize_constant_subqueries()
 {
+  APPENDFUNC;
   ulonglong save_options= select_lex->options;
   bool res;
   /*
@@ -5935,6 +5997,7 @@ bool JOIN::optimize_constant_subqueries()
 
 enum_nested_loop_state join_tab_execution_startup(JOIN_TAB *tab)
 {
+  APPENDFUNC;
   Item_in_subselect *in_subs;
   DBUG_ENTER("join_tab_execution_startup");
   
@@ -5998,6 +6061,7 @@ enum_nested_loop_state join_tab_execution_startup(JOIN_TAB *tab)
 
 TABLE *create_dummy_tmp_table(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("create_dummy_tmp_table");
   TABLE *table;
   TMP_TABLE_PARAM sjm_table_param;
@@ -6035,6 +6099,7 @@ TABLE *create_dummy_tmp_table(THD *thd)
 
 class select_value_catcher :public select_subselect
 {
+
 public:
   select_value_catcher(THD *thd_arg, Item_subselect *item_arg):
     select_subselect(thd_arg, item_arg)
@@ -6049,6 +6114,7 @@ public:
 
 int select_value_catcher::setup(List<Item> *items)
 {
+  APPENDFUNC;
   assigned= FALSE;
   n_elements= items->elements;
  
@@ -6069,6 +6135,7 @@ int select_value_catcher::setup(List<Item> *items)
 
 int select_value_catcher::send_data(List<Item> &items)
 {
+  APPENDFUNC;
   DBUG_ENTER("select_value_catcher::send_data");
   DBUG_ASSERT(!assigned);
   DBUG_ASSERT(items.elements == n_elements);
@@ -6112,6 +6179,7 @@ Item *and_new_conditions_to_optimized_cond(THD *thd, Item *cond,
                                            List<Item> &new_conds,
                                            Item::cond_result *cond_value)
 {
+  APPENDFUNC;
   COND_EQUAL new_cond_equal;
   Item *item;
   Item_equal *mult_eq;
@@ -6409,6 +6477,7 @@ bool execute_degenerate_jtbm_semi_join(THD *thd,
                                        Item_in_subselect *subq_pred,
                                        List<Item> &eq_list)
 {
+  APPENDFUNC;
   DBUG_ENTER("execute_degenerate_jtbm_semi_join");
   select_value_catcher *new_sink;
 
@@ -6499,6 +6568,7 @@ bool setup_degenerate_jtbm_semi_joins(JOIN *join,
                                       List<TABLE_LIST> *join_list,
 				      List<Item> &eq_list)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   NESTED_JOIN *nested_join;
   List_iterator<TABLE_LIST> li(*join_list);
@@ -6579,6 +6649,7 @@ bool setup_degenerate_jtbm_semi_joins(JOIN *join,
 bool setup_jtbm_semi_joins(JOIN *join, List<TABLE_LIST> *join_list,
                            List<Item> &eq_list)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   NESTED_JOIN *nested_join;
   List_iterator<TABLE_LIST> li(*join_list);
@@ -6666,6 +6737,7 @@ bool setup_jtbm_semi_joins(JOIN *join, List<TABLE_LIST> *join_list,
 
 void cleanup_empty_jtbm_semi_joins(JOIN *join, List<TABLE_LIST> *join_list)
 {
+  APPENDFUNC;
   List_iterator<TABLE_LIST> li(*join_list);
   TABLE_LIST *table;
   while ((table= li++))
@@ -6724,6 +6796,7 @@ void cleanup_empty_jtbm_semi_joins(JOIN *join, List<TABLE_LIST> *join_list)
 
 bool JOIN::choose_subquery_plan(table_map join_tables)
 {
+  APPENDFUNC;
   enum_reopt_result reopt_result= REOPT_NONE;
   Item_in_subselect *in_subs;
 
@@ -7002,6 +7075,7 @@ bool JOIN::choose_subquery_plan(table_map join_tables)
 
 bool JOIN::choose_tableless_subquery_plan()
 {
+  APPENDFUNC;
   DBUG_ASSERT(!tables_list || !table_count);
   if (unit->item)
   {
@@ -7062,6 +7136,7 @@ bool JOIN::choose_tableless_subquery_plan()
 
 bool Item::pushable_equality_checker_for_subquery(uchar *arg)
 {
+  APPENDFUNC;
   return
   get_corresponding_field_pair(this,
                                ((Item *)arg)->get_IN_subquery()->
@@ -7077,6 +7152,7 @@ bool Item::pushable_equality_checker_for_subquery(uchar *arg)
 
 Field_pair *find_matching_field_pair(Item *item, List<Field_pair> pair_list)
 {
+  APPENDFUNC;
   Field_pair *field_pair= get_corresponding_field_pair(item, pair_list);
   if (field_pair)
     return field_pair;
@@ -7101,6 +7177,7 @@ Field_pair *find_matching_field_pair(Item *item, List<Field_pair> pair_list)
 
 bool Item_field::excl_dep_on_in_subq_left_part(Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   if (find_matching_field_pair(((Item *) this), subq_pred->corresponding_fields))
     return true;
   return false;
@@ -7109,6 +7186,7 @@ bool Item_field::excl_dep_on_in_subq_left_part(Item_in_subselect *subq_pred)
 
 bool Item_direct_view_ref::excl_dep_on_in_subq_left_part(Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   if (item_equal)
   {
     DBUG_ASSERT(real_item()->type() == Item::FIELD_ITEM);
@@ -7121,6 +7199,7 @@ bool Item_direct_view_ref::excl_dep_on_in_subq_left_part(Item_in_subselect *subq
 
 bool Item_equal::excl_dep_on_in_subq_left_part(Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   Item *left_item = get_const();
   Item_equal_fields_iterator it(*this);
   Item *item;
@@ -7172,6 +7251,7 @@ static
 Item *get_corresponding_item(THD *thd, Item *item,
                              Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   DBUG_ASSERT(item->type() == Item::FIELD_ITEM ||
               (item->type() == Item::REF_ITEM &&
               ((Item_ref *) item)->ref_type() == Item_ref::VIEW_REF));
@@ -7204,6 +7284,7 @@ Item *get_corresponding_item(THD *thd, Item *item,
 
 Item *Item_field::in_subq_field_transformer_for_where(THD *thd, uchar *arg)
 {
+  APPENDFUNC;
   Item_in_subselect *subq_pred= ((Item *)arg)->get_IN_subquery();
   Item *producing_item= get_corresponding_item(thd, this, subq_pred);
   if (producing_item)
@@ -7215,6 +7296,7 @@ Item *Item_field::in_subq_field_transformer_for_where(THD *thd, uchar *arg)
 Item *Item_direct_view_ref::in_subq_field_transformer_for_where(THD *thd,
                                                                 uchar *arg)
 {
+  APPENDFUNC;
   if (item_equal)
   {
     Item_in_subselect *subq_pred= ((Item *)arg)->get_IN_subquery();
@@ -7249,6 +7331,7 @@ static Item*
 get_corresponding_item_for_in_subq_having(THD *thd, Item *in_item,
                                           Item_in_subselect *subq_pred)
 {
+  APPENDFUNC;
   Item *new_item= get_corresponding_item(thd, in_item, subq_pred);
 
   if (new_item)
@@ -7267,6 +7350,7 @@ get_corresponding_item_for_in_subq_having(THD *thd, Item *in_item,
 
 Item *Item_field::in_subq_field_transformer_for_having(THD *thd, uchar *arg)
 {
+  APPENDFUNC;
   DBUG_ASSERT(((Item *)arg)->get_IN_subquery());
   return get_corresponding_item_for_in_subq_having(thd, this,
                                                    (Item_in_subselect *)arg);
@@ -7276,6 +7360,7 @@ Item *Item_field::in_subq_field_transformer_for_having(THD *thd, uchar *arg)
 Item *Item_direct_view_ref::in_subq_field_transformer_for_having(THD *thd,
                                                                  uchar *arg)
 {
+  APPENDFUNC;
   if (!item_equal)
     return this;
   else
@@ -7309,6 +7394,7 @@ bool grouping_fields_in_the_in_subq_left_part(THD *thd,
                                               List<Field_pair> *fields,
                                               ORDER *grouping_list)
 {
+  APPENDFUNC;
   DBUG_ENTER("grouping_fields_in_the_in_subq_left_part");
   sel->grouping_tmp_fields.empty();
   List_iterator<Field_pair> it(*fields);
@@ -7383,6 +7469,7 @@ bool grouping_fields_in_the_in_subq_left_part(THD *thd,
 
 bool Item_in_subselect::pushdown_cond_for_in_subquery(THD *thd, Item *cond)
 {
+  APPENDFUNC;
   DBUG_ENTER("Item_in_subselect::pushdown_cond_for_in_subquery");
   Item *remaining_cond= NULL;
 
@@ -7496,5 +7583,6 @@ exit:
 */
 bool TABLE_LIST::is_sjm_scan_table()
 {
+  APPENDFUNC;
   return is_active_sjm() && sj_mat_info->is_sj_scan;
 }

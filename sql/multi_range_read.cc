@@ -50,6 +50,7 @@ void handler::calculate_costs(Cost_estimate *cost, uint keyno,
                               ulonglong io_blocks,
                               ulonglong unassigned_single_point_ranges)
 {
+  APPENDFUNC;
   cost->reset(this);
 
   if (!is_clustering_key(keyno))
@@ -132,6 +133,7 @@ handler::multi_range_read_info_const(uint keyno, RANGE_SEQ_IF *seq,
                                      ha_rows top_limit,
                                      Cost_estimate *cost)
 {
+  APPENDFUNC;
   KEY_MULTI_RANGE range;
   range_seq_t seq_it;
   ha_rows total_rows= 0;
@@ -443,6 +445,7 @@ ha_rows handler::multi_range_read_info(uint keyno, uint n_ranges,
                                        uint key_parts, uint *bufsz,
                                        uint *flags, Cost_estimate *cost)
 {
+  APPENDFUNC;
   /* 
     Currently we expect this function to be called only in preparation of scan
     with HA_MRR_SINGLE_POINT property.
@@ -521,6 +524,7 @@ int
 handler::multi_range_read_init(RANGE_SEQ_IF *seq_funcs, void *seq_init_param,
                                uint n_ranges, uint mode, HANDLER_BUFFER *buf)
 {
+  APPENDFUNC;
   DBUG_ENTER("handler::multi_range_read_init");
   mrr_iter= seq_funcs->init(seq_init_param, n_ranges, mode);
   mrr_funcs= *seq_funcs;
@@ -544,6 +548,7 @@ handler::multi_range_read_init(RANGE_SEQ_IF *seq_funcs, void *seq_init_param,
 
 int handler::multi_range_read_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int result= HA_ERR_END_OF_FILE;
   bool range_res;
   DBUG_ENTER("handler::multi_range_read_next");
@@ -614,6 +619,7 @@ int Mrr_simple_index_reader::init(handler *h_arg, RANGE_SEQ_IF *seq_funcs,
                                   Lifo_buffer *key_buffer_arg,
                                   Buffer_manager *buf_manager_arg)
 {
+  APPENDFUNC;
   HANDLER_BUFFER no_buffer = {NULL, NULL, NULL};
   file= h_arg;
   return file->handler::multi_range_read_init(seq_funcs, seq_init_param,
@@ -623,6 +629,7 @@ int Mrr_simple_index_reader::init(handler *h_arg, RANGE_SEQ_IF *seq_funcs,
 
 int Mrr_simple_index_reader::get_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int res;
   while (!(res= file->handler::multi_range_read_next(range_info)))
   {
@@ -655,6 +662,7 @@ int Mrr_simple_index_reader::get_next(range_id_t *range_info)
 
 int Mrr_ordered_index_reader::get_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int res;
   DBUG_ENTER("Mrr_ordered_index_reader::get_next");
   
@@ -706,6 +714,7 @@ bool Mrr_ordered_index_reader::set_interruption_temp_buffer(uint rowid_length,
                                                             uchar **space_start,
                                                             uchar *space_end)
 {
+  APPENDFUNC;
   if (space_end - *space_start <= (ptrdiff_t)(rowid_length + key_len + saved_pk_len))
     return TRUE;
   support_scan_interruptions= TRUE; 
@@ -731,6 +740,7 @@ bool Mrr_ordered_index_reader::set_interruption_temp_buffer(uint rowid_length,
 
 void Mrr_ordered_index_reader::set_no_interruption_temp_buffer()
 {
+  APPENDFUNC;
   support_scan_interruptions= FALSE;
   saved_key_tuple= saved_rowid= saved_primary_key= NULL; /* safety */
   have_saved_rowid= FALSE;
@@ -739,6 +749,7 @@ void Mrr_ordered_index_reader::set_no_interruption_temp_buffer()
 
 void Mrr_ordered_index_reader::interrupt_read()
 {
+  APPENDFUNC;
   DBUG_ASSERT(support_scan_interruptions);
   TABLE *table= file->get_table();
   KEY *used_index= &table->key_info[file->active_index];
@@ -761,6 +772,7 @@ void Mrr_ordered_index_reader::interrupt_read()
 
 void Mrr_ordered_index_reader::position()
 {
+  APPENDFUNC;
   if (have_saved_rowid)
     memcpy(file->ref, saved_rowid, file->ref_length);
   else
@@ -769,6 +781,7 @@ void Mrr_ordered_index_reader::position()
 
 void Mrr_ordered_index_reader::resume_read()
 {
+  APPENDFUNC;
   TABLE *table= file->get_table();
 
   if (!read_was_interrupted)
@@ -796,6 +809,7 @@ void Mrr_ordered_index_reader::resume_read()
 
 int Mrr_ordered_index_reader::refill_buffer(bool initial)
 {
+  APPENDFUNC;
   KEY_MULTI_RANGE cur_range;
   DBUG_ENTER("Mrr_ordered_index_reader::refill_buffer");
 
@@ -849,6 +863,7 @@ int Mrr_ordered_index_reader::init(handler *h_arg, RANGE_SEQ_IF *seq_funcs,
                                    Lifo_buffer *key_buffer_arg,
                                    Buffer_manager *buf_manager_arg)
 {
+  APPENDFUNC;
   file= h_arg;
   key_buffer= key_buffer_arg;
   buf_manager= buf_manager_arg;
@@ -871,6 +886,7 @@ int Mrr_ordered_index_reader::init(handler *h_arg, RANGE_SEQ_IF *seq_funcs,
 
 static int rowid_cmp_reverse(void *file, uchar *a, uchar *b)
 {
+  APPENDFUNC;
   return - ((handler*)file)->cmp_ref(a, b);
 }
 
@@ -881,6 +897,7 @@ int Mrr_ordered_rndpos_reader::init(handler *h_arg,
                                     Lifo_buffer *buf,
                                     Rowid_filter *filter)
 {
+  APPENDFUNC;
   file= h_arg;
   index_reader= index_reader_arg;
   rowid_buffer= buf;
@@ -910,6 +927,7 @@ int Mrr_ordered_rndpos_reader::init(handler *h_arg,
 
 int Mrr_ordered_rndpos_reader::refill_buffer(bool initial)
 {
+  APPENDFUNC;
   int res;
   bool first_call= initial;
   DBUG_ENTER("Mrr_ordered_rndpos_reader::refill_buffer");
@@ -943,6 +961,7 @@ int Mrr_ordered_rndpos_reader::refill_buffer(bool initial)
 
 void Mrr_index_reader::position()
 {
+  APPENDFUNC;
   file->position(file->get_table()->record[0]);
 }
 
@@ -954,6 +973,7 @@ void Mrr_index_reader::position()
 
 int Mrr_ordered_rndpos_reader::refill_from_index_reader()
 {
+  APPENDFUNC;
   range_id_t range_info;
   int res;
   DBUG_ENTER("Mrr_ordered_rndpos_reader::refill_from_index_reader");
@@ -1025,6 +1045,7 @@ int Mrr_ordered_rndpos_reader::refill_from_index_reader()
 
 int Mrr_ordered_rndpos_reader::get_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int res;
   
   /* 
@@ -1123,6 +1144,7 @@ int DsMrr_impl::dsmrr_init(handler *h_arg, RANGE_SEQ_IF *seq_funcs,
                            void *seq_init_param, uint n_ranges, uint mode,
                            HANDLER_BUFFER *buf)
 {
+  APPENDFUNC;
   TABLE *table= h_arg->get_table();
   THD *thd= table->in_use;
   int res;
@@ -1360,6 +1382,7 @@ use_default_impl:
 
 int DsMrr_impl::setup_two_handlers()
 {
+  APPENDFUNC;
   int res;
   THD *thd= primary_file->get_table()->in_use;
   DBUG_ENTER("DsMrr_impl::setup_two_handlers");
@@ -1450,6 +1473,7 @@ error:
 
 void DsMrr_impl::close_second_handler()
 {
+  APPENDFUNC;
   if (secondary_file)
   {
     secondary_file->extra(HA_EXTRA_NO_KEYREAD);
@@ -1464,6 +1488,7 @@ void DsMrr_impl::close_second_handler()
 
 void DsMrr_impl::dsmrr_close()
 {
+  APPENDFUNC;
   DBUG_ENTER("DsMrr_impl::dsmrr_close");
   rowid_filter= NULL;
   close_second_handler();
@@ -1479,6 +1504,7 @@ void DsMrr_impl::dsmrr_close()
 int Mrr_ordered_index_reader::compare_keys(void* arg, uchar* key1_arg, 
                                            uchar* key2_arg)
 {
+  APPENDFUNC;
   Mrr_ordered_index_reader *reader= (Mrr_ordered_index_reader*)arg;
   TABLE *table= reader->file->get_table();
   KEY_PART_INFO *part= table->key_info[reader->file->active_index].key_part;
@@ -1503,6 +1529,7 @@ int Mrr_ordered_index_reader::compare_keys(void* arg, uchar* key1_arg,
 int Mrr_ordered_index_reader::compare_keys_reverse(void* arg, uchar* key1, 
                                                    uchar* key2)
 {
+  APPENDFUNC;
   return -compare_keys(arg, key1, key2);
 }
 
@@ -1521,6 +1548,7 @@ int Mrr_ordered_index_reader::compare_keys_reverse(void* arg, uchar* key1,
 bool DsMrr_impl::setup_buffer_sharing(uint key_size_in_keybuf, 
                                       key_part_map key_tuple_map)
 {
+  APPENDFUNC;
   long key_buff_elem_size= key_size_in_keybuf + 
                            (int)is_mrr_assoc * sizeof(range_id_t);
   
@@ -1572,12 +1600,14 @@ bool DsMrr_impl::setup_buffer_sharing(uint key_size_in_keybuf,
 
 void DsMrr_impl::do_nothing(void *dsmrr_arg)
 {
+  APPENDFUNC;
   /* Do nothing */
 }
 
 
 void DsMrr_impl::reset_buffer_sizes(void *dsmrr_arg)
 {
+  APPENDFUNC;
   DsMrr_impl *dsmrr= (DsMrr_impl*)dsmrr_arg;
   dsmrr->rowid_buffer.set_buffer_space(dsmrr->full_buf, 
                                        dsmrr->rowid_buffer_end);
@@ -1592,6 +1622,7 @@ void DsMrr_impl::reset_buffer_sizes(void *dsmrr_arg)
 
 void DsMrr_impl::redistribute_buffer_space(void *dsmrr_arg)
 {
+  APPENDFUNC;
   DsMrr_impl *dsmrr= (DsMrr_impl*)dsmrr_arg;
   uchar *unused_start, *unused_end;
   dsmrr->key_buffer->remove_unused_space(&unused_start, &unused_end);
@@ -1615,6 +1646,7 @@ void DsMrr_impl::redistribute_buffer_space(void *dsmrr_arg)
 
 int Key_value_records_iterator::init(Mrr_ordered_index_reader *owner_arg)
 {
+  APPENDFUNC;
   int res;
   owner= owner_arg;
 
@@ -1659,6 +1691,7 @@ int Key_value_records_iterator::init(Mrr_ordered_index_reader *owner_arg)
 
 int Key_value_records_iterator::get_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int res;
 
   if (get_next_row)
@@ -1707,6 +1740,7 @@ int Key_value_records_iterator::get_next(range_id_t *range_info)
 
 void Key_value_records_iterator::move_to_next_key_value()
 {
+  APPENDFUNC;
   while (!owner->key_buffer->read() && 
          (owner->key_buffer->read_ptr1 != last_identical_key_ptr)) {}
 }
@@ -1720,6 +1754,7 @@ void Key_value_records_iterator::move_to_next_key_value()
 
 int DsMrr_impl::dsmrr_next(range_id_t *range_info)
 {
+  APPENDFUNC;
   int res;
   if (strategy_exhausted)
     return HA_ERR_END_OF_FILE;
@@ -1740,6 +1775,7 @@ ha_rows DsMrr_impl::dsmrr_info(uint keyno, uint n_ranges, uint rows,
                                uint key_parts,
                                uint *bufsz, uint *flags, Cost_estimate *cost)
 {  
+  APPENDFUNC;
   ha_rows res __attribute__((unused));
   uint def_flags= *flags;
   uint def_bufsz= *bufsz;
@@ -1776,6 +1812,7 @@ ha_rows DsMrr_impl::dsmrr_info_const(uint keyno, RANGE_SEQ_IF *seq,
                                      uint *bufsz, uint *flags, ha_rows limit,
                                      Cost_estimate *cost)
 {
+  APPENDFUNC;
   ha_rows rows;
   uint def_flags= *flags;
   uint def_bufsz= *bufsz;
@@ -1834,6 +1871,7 @@ ha_rows DsMrr_impl::dsmrr_info_const(uint keyno, RANGE_SEQ_IF *seq,
 
 bool key_uses_partial_cols(TABLE_SHARE *share, uint keyno)
 {
+  APPENDFUNC;
   KEY_PART_INFO *kp= share->key_info[keyno].key_part;
   KEY_PART_INFO *kp_end= kp + share->key_info[keyno].user_defined_key_parts;
   for (; kp != kp_end; kp++)
@@ -1859,6 +1897,7 @@ bool key_uses_partial_cols(TABLE_SHARE *share, uint keyno)
 bool DsMrr_impl::check_cpk_scan(THD *thd, TABLE_SHARE *share, uint keyno, 
                                 uint mrr_flags)
 {
+  APPENDFUNC;
   return MY_TEST((mrr_flags & HA_MRR_SINGLE_POINT) &&
                  primary_file->is_clustering_key(keyno) &&
                  optimizer_flag(thd, OPTIMIZER_SWITCH_MRR_SORT_KEYS));
@@ -1892,6 +1931,7 @@ bool DsMrr_impl::check_cpk_scan(THD *thd, TABLE_SHARE *share, uint keyno,
 bool DsMrr_impl::choose_mrr_impl(uint keyno, ha_rows rows, uint *flags,
                                  uint *bufsz, Cost_estimate *cost)
 {
+  APPENDFUNC;
   Cost_estimate dsmrr_cost;
   bool res;
   THD *thd= primary_file->get_table()->in_use;
@@ -1969,6 +2009,7 @@ bool DsMrr_impl::choose_mrr_impl(uint keyno, ha_rows rows, uint *flags,
 
 int DsMrr_impl::dsmrr_explain_info(uint mrr_mode, char *str, size_t size)
 {
+  APPENDFUNC;
   const char *key_ordered=   "Key-ordered scan";
   const char *rowid_ordered= "Rowid-ordered scan";
   const char *both_ordered=  "Key-ordered Rowid-ordered scan";
@@ -2021,6 +2062,7 @@ bool DsMrr_impl::get_disk_sweep_mrr_cost(uint keynr, ha_rows rows, uint flags,
                                          uint extra_mem_overhead,
                                          Cost_estimate *cost)
 {
+  APPENDFUNC;
   ulong max_buff_entries, elem_size;
   ha_rows rows_in_full_step;
   ha_rows rows_in_last_step;
@@ -2101,6 +2143,7 @@ bool DsMrr_impl::get_disk_sweep_mrr_cost(uint keynr, ha_rows rows, uint flags,
 static 
 void get_sort_and_sweep_cost(TABLE *table, ha_rows nrows, Cost_estimate *cost)
 {
+  APPENDFUNC;
   if (nrows)
   {
     get_sweep_read_cost(table, nrows, FALSE, cost);
@@ -2126,6 +2169,7 @@ void get_sort_and_sweep_cost(TABLE *table, ha_rows nrows, Cost_estimate *cost)
 static void get_sweep_read_cost(TABLE *table, ha_rows nrows, bool interrupted,
                                 Cost_estimate *cost)
 {
+  APPENDFUNC;
   DBUG_ENTER("get_sweep_read_cost");
 
 #ifndef OLD_SWEEP_COST

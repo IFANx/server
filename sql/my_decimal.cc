@@ -42,6 +42,7 @@
 
 int decimal_operation_results(int result, const char *value, const char *type)
 {
+  APPENDFUNC;
   /* Avoid calling current_thd on default path */
   if (likely(result == E_DEC_OK))
     return(result);
@@ -99,6 +100,7 @@ int decimal_operation_results(int result, const char *value, const char *type)
 int my_decimal::to_string_native(String *str, uint fixed_prec, uint fixed_dec,
                                  char filler, uint mask) const
 {
+  APPENDFUNC;
   /*
     Calculate the size of the string: For DECIMAL(a,b), fixed_prec==a
     holds true iff the type is also ZEROFILL, which in turn implies
@@ -154,6 +156,7 @@ str_set_decimal(uint mask, const my_decimal *val,
                 uint fixed_prec, uint fixed_dec, char filler,
                 String *str, CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   if (!(cs->state & MY_CS_NONASCII))
   {
     // For ASCII-compatible character sets we can use to_string_native()
@@ -201,6 +204,7 @@ str_set_decimal(uint mask, const my_decimal *val,
 int my_decimal::to_binary(uchar *bin, int prec, decimal_digits_t scale,
                           uint mask) const
 {
+  APPENDFUNC;
   int err1= E_DEC_OK, err2;
   my_decimal rounded;
   my_decimal2decimal(this, &rounded);
@@ -241,6 +245,7 @@ int str2my_decimal(uint mask, const char *from, size_t length,
                    CHARSET_INFO *charset, my_decimal *decimal_value,
                    const char **end_ptr)
 {
+  APPENDFUNC;
   int err;
   if (charset->mbminlen > 1)
   {
@@ -272,6 +277,7 @@ int str2my_decimal(uint mask, const char *from, size_t length,
 bool my_decimal2seconds(const my_decimal *d, ulonglong *sec,
                         ulong *microsec, ulong *nanosec)
 {
+  APPENDFUNC;
   int pos;
   
   if (d->intg)
@@ -309,6 +315,7 @@ bool my_decimal2seconds(const my_decimal *d, ulonglong *sec,
 my_decimal *seconds2my_decimal(bool sign,
                                ulonglong sec, ulong microsec, my_decimal *d)
 {
+  APPENDFUNC;
   d->init();
   longlong2decimal(sec, d); // cannot fail
   if (microsec)
@@ -323,6 +330,7 @@ my_decimal *seconds2my_decimal(bool sign,
 
 my_decimal *date2my_decimal(const MYSQL_TIME *ltime, my_decimal *dec)
 {
+  APPENDFUNC;
   longlong date= (ltime->year*100L + ltime->month)*100L + ltime->day;
   if (ltime->time_type > MYSQL_TIMESTAMP_DATE)
     date= ((date*100L + ltime->hour)*100L+ ltime->minute)*100L + ltime->second;
@@ -332,6 +340,7 @@ my_decimal *date2my_decimal(const MYSQL_TIME *ltime, my_decimal *dec)
 
 void my_decimal_trim(ulonglong *precision, decimal_digits_t *scale)
 {
+  APPENDFUNC;
   if (!(*precision) && !(*scale))
   {
     *precision= 10;
@@ -348,6 +357,7 @@ void my_decimal_trim(ulonglong *precision, decimal_digits_t *scale)
 int my_decimal2int(uint mask, const decimal_t *d, bool unsigned_flag,
 		   longlong *l, decimal_round_mode round_type)
 {
+  APPENDFUNC;
   int res;
   my_decimal rounded;
   /* decimal_round can return only E_DEC_TRUNCATED */
@@ -371,6 +381,7 @@ int my_decimal2int(uint mask, const decimal_t *d, bool unsigned_flag,
 
 longlong my_decimal::to_longlong(bool unsigned_flag) const
 {
+  APPENDFUNC;
   longlong result;
   my_decimal2int(E_DEC_FATAL_ERROR, this, unsigned_flag, &result);
   return result;
@@ -379,6 +390,7 @@ longlong my_decimal::to_longlong(bool unsigned_flag) const
 
 my_decimal::my_decimal(Field *field)
 {
+  APPENDFUNC;
   init();
   DBUG_ASSERT(!field->is_null());
 #ifdef DBUG_ASSERT_EXISTS
@@ -396,6 +408,7 @@ my_decimal::my_decimal(Field *field)
 void
 print_decimal(const my_decimal *dec)
 {
+  APPENDFUNC;
   int i, end;
   char buff[512], *pos;
   pos= buff;
@@ -413,6 +426,7 @@ print_decimal(const my_decimal *dec)
 void
 print_decimal_buff(const my_decimal *dec, const uchar* ptr, int length)
 {
+  APPENDFUNC;
   print_decimal(dec);
   fprintf(DBUG_FILE, "Record: ");
   for (int i= 0; i < length; i++)
@@ -425,6 +439,7 @@ print_decimal_buff(const my_decimal *dec, const uchar* ptr, int length)
 
 const char *dbug_decimal_as_string(char *buff, const my_decimal *val)
 {
+  APPENDFUNC;
   int length= DECIMAL_MAX_STR_LENGTH + 1;     /* minimum size for buff */
   if (!val)
     return "NULL";

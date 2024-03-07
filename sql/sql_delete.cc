@@ -61,6 +61,7 @@
 
 Explain_delete* Delete_plan::save_explain_delete_data(THD *thd, MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   Explain_query *query= thd->lex->explain;
   Explain_delete *explain= 
      new (mem_root) Explain_delete(mem_root, thd->lex->analyze_stmt);
@@ -89,6 +90,7 @@ Explain_delete* Delete_plan::save_explain_delete_data(THD *thd, MEM_ROOT *mem_ro
 Explain_update* 
 Update_plan::save_explain_update_data(THD *thd, MEM_ROOT *mem_root)
 {
+  APPENDFUNC;
   Explain_query *query= thd->lex->explain;
   Explain_update* explain= 
     new (mem_root) Explain_update(mem_root, thd->lex->analyze_stmt);
@@ -106,6 +108,7 @@ bool Update_plan::save_explain_data_intern(THD *thd,
                                            Explain_update *explain,
                                            bool is_analyze)
 {
+  APPENDFUNC;
   explain->select_type= "SIMPLE";
   explain->table_name.append(table->alias);
   
@@ -225,6 +228,7 @@ bool Update_plan::save_explain_data_intern(THD *thd,
 static bool record_should_be_deleted(THD *thd, TABLE *table, SQL_SELECT *sel,
                                      Explain_delete *explain, bool truncate_history)
 {
+  APPENDFUNC;
   explain->tracker.on_record_read();
   thd->inc_examined_row_count();
   if (table->vfield)
@@ -242,6 +246,7 @@ int update_portion_of_time(THD *thd, TABLE *table,
                            const vers_select_conds_t &period_conds,
                            bool *inside_period)
 {
+  APPENDFUNC;
   bool lcond= period_conds.field_start->val_datetime_packed(thd)
               < period_conds.start.item->val_datetime_packed(thd);
   bool rcond= period_conds.field_end->val_datetime_packed(thd)
@@ -288,6 +293,7 @@ int update_portion_of_time(THD *thd, TABLE *table,
 inline
 int TABLE::delete_row()
 {
+  APPENDFUNC;
   if (!versioned(VERS_TIMESTAMP) || !vers_end_field()->is_max())
     return file->ha_delete_row(record[0]);
 
@@ -314,6 +320,7 @@ int TABLE::delete_row()
 
 bool Sql_cmd_delete::delete_from_single_table(THD *thd)
 {
+  APPENDFUNC;
   int error;
   int loc_error;
   bool transactional_table;
@@ -1009,6 +1016,7 @@ got_error:
 
 extern "C" int refpos_order_cmp(void* arg, const void *a,const void *b)
 {
+  APPENDFUNC;
   handler *file= (handler*)arg;
   return file->cmp_ref((const uchar*)a, (const uchar*)b);
 }
@@ -1019,6 +1027,7 @@ multi_delete::multi_delete(THD *thd_arg, TABLE_LIST *dt, uint num_of_tables_arg)
     num_of_tables(num_of_tables_arg), error(0),
     do_delete(0), transactional_tables(0), normal_tables(0), error_handled(0)
 {
+  APPENDFUNC;
   tempfiles= (Unique **) thd_arg->calloc(sizeof(Unique *) * num_of_tables);
 }
 
@@ -1026,6 +1035,7 @@ multi_delete::multi_delete(THD *thd_arg, TABLE_LIST *dt, uint num_of_tables_arg)
 int
 multi_delete::prepare(List<Item> &values, SELECT_LEX_UNIT *u)
 {
+  APPENDFUNC;
   DBUG_ENTER("multi_delete::prepare");
   unit= u;
   do_delete= 1;
@@ -1035,6 +1045,7 @@ multi_delete::prepare(List<Item> &values, SELECT_LEX_UNIT *u)
 
 void multi_delete::prepare_to_read_rows()
 {
+  APPENDFUNC;
   /* see multi_update::prepare_to_read_rows() */
   for (TABLE_LIST *walk= delete_tables; walk; walk= walk->next_local)
   {
@@ -1046,6 +1057,7 @@ void multi_delete::prepare_to_read_rows()
 bool
 multi_delete::initialize_tables(JOIN *join)
 {
+  APPENDFUNC;
   TABLE_LIST *walk;
   Unique **tempfiles_ptr;
   DBUG_ENTER("initialize_tables");
@@ -1140,6 +1152,7 @@ multi_delete::initialize_tables(JOIN *join)
 
 multi_delete::~multi_delete()
 {
+  APPENDFUNC;
   for (table_being_deleted= delete_tables;
        table_being_deleted;
        table_being_deleted= table_being_deleted->next_local)
@@ -1161,6 +1174,7 @@ multi_delete::~multi_delete()
 
 int multi_delete::send_data(List<Item> &values)
 {
+  APPENDFUNC;
   int secure_counter= delete_while_scanning ? -1 : 0;
   TABLE_LIST *del_table;
   DBUG_ENTER("multi_delete::send_data");
@@ -1227,6 +1241,7 @@ int multi_delete::send_data(List<Item> &values)
 
 void multi_delete::abort_result_set()
 {
+  APPENDFUNC;
   DBUG_ENTER("multi_delete::abort_result_set");
 
   /* the error was handled or nothing deleted and no side effects return */
@@ -1297,6 +1312,7 @@ void multi_delete::abort_result_set()
 
 int multi_delete::do_deletes()
 {
+  APPENDFUNC;
   DBUG_ENTER("do_deletes");
   DBUG_ASSERT(do_delete);
 
@@ -1349,6 +1365,7 @@ int multi_delete::do_deletes()
 int multi_delete::do_table_deletes(TABLE *table, SORT_INFO *sort_info,
                                    bool ignore)
 {
+  APPENDFUNC;
   int local_error= 0;
   READ_RECORD info;
   ha_rows last_deleted= deleted;
@@ -1419,6 +1436,7 @@ int multi_delete::do_table_deletes(TABLE *table, SORT_INFO *sort_info,
 
 bool multi_delete::send_eof()
 {
+  APPENDFUNC;
   killed_state killed_status= NOT_KILLED;
   THD_STAGE_INFO(thd, stage_deleting_from_reference_tables);
 
@@ -1484,6 +1502,7 @@ bool multi_delete::send_eof()
 
 void  Sql_cmd_delete::remove_order_by_without_limit(THD *thd)
 {
+  APPENDFUNC;
   SELECT_LEX *const select_lex = thd->lex->first_select_lex();
   if (select_lex->order_list.elements &&
       !select_lex->limit_params.select_limit)
@@ -1504,6 +1523,7 @@ void  Sql_cmd_delete::remove_order_by_without_limit(THD *thd)
 
 bool Sql_cmd_delete::processing_as_multitable_delete_prohibited(THD *thd)
 {
+  APPENDFUNC;
   SELECT_LEX *const select_lex = thd->lex->first_select_lex();
   return
     ((select_lex->order_list.elements &&
@@ -1521,6 +1541,7 @@ bool Sql_cmd_delete::processing_as_multitable_delete_prohibited(THD *thd)
 
 bool Sql_cmd_delete::precheck(THD *thd)
 {
+  APPENDFUNC;
   if (!multitable)
   {
     if (delete_precheck(thd, lex->query_tables))
@@ -1558,6 +1579,7 @@ wsrep_error_label:
 
 bool Sql_cmd_delete::prepare_inner(THD *thd)
 {
+  APPENDFUNC;
   int err= 0;
   TABLE_LIST *target_tbl;
   JOIN *join;
@@ -1780,6 +1802,7 @@ err:
 
 bool Sql_cmd_delete::execute_inner(THD *thd)
 {
+  APPENDFUNC;
   if (!multitable)
   {
     if (lex->has_returning())

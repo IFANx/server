@@ -27,6 +27,7 @@
 bool
 Window_spec::check_window_names(List_iterator_fast<Window_spec> &it)
 {
+  APPENDFUNC;
   if (window_names_are_checked)
     return false;
   const char *name= this->name();
@@ -81,6 +82,7 @@ Window_spec::check_window_names(List_iterator_fast<Window_spec> &it)
 void
 Window_spec::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   str->append('(');
   print_partition(str, query_type);
   print_order(str, query_type);
@@ -93,6 +95,7 @@ Window_spec::print(String *str, enum_query_type query_type)
 void
 Window_spec::print_partition(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (partition_list->first)
   {
     str->append(STRING_WITH_LEN(" partition by "));
@@ -103,6 +106,7 @@ Window_spec::print_partition(String *str, enum_query_type query_type)
 void
 Window_spec::print_order(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (order_list->first)
   {
     str->append(STRING_WITH_LEN(" order by "));
@@ -113,6 +117,7 @@ Window_spec::print_order(String *str, enum_query_type query_type)
 bool
 Window_frame::check_frame_bounds()
 {
+  APPENDFUNC;
   if ((top_bound->is_unbounded() &&
        top_bound->precedence_type == Window_frame_bound::FOLLOWING) ||
       (bottom_bound->is_unbounded() &&
@@ -133,6 +138,7 @@ Window_frame::check_frame_bounds()
 void
 Window_frame::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   switch (units) {
   case UNITS_ROWS:
     str->append(STRING_WITH_LEN(" rows "));
@@ -173,6 +179,7 @@ Window_frame::print(String *str, enum_query_type query_type)
 void
 Window_frame_bound::print(String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   if (precedence_type == CURRENT)
   {
     str->append(STRING_WITH_LEN(" current row "));
@@ -203,6 +210,7 @@ setup_windows(THD *thd, Ref_ptr_array ref_pointer_array, TABLE_LIST *tables,
               List<Item> &fields, List<Item> &all_fields,
               List<Window_spec> &win_specs, List<Item_window_func> &win_funcs)
 {
+  APPENDFUNC;
   Window_spec *win_spec;
   DBUG_ENTER("setup_windows");
   List_iterator<Window_spec> it(win_specs);
@@ -364,6 +372,7 @@ setup_windows(THD *thd, Ref_ptr_array ref_pointer_array, TABLE_LIST *tables,
 
 ORDER *st_select_lex::find_common_window_func_partition_fields(THD *thd)
 {
+  APPENDFUNC;
   ORDER *ord;
   Item *item;
   DBUG_ASSERT(window_funcs.elements);
@@ -443,6 +452,7 @@ static
 int compare_order_elements(ORDER *ord1, int weight1,
                            ORDER *ord2, int weight2)
 {
+  APPENDFUNC;
   if (*ord1->item == *ord2->item && ord1->direction == ord2->direction)
     return CMP_EQ;
   Item *item1= (*ord1->item)->real_item();
@@ -499,6 +509,7 @@ int compare_order_lists(SQL_I_List<ORDER> *part_list1,
                         SQL_I_List<ORDER> *part_list2,
                         int spec_number2)
 {
+  APPENDFUNC;
   if (part_list1 == part_list2)
     return CMP_EQ;
   ORDER *elem1= part_list1->first;
@@ -539,6 +550,7 @@ int compare_window_frame_bounds(Window_frame_bound *win_frame_bound1,
                                 Window_frame_bound *win_frame_bound2,
                                 bool is_bottom_bound)
 { 
+  APPENDFUNC;
   int res;
   if (win_frame_bound1->precedence_type != win_frame_bound2->precedence_type)
   {
@@ -579,6 +591,7 @@ static
 int compare_window_frames(Window_frame *win_frame1,
                           Window_frame *win_frame2)
 {
+  APPENDFUNC;
   int cmp;
 
   if (win_frame1 == win_frame2)
@@ -615,6 +628,7 @@ static
 int compare_window_spec_joined_lists(Window_spec *win_spec1,
                                      Window_spec *win_spec2)
 {
+  APPENDFUNC;
   win_spec1->join_partition_and_order_lists();
   win_spec2->join_partition_and_order_lists();
   int cmp= compare_order_lists(win_spec1->partition_list, 
@@ -632,6 +646,7 @@ int compare_window_funcs_by_window_specs(Item_window_func *win_func1,
                                          Item_window_func *win_func2,
                                          void *arg)
 {
+  APPENDFUNC;
   int cmp;
   Window_spec *win_spec1= win_func1->window_spec;
   Window_spec *win_spec2= win_func2->window_spec;
@@ -730,6 +745,7 @@ typedef int (*Item_window_func_cmp)(Item_window_func *f1,
 static
 void order_window_funcs_by_window_specs(List<Item_window_func> *win_func_list)
 {
+  APPENDFUNC;
   if (win_func_list->elements == 0)
     return;
 
@@ -801,6 +817,7 @@ int rr_from_pointers(READ_RECORD *info);
 
 class Rowid_seq_cursor
 {
+
 public:
   Rowid_seq_cursor() : io_cache(NULL), ref_buffer(0) {}
   virtual ~Rowid_seq_cursor()
@@ -959,6 +976,7 @@ protected:
 
 class Table_read_cursor : public Rowid_seq_cursor
 {
+
 public:
   virtual ~Table_read_cursor() = default;
 
@@ -999,6 +1017,7 @@ private:
 
 class Partition_read_cursor : public Table_read_cursor
 {
+
 public:
   Partition_read_cursor(THD *thd, SQL_I_List<ORDER> *partition_list) :
     bound_tracker(thd, partition_list) {}
@@ -1106,6 +1125,7 @@ private:
 
 class Frame_cursor : public Sql_alloc
 {
+
 public:
   Frame_cursor() : sum_functions(), perform_no_action(false) {}
 
@@ -1209,6 +1229,7 @@ private:
 */
 class Cursor_manager
 {
+
 public:
   bool add_cursor(Frame_cursor *cursor)
   {
@@ -1273,6 +1294,7 @@ private:
 
 class Frame_range_n_top : public Frame_cursor
 {
+
   Partition_read_cursor cursor;
 
   Cached_item_item *range_expr;
@@ -1412,6 +1434,7 @@ private:
 
 class Frame_range_n_bottom: public Frame_cursor
 {
+
   Partition_read_cursor cursor;
 
   Cached_item_item *range_expr;
@@ -1554,6 +1577,7 @@ private:
 
 class Frame_range_current_row_bottom: public Frame_cursor
 {
+
   Partition_read_cursor cursor;
 
   Group_bound_tracker peer_tracker;
@@ -1650,6 +1674,7 @@ private:
 
 class Frame_range_current_row_top : public Frame_cursor
 {
+
   Group_bound_tracker bound_tracker;
 
   Table_read_cursor cursor;
@@ -1732,6 +1757,7 @@ public:
 */
 class Frame_unbounded_preceding : public Frame_cursor
 {
+
 public:
   Frame_unbounded_preceding(THD *thd,
                             SQL_I_List<ORDER> *partition_list,
@@ -1771,6 +1797,7 @@ private:
 
 class Frame_unbounded_following : public Frame_cursor
 {
+
 protected:
   Partition_read_cursor cursor;
 
@@ -1817,6 +1844,7 @@ public:
 
 class Frame_unbounded_following_set_count : public Frame_unbounded_following
 {
+
 public:
   Frame_unbounded_following_set_count(
       THD *thd,
@@ -1854,6 +1882,7 @@ protected:
 class Frame_unbounded_following_set_count_no_nulls:
             public Frame_unbounded_following_set_count
 {
+
 
 public:
   Frame_unbounded_following_set_count_no_nulls(THD *thd,
@@ -1897,6 +1926,7 @@ private:
 */
 class Frame_n_rows_preceding : public Frame_cursor
 {
+
   /* Whether this is top of the frame or bottom */
   const bool is_top_bound;
   const ha_rows n_rows;
@@ -2009,6 +2039,7 @@ private:
 
 class Frame_rows_current_row_bottom : public Frame_cursor
 {
+
 public:
 
   Frame_rows_current_row_bottom() : curr_rownum(0) {}
@@ -2060,6 +2091,7 @@ private:
 class Frame_rows_current_row_top: public Frame_n_rows_preceding
 
 {
+
 public:
   Frame_rows_current_row_top() :
     Frame_n_rows_preceding(true /*top*/, 0 /* n_rows */)
@@ -2073,6 +2105,7 @@ public:
 
 class Frame_n_rows_following : public Frame_cursor
 {
+
   /* Whether this is top of the frame or bottom */
   const bool is_top_bound;
   const ha_rows n_rows;
@@ -2211,6 +2244,7 @@ private:
 */
 class Frame_scan_cursor : public Frame_cursor
 {
+
 public:
   Frame_scan_cursor(const Frame_cursor &top_bound,
                     const Frame_cursor &bottom_bound) :
@@ -2292,6 +2326,7 @@ private:
 */
 class Frame_positional_cursor : public Frame_cursor
 {
+
  public:
   Frame_positional_cursor(const Frame_cursor &position_cursor) :
     position_cursor(position_cursor), top_bound(NULL),
@@ -2429,6 +2464,7 @@ private:
 */
 Frame_cursor *get_frame_cursor(THD *thd, Window_spec *spec, bool is_top_bound)
 {
+
   Window_frame *frame= spec->window_frame;
   if (!frame)
   {
@@ -2534,6 +2570,7 @@ static
 void add_special_frame_cursors(THD *thd, Cursor_manager *cursor_manager,
                                Item_window_func *window_func)
 {
+  APPENDFUNC;
   Window_spec *spec= window_func->window_spec;
   Item_sum *item_sum= window_func->window_func();
   DBUG_PRINT("info", ("Get arg count: %d", item_sum->get_arg_count()));
@@ -2656,6 +2693,7 @@ void add_special_frame_cursors(THD *thd, Cursor_manager *cursor_manager,
 
 static bool is_computed_with_remove(Item_sum::Sumfunctype sum_func)
 {
+  APPENDFUNC;
   switch (sum_func)
   {
     case Item_sum::CUME_DIST_FUNC:
@@ -2683,6 +2721,7 @@ void get_window_functions_required_cursors(
     List<Item_window_func>& window_functions,
     List<Cursor_manager> *cursor_managers)
 {
+  APPENDFUNC;
   List_iterator_fast<Item_window_func> it(window_functions);
   Item_window_func* item_win_func;
   Item_sum *sum_func;
@@ -2773,6 +2812,7 @@ static
 bool save_window_function_values(List<Item_window_func>& window_functions,
                                  TABLE *tbl, uchar *rowid_buf)
 {
+  APPENDFUNC;
   List_iterator_fast<Item_window_func> iter(window_functions);
   JOIN_TAB *join_tab= tbl->reginfo.join_tab;
   tbl->file->ha_rnd_pos(tbl->record[0], rowid_buf);
@@ -2856,6 +2896,7 @@ bool compute_window_func(THD *thd,
                          TABLE *tbl,
                          SORT_INFO *filesort_result)
 {
+  APPENDFUNC;
   List_iterator_fast<Item_window_func> iter_win_funcs(window_functions);
   List_iterator_fast<Cursor_manager> iter_cursor_managers(cursor_managers);
   uint err;
@@ -2946,6 +2987,7 @@ bool compute_window_func(THD *thd,
 
 static ORDER* concat_order_lists(MEM_ROOT *mem_root, ORDER *list1, ORDER *list2)
 {
+  APPENDFUNC;
   if (!list1)
   {
     list1= list2;
@@ -2979,6 +3021,7 @@ static ORDER* concat_order_lists(MEM_ROOT *mem_root, ORDER *list1, ORDER *list2)
 
 bool Window_func_runner::add_function_to_run(Item_window_func *win_func)
 {
+  APPENDFUNC;
 
   Item_sum *sum_func= win_func->window_func();
   sum_func->setup_window_func(current_thd, win_func->window_spec);
@@ -3025,6 +3068,7 @@ bool Window_func_runner::add_function_to_run(Item_window_func *win_func)
 */
 bool Window_func_runner::exec(THD *thd, TABLE *tbl, SORT_INFO *filesort_result)
 {
+  APPENDFUNC;
   List_iterator_fast<Item_window_func> it(window_functions);
   Item_window_func *win_func;
   while ((win_func= it++))
@@ -3059,6 +3103,7 @@ bool Window_func_runner::exec(THD *thd, TABLE *tbl, SORT_INFO *filesort_result)
 
 bool Window_funcs_sort::exec(JOIN *join, bool keep_filesort_result)
 {
+  APPENDFUNC;
   THD *thd= join->thd;
   JOIN_TAB *join_tab= join->join_tab + join->total_join_tab_cnt();
 
@@ -3085,6 +3130,7 @@ bool Window_funcs_sort::setup(THD *thd, SQL_SELECT *sel,
                               List_iterator<Item_window_func> &it,
                               JOIN_TAB *join_tab)
 {
+  APPENDFUNC;
   Window_spec *spec;
   Item_window_func *win_func= it.peek();  
   Item_window_func *win_func_with_longest_order= NULL;
@@ -3158,6 +3204,7 @@ bool Window_funcs_computation::setup(THD *thd,
                                      List<Item_window_func> *window_funcs,
                                      JOIN_TAB *tab)
 {
+  APPENDFUNC;
   order_window_funcs_by_window_specs(window_funcs);
 
   SQL_SELECT *sel= NULL;
@@ -3190,6 +3237,7 @@ bool Window_funcs_computation::setup(THD *thd,
 
 bool Window_funcs_computation::exec(JOIN *join, bool keep_last_filesort_result)
 {
+  APPENDFUNC;
   List_iterator<Window_funcs_sort> it(win_func_sorts);
   Window_funcs_sort *srt;
   uint counter= 0; /* Count how many sorts we've executed. */
@@ -3208,6 +3256,7 @@ bool Window_funcs_computation::exec(JOIN *join, bool keep_last_filesort_result)
 
 void Window_funcs_computation::cleanup()
 {
+  APPENDFUNC;
   List_iterator<Window_funcs_sort> it(win_func_sorts);
   Window_funcs_sort *srt;
   while ((srt = it++))
@@ -3222,6 +3271,7 @@ Explain_aggr_window_funcs*
 Window_funcs_computation::save_explain_plan(MEM_ROOT *mem_root, 
                                                  bool is_analyze)
 {
+  APPENDFUNC;
   Explain_aggr_window_funcs *xpl= new Explain_aggr_window_funcs;
   List_iterator<Window_funcs_sort> it(win_func_sorts);
   Window_funcs_sort *srt;
@@ -3241,6 +3291,7 @@ Window_funcs_computation::save_explain_plan(MEM_ROOT *mem_root,
 
 bool st_select_lex::add_window_func(Item_window_func *win_func)
 {
+  APPENDFUNC;
   if (parsing_place != SELECT_LIST)
     fields_in_window_functions+= win_func->window_func()->argument_count();
   return window_funcs.push_back(win_func);

@@ -43,6 +43,7 @@ extern "C" uchar*
 get_native_fct_hash_key(const uchar *buff, size_t *length,
                         my_bool /* unused */)
 {
+  APPENDFUNC;
   Native_func_registry *func= (Native_func_registry*) buff;
   *length= func->name.length;
   return (uchar*) func->name.str;
@@ -129,6 +130,7 @@ protected:
 
 class Create_func_aes_encrypt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -143,6 +145,7 @@ protected:
 
 class Create_func_aes_decrypt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -157,6 +160,7 @@ protected:
 
 class Create_func_kdf : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -171,6 +175,7 @@ protected:
 
 class Create_func_asin : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -184,6 +189,7 @@ protected:
 
 class Create_func_atan : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -198,6 +204,7 @@ protected:
 
 class Create_func_benchmark : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -211,6 +218,7 @@ protected:
 
 class Create_func_bin : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -224,6 +232,7 @@ protected:
 
 class Create_func_binlog_gtid_pos : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -237,6 +246,7 @@ protected:
 
 class Create_func_bit_count : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -250,6 +260,7 @@ protected:
 
 class Create_func_bit_length : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -263,6 +274,7 @@ protected:
 
 class Create_func_ceiling : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -276,6 +288,7 @@ protected:
 
 class Create_func_chr : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -289,6 +302,7 @@ protected:
 
 class Create_func_char_length : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -302,6 +316,7 @@ protected:
 
 class Create_func_coercibility : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -314,6 +329,7 @@ protected:
 
 class Create_func_dyncol_check : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -326,6 +342,7 @@ protected:
 
 class Create_func_dyncol_exists : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -338,6 +355,7 @@ protected:
 
 class Create_func_dyncol_list : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -350,6 +368,7 @@ protected:
 
 class Create_func_dyncol_json : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -363,6 +382,7 @@ protected:
 
 class Create_func_compress : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -376,6 +396,7 @@ protected:
 
 class Create_func_concat : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -390,6 +411,7 @@ protected:
 
 class Create_func_concat_operator_oracle : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -404,6 +426,7 @@ protected:
 
 class Create_func_decode_histogram : public Create_func_arg2
 {
+
 public:
   Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -417,6 +440,7 @@ protected:
 
 class Create_func_decode_oracle : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
@@ -439,6 +463,7 @@ protected:
 
 class Create_func_decode : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
@@ -463,6 +488,7 @@ protected:
 
 class Create_func_concat_ws : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -477,6 +503,7 @@ protected:
 
 class Create_func_connection_id : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -490,6 +517,7 @@ protected:
 
 class Create_func_nvl2 : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -503,6 +531,7 @@ protected:
 
 class Create_func_conv : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -516,6 +545,7 @@ protected:
 
 class Create_func_convert_tz : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -529,6 +559,7 @@ protected:
 
 class Create_func_cos : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -542,6 +573,7 @@ protected:
 
 class Create_func_cot : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -555,6 +587,7 @@ protected:
 
 class Create_func_crc32 : public Create_native_func
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *, List<Item> *item_list)
     override;
@@ -569,6 +602,7 @@ protected:
 
 class Create_func_crc32c : public Create_native_func
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *, List<Item> *item_list)
     override;
@@ -583,6 +617,7 @@ protected:
 
 class Create_func_datediff : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -596,6 +631,7 @@ protected:
 
 class Create_func_dayname : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -609,6 +645,7 @@ protected:
 
 class Create_func_dayofmonth : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -622,6 +659,7 @@ protected:
 
 class Create_func_dayofweek : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -635,6 +673,7 @@ protected:
 
 class Create_func_dayofyear : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -648,6 +687,7 @@ protected:
 
 class Create_func_degrees : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -661,6 +701,7 @@ protected:
 
 class Create_func_des_decrypt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -675,6 +716,7 @@ protected:
 
 class Create_func_des_encrypt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -689,6 +731,7 @@ protected:
 
 class Create_func_elt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -703,6 +746,7 @@ protected:
 
 class Create_func_encode : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -716,6 +760,7 @@ protected:
 
 class Create_func_encrypt : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -730,6 +775,7 @@ protected:
 
 class Create_func_exp : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -743,6 +789,7 @@ protected:
 
 class Create_func_export_set : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -757,6 +804,7 @@ protected:
 
 class Create_func_field : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -771,6 +819,7 @@ protected:
 
 class Create_func_find_in_set : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -784,6 +833,7 @@ protected:
 
 class Create_func_floor : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -797,6 +847,7 @@ protected:
 
 class Create_func_format_pico_time : public Create_func_arg1
 {
+
 public:
     virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -810,6 +861,7 @@ protected:
 
 class Create_func_format : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -824,6 +876,7 @@ protected:
 
 class Create_func_found_rows : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -837,6 +890,7 @@ protected:
 
 class Create_func_from_base64 : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -850,6 +904,7 @@ protected:
 
 class Create_func_from_days : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -863,6 +918,7 @@ protected:
 
 class Create_func_from_unixtime : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -877,6 +933,7 @@ protected:
 
 class Create_func_get_lock : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -890,6 +947,7 @@ protected:
 
 class Create_func_greatest : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -904,6 +962,7 @@ protected:
 
 class Create_func_hex : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -917,6 +976,7 @@ protected:
 
 class Create_func_ifnull : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -930,6 +990,7 @@ protected:
 
 class Create_func_instr : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -943,6 +1004,7 @@ protected:
 
 class Create_func_is_free_lock : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -956,6 +1018,7 @@ protected:
 
 class Create_func_is_used_lock : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -969,6 +1032,7 @@ protected:
 
 class Create_func_isnull : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -982,6 +1046,7 @@ protected:
 
 class Create_func_json_normalize : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -994,6 +1059,7 @@ protected:
 
 class Create_func_json_object_to_array : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1006,6 +1072,7 @@ protected:
 
 class Create_func_json_equals : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1019,6 +1086,7 @@ protected:
 
 class Create_func_json_exists : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1032,6 +1100,7 @@ protected:
 
 class Create_func_json_valid : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1045,6 +1114,7 @@ protected:
 
 class Create_func_json_compact : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1058,6 +1128,7 @@ protected:
 
 class Create_func_json_loose : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1071,6 +1142,7 @@ protected:
 
 class Create_func_json_detailed: public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1085,6 +1157,7 @@ protected:
 
 class Create_func_json_type : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1098,6 +1171,7 @@ protected:
 
 class Create_func_json_depth : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1111,6 +1185,7 @@ protected:
 
 class Create_func_json_value : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1124,6 +1199,7 @@ protected:
 
 class Create_func_json_query : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1137,6 +1213,7 @@ protected:
 
 class Create_func_json_keys: public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1151,6 +1228,7 @@ protected:
 
 class Create_func_json_contains: public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1165,6 +1243,7 @@ protected:
 
 class Create_func_json_contains_path : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1179,6 +1258,7 @@ protected:
 
 class Create_func_json_extract : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1193,6 +1273,7 @@ protected:
 
 class Create_func_json_search : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1207,6 +1288,7 @@ protected:
 
 class Create_func_json_array : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1221,6 +1303,7 @@ protected:
 
 class Create_func_json_array_append : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1235,6 +1318,7 @@ protected:
 
 class Create_func_json_array_insert : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1249,6 +1333,7 @@ protected:
 
 class Create_func_json_insert : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1263,6 +1348,7 @@ protected:
 
 class Create_func_json_set : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1277,6 +1363,7 @@ protected:
 
 class Create_func_json_replace : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1291,6 +1378,7 @@ protected:
 
 class Create_func_json_remove : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1305,6 +1393,7 @@ protected:
 
 class Create_func_json_object : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1319,6 +1408,7 @@ protected:
 
 class Create_func_json_length : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1333,6 +1423,7 @@ protected:
 
 class Create_func_json_merge : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1347,6 +1438,7 @@ protected:
 
 class Create_func_json_merge_patch : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1361,6 +1453,7 @@ protected:
 
 class Create_func_json_quote : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1374,6 +1467,7 @@ protected:
 
 class Create_func_json_unquote : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1387,6 +1481,7 @@ protected:
 
 class Create_func_json_overlaps: public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1399,6 +1494,7 @@ protected:
 
 class Create_func_json_schema_valid: public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1411,6 +1507,7 @@ protected:
 
 class Create_func_json_key_value : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1424,6 +1521,7 @@ protected:
 
 class Create_func_json_array_intersect : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1437,6 +1535,7 @@ protected:
 
 class Create_func_json_object_filter_keys : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1450,6 +1549,7 @@ protected:
 
 class Create_func_last_day : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1463,6 +1563,7 @@ protected:
 
 class Create_func_last_insert_id : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1477,6 +1578,7 @@ protected:
 
 class Create_func_lcase : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1490,6 +1592,7 @@ protected:
 
 class Create_func_least : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1504,6 +1607,7 @@ protected:
 
 class Create_func_length : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1516,6 +1620,7 @@ protected:
 
 class Create_func_octet_length : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1530,6 +1635,7 @@ protected:
 #ifndef DBUG_OFF
 class Create_func_like_range_min : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1543,6 +1649,7 @@ protected:
 
 class Create_func_like_range_max : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1557,6 +1664,7 @@ protected:
 
 class Create_func_ln : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1570,6 +1678,7 @@ protected:
 
 class Create_func_load_file : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1583,6 +1692,7 @@ protected:
 
 class Create_func_locate : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1597,6 +1707,7 @@ protected:
 
 class Create_func_log : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1611,6 +1722,7 @@ protected:
 
 class Create_func_log10 : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1624,6 +1736,7 @@ protected:
 
 class Create_func_log2 : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1637,6 +1750,7 @@ protected:
 
 class Create_func_lpad : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
@@ -1657,6 +1771,7 @@ protected:
 
 class Create_func_lpad_oracle : public Create_func_lpad
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *name,
                       List<Item> *item_list)
@@ -1669,6 +1784,7 @@ public:
 
 class Create_func_ltrim : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1682,6 +1798,7 @@ protected:
 
 class Create_func_ltrim_oracle : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1695,6 +1812,7 @@ protected:
 
 class Create_func_makedate : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1708,6 +1826,7 @@ protected:
 
 class Create_func_maketime : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -1721,6 +1840,7 @@ protected:
 
 class Create_func_make_set : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1735,6 +1855,7 @@ protected:
 
 class Create_func_master_pos_wait : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1749,6 +1870,7 @@ protected:
 
 class Create_func_master_gtid_wait : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1763,6 +1885,7 @@ protected:
 
 class Create_func_md5 : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1776,6 +1899,7 @@ protected:
 
 class Create_func_monthname : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1789,6 +1913,7 @@ protected:
 
 class Create_func_name_const : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1801,6 +1926,7 @@ protected:
 
 class Create_func_natural_sort_key : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1) override;
   static Create_func_natural_sort_key s_singleton;
@@ -1811,6 +1937,7 @@ protected:
 
 class Create_func_nullif : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1824,6 +1951,7 @@ protected:
 
 class Create_func_oct : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1837,6 +1965,7 @@ protected:
 
 class Create_func_ord : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1850,6 +1979,7 @@ protected:
 
 class Create_func_period_add : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1863,6 +1993,7 @@ protected:
 
 class Create_func_period_diff : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1876,6 +2007,7 @@ protected:
 
 class Create_func_pi : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -1889,6 +2021,7 @@ protected:
 
 class Create_func_pow : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1902,6 +2035,7 @@ protected:
 
 class Create_func_quote : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1915,6 +2049,7 @@ protected:
 
 class Create_func_regexp_instr : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1928,6 +2063,7 @@ protected:
 
 class Create_func_regexp_replace : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -1941,6 +2077,7 @@ protected:
 
 class Create_func_regexp_substr : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -1954,6 +2091,7 @@ protected:
 
 class Create_func_radians : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1967,6 +2105,7 @@ protected:
 
 class Create_func_rand : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -1981,6 +2120,7 @@ protected:
 
 class Create_func_random_bytes : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -1994,6 +2134,7 @@ protected:
 
 class Create_func_release_all_locks : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -2003,6 +2144,7 @@ public:
 
 class Create_func_release_lock : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2016,6 +2158,7 @@ protected:
 
 class Create_func_replace_oracle : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -2029,6 +2172,7 @@ protected:
 
 class Create_func_reverse : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2042,6 +2186,7 @@ protected:
 
 class Create_func_round : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -2056,6 +2201,7 @@ protected:
 
 class Create_func_rpad : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
@@ -2076,6 +2222,7 @@ protected:
 
 class Create_func_rpad_oracle : public Create_func_rpad
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *name,
                       List<Item> *item_list)
@@ -2088,6 +2235,7 @@ public:
 
 class Create_func_rtrim : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2101,6 +2249,7 @@ protected:
 
 class Create_func_rtrim_oracle : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2114,6 +2263,7 @@ protected:
 
 class Create_func_sec_to_time : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2126,6 +2276,7 @@ protected:
 
 class Create_func_sformat : public Create_native_func
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *name, List<Item> *item_list)
     override;
@@ -2137,6 +2288,7 @@ protected:
 
 class Create_func_sha : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2150,6 +2302,7 @@ protected:
 
 class Create_func_sha2 : public Create_func_arg2
 {
+
 public:
   virtual Item* create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2163,6 +2316,7 @@ protected:
 
 class Create_func_sign : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2176,6 +2330,7 @@ protected:
 
 class Create_func_sin : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2189,6 +2344,7 @@ protected:
 
 class Create_func_sleep : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2202,6 +2358,7 @@ protected:
 
 class Create_func_soundex : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2215,6 +2372,7 @@ protected:
 
 class Create_func_space : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2228,6 +2386,7 @@ protected:
 
 class Create_func_sqrt : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2241,6 +2400,7 @@ protected:
 
 class Create_func_str_to_date : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2254,6 +2414,7 @@ protected:
 
 class Create_func_strcmp : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2267,6 +2428,7 @@ protected:
 
 class Create_func_substr_index : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -2280,6 +2442,7 @@ protected:
 
 class Create_func_substr_oracle : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -2294,6 +2457,7 @@ protected:
 
 class Create_func_subtime : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2307,6 +2471,7 @@ protected:
 
 class Create_func_tan : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2320,6 +2485,7 @@ protected:
 
 class Create_func_time_format : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2333,6 +2499,7 @@ protected:
 
 class Create_func_time_to_sec : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2346,6 +2513,7 @@ protected:
 
 class Create_func_timediff : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2359,6 +2527,7 @@ protected:
 
 class Create_func_to_base64 : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2372,6 +2541,7 @@ protected:
 
 class Create_func_to_char : public Create_native_func
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *name, List<Item> *item_list)
     override;
@@ -2386,6 +2556,7 @@ protected:
 
 class Create_func_to_days : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2398,6 +2569,7 @@ protected:
 
 class Create_func_to_seconds : public Create_func_arg1
 {
+
 public:
   virtual Item* create_1_arg(THD *thd, Item *arg1);
 
@@ -2411,6 +2583,7 @@ protected:
 
 class Create_func_ucase : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2424,6 +2597,7 @@ protected:
 
 class Create_func_uncompress : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2437,6 +2611,7 @@ protected:
 
 class Create_func_uncompressed_length : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2450,6 +2625,7 @@ protected:
 
 class Create_func_unhex : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2463,6 +2639,7 @@ protected:
 
 class Create_func_unix_timestamp : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -2477,6 +2654,7 @@ protected:
 
 class Create_func_uuid_short : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -2490,6 +2668,7 @@ protected:
 
 class Create_func_version : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -2503,6 +2682,7 @@ protected:
 
 class Create_func_weekday : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2516,6 +2696,7 @@ protected:
 
 class Create_func_weekofyear : public Create_func_arg1
 {
+
 public:
   virtual Item *create_1_arg(THD *thd, Item *arg1);
 
@@ -2530,6 +2711,7 @@ protected:
 #ifdef WITH_WSREP
 class Create_func_wsrep_last_written_gtid : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -2543,6 +2725,7 @@ protected:
 
 class Create_func_wsrep_last_seen_gtid : public Create_func_arg0
 {
+
 public:
   virtual Item *create_builder(THD *thd);
 
@@ -2556,6 +2739,7 @@ protected:
 
 class Create_func_wsrep_sync_wait_upto : public Create_native_func
 {
+
 public:
   Item *create_native(THD *thd, const LEX_CSTRING *name, List<Item> *item_list)
     override;
@@ -2571,6 +2755,7 @@ protected:
 
 class Create_func_xml_extractvalue : public Create_func_arg2
 {
+
 public:
   virtual Item *create_2_arg(THD *thd, Item *arg1, Item *arg2);
 
@@ -2584,6 +2769,7 @@ protected:
 
 class Create_func_xml_update : public Create_func_arg3
 {
+
 public:
   virtual Item *create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3);
 
@@ -2597,6 +2783,7 @@ protected:
 
 class Create_func_year_week : public Create_native_func
 {
+
 public:
   virtual Item *create_native(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list);
@@ -2624,6 +2811,7 @@ protected:
 */
 static bool has_named_parameters(List<Item> *params)
 {
+  APPENDFUNC;
   if (params)
   {
     Item *param;
@@ -2643,6 +2831,7 @@ Item*
 Create_qfunc::create_func(THD *thd, const LEX_CSTRING *name,
                           List<Item> *item_list)
 {
+  APPENDFUNC;
   LEX_CSTRING db;
 
   if (unlikely(! thd->db.str && ! thd->lex->sphead))
@@ -2677,6 +2866,7 @@ Item*
 Create_udf_func::create_func(THD *thd, const LEX_CSTRING *name,
                              List<Item> *item_list)
 {
+  APPENDFUNC;
   udf_func *udf= find_udf(name->str,  name->length);
   DBUG_ASSERT(udf);
   return create(thd, udf, item_list);
@@ -2686,6 +2876,7 @@ Create_udf_func::create_func(THD *thd, const LEX_CSTRING *name,
 Item*
 Create_udf_func::create(THD *thd, udf_func *udf, List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -2790,6 +2981,7 @@ Create_sp_func::create_with_db(THD *thd,
                                const LEX_CSTRING *name,
                                bool use_explicit_name, List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
   Item *func= NULL;
   LEX *lex= thd->lex;
@@ -2837,6 +3029,7 @@ Item*
 Create_native_func::create_func(THD *thd, const LEX_CSTRING *name,
                                 List<Item> *item_list)
 {
+  APPENDFUNC;
   if (unlikely(has_named_parameters(item_list)))
   {
     my_error(ER_WRONG_PARAMETERS_TO_NATIVE_FCT, MYF(0), name->str);
@@ -2851,6 +3044,7 @@ Item*
 Create_func_arg0::create_func(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -2870,6 +3064,7 @@ Item*
 Create_func_arg1::create_func(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list)
@@ -2897,6 +3092,7 @@ Item*
 Create_func_arg2::create_func(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list)
@@ -2926,6 +3122,7 @@ Item*
 Create_func_arg3::create_func(THD *thd, const LEX_CSTRING *name,
                               List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list)
@@ -2958,6 +3155,7 @@ Create_func_abs Create_func_abs::s_singleton;
 Item*
 Create_func_abs::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_abs(thd, arg1);
 }
 
@@ -2967,6 +3165,7 @@ Create_func_acos Create_func_acos::s_singleton;
 Item*
 Create_func_acos::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_acos(thd, arg1);
 }
 
@@ -2976,6 +3175,7 @@ Create_func_addtime Create_func_addtime::s_singleton;
 Item*
 Create_func_addtime::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_add_time(thd, arg1, arg2, false);
 }
 
@@ -2986,6 +3186,7 @@ Item*
 Create_func_aes_encrypt::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   uint arg_count= item_list->elements;
   Item *a[4];
   for (uint i=0; i < MY_MIN(array_elements(a), arg_count); i++)
@@ -3010,6 +3211,7 @@ Item*
 Create_func_aes_decrypt::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   uint arg_count= item_list->elements;
   Item *a[4];
   for (uint i=0; i < MY_MIN(array_elements(a), arg_count); i++)
@@ -3034,6 +3236,7 @@ Item*
 Create_func_kdf::create_native(THD *thd, const LEX_CSTRING *name,
                                List<Item> *item_list)
 {
+  APPENDFUNC;
   uint arg_count= item_list->elements;
   Item *a[5];
   for (uint i=0; i < MY_MIN(array_elements(a), arg_count); i++)
@@ -3059,6 +3262,7 @@ Create_func_asin Create_func_asin::s_singleton;
 Item*
 Create_func_asin::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_asin(thd, arg1);
 }
 
@@ -3069,6 +3273,7 @@ Item*
 Create_func_atan::create_native(THD *thd, const LEX_CSTRING *name,
                                 List<Item> *item_list)
 {
+  APPENDFUNC;
   Item* func= NULL;
   int arg_count= 0;
 
@@ -3105,6 +3310,7 @@ Create_func_benchmark Create_func_benchmark::s_singleton;
 Item*
 Create_func_benchmark::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_benchmark(thd, arg1, arg2);
 }
@@ -3115,6 +3321,7 @@ Create_func_bin Create_func_bin::s_singleton;
 Item*
 Create_func_bin::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   Item *i10= new (thd->mem_root) Item_int(thd, (int32) 10,2);
   Item *i2= new (thd->mem_root) Item_int(thd, (int32) 2,1);
   return new (thd->mem_root) Item_func_conv(thd, arg1, i10, i2);
@@ -3126,6 +3333,7 @@ Create_func_binlog_gtid_pos Create_func_binlog_gtid_pos::s_singleton;
 Item*
 Create_func_binlog_gtid_pos::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
 #ifdef HAVE_REPLICATION
   if (unlikely(!mysql_bin_log.is_open()))
 #endif
@@ -3143,6 +3351,7 @@ Create_func_bit_count Create_func_bit_count::s_singleton;
 Item*
 Create_func_bit_count::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_bit_count(thd, arg1);
 }
 
@@ -3152,6 +3361,7 @@ Create_func_bit_length Create_func_bit_length::s_singleton;
 Item*
 Create_func_bit_length::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_bit_length(thd, arg1);
 }
 
@@ -3161,6 +3371,7 @@ Create_func_ceiling Create_func_ceiling::s_singleton;
 Item*
 Create_func_ceiling::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ceiling(thd, arg1);
 }
 
@@ -3170,6 +3381,7 @@ Create_func_chr Create_func_chr::s_singleton;
 Item*
 Create_func_chr::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   CHARSET_INFO *cs_db= thd->variables.collation_database;
   return new (thd->mem_root) Item_func_chr(thd, arg1, cs_db);
 }
@@ -3180,6 +3392,7 @@ Create_func_char_length Create_func_char_length::s_singleton;
 Item*
 Create_func_char_length::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_char_length(thd, arg1);
 }
 
@@ -3189,6 +3402,7 @@ Create_func_coercibility Create_func_coercibility::s_singleton;
 Item*
 Create_func_coercibility::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_coercibility(thd, arg1);
 }
 
@@ -3198,6 +3412,7 @@ Create_func_dyncol_check Create_func_dyncol_check::s_singleton;
 Item*
 Create_func_dyncol_check::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dyncol_check(thd, arg1);
 }
 
@@ -3206,6 +3421,7 @@ Create_func_dyncol_exists Create_func_dyncol_exists::s_singleton;
 Item*
 Create_func_dyncol_exists::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dyncol_exists(thd, arg1, arg2);
 }
 
@@ -3214,6 +3430,7 @@ Create_func_dyncol_list Create_func_dyncol_list::s_singleton;
 Item*
 Create_func_dyncol_list::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dyncol_list(thd, arg1);
 }
 
@@ -3222,6 +3439,7 @@ Create_func_dyncol_json Create_func_dyncol_json::s_singleton;
 Item*
 Create_func_dyncol_json::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dyncol_json(thd, arg1);
 }
 
@@ -3231,6 +3449,7 @@ Item*
 Create_func_concat::create_native(THD *thd, const LEX_CSTRING *name,
                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3252,6 +3471,7 @@ Item*
 Create_func_concat_operator_oracle::create_native(THD *thd, const LEX_CSTRING *name,
                                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3271,6 +3491,7 @@ Create_func_decode_histogram Create_func_decode_histogram::s_singleton;
 Item *
 Create_func_decode_histogram::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_decode_histogram(thd, arg1, arg2);
 }
 
@@ -3284,6 +3505,7 @@ Item*
 Create_func_concat_ws::create_native(THD *thd, const LEX_CSTRING *name,
                                      List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3305,6 +3527,7 @@ Create_func_compress Create_func_compress::s_singleton;
 Item*
 Create_func_compress::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_compress(thd, arg1);
 }
 
@@ -3314,6 +3537,7 @@ Create_func_connection_id Create_func_connection_id::s_singleton;
 Item*
 Create_func_connection_id::create_builder(THD *thd)
 {
+  APPENDFUNC;
   thd->lex->safe_to_cache_query= 0;
   return new (thd->mem_root) Item_func_connection_id(thd);
 }
@@ -3324,6 +3548,7 @@ Create_func_nvl2 Create_func_nvl2::s_singleton;
 Item*
 Create_func_nvl2::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_nvl2(thd, arg1, arg2, arg3);
 }
 
@@ -3333,6 +3558,7 @@ Create_func_conv Create_func_conv::s_singleton;
 Item*
 Create_func_conv::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_conv(thd, arg1, arg2, arg3);
 }
 
@@ -3342,6 +3568,7 @@ Create_func_convert_tz Create_func_convert_tz::s_singleton;
 Item*
 Create_func_convert_tz::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_convert_tz(thd, arg1, arg2, arg3);
 }
 
@@ -3351,6 +3578,7 @@ Create_func_cos Create_func_cos::s_singleton;
 Item*
 Create_func_cos::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_cos(thd, arg1);
 }
 
@@ -3360,6 +3588,7 @@ Create_func_cot Create_func_cot::s_singleton;
 Item*
 Create_func_cot::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_cot(thd, arg1);
 }
 
@@ -3370,6 +3599,7 @@ Item*
 Create_func_crc32::create_native(THD *thd, const LEX_CSTRING *name,
                                  List<Item> *item_list)
 {
+  APPENDFUNC;
   int argc= item_list ? item_list->elements : 0;
 
   if (unlikely(argc != 1 && argc != 2))
@@ -3396,6 +3626,7 @@ Item*
 Create_func_crc32c::create_native(THD *thd, const LEX_CSTRING *name,
                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   int argc= item_list ? item_list->elements : 0;
 
   if (unlikely(argc != 1 && argc != 2))
@@ -3421,6 +3652,7 @@ Create_func_datediff Create_func_datediff::s_singleton;
 Item*
 Create_func_datediff::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   Item *i1= new (thd->mem_root) Item_func_to_days(thd, arg1);
   Item *i2= new (thd->mem_root) Item_func_to_days(thd, arg2);
 
@@ -3433,6 +3665,7 @@ Create_func_dayname Create_func_dayname::s_singleton;
 Item*
 Create_func_dayname::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dayname(thd, arg1);
 }
 
@@ -3442,6 +3675,7 @@ Create_func_dayofmonth Create_func_dayofmonth::s_singleton;
 Item*
 Create_func_dayofmonth::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dayofmonth(thd, arg1);
 }
 
@@ -3451,6 +3685,7 @@ Create_func_dayofweek Create_func_dayofweek::s_singleton;
 Item*
 Create_func_dayofweek::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_weekday(thd, arg1, 1);
 }
 
@@ -3460,6 +3695,7 @@ Create_func_dayofyear Create_func_dayofyear::s_singleton;
 Item*
 Create_func_dayofyear::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_dayofyear(thd, arg1);
 }
 
@@ -3469,6 +3705,7 @@ Create_func_degrees Create_func_degrees::s_singleton;
 Item*
 Create_func_degrees::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_units(thd, (char*) "degrees", arg1,
                                              180/M_PI, 0.0);
 }
@@ -3480,6 +3717,7 @@ Item*
 Create_func_des_decrypt::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3517,6 +3755,7 @@ Item*
 Create_func_des_encrypt::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3554,6 +3793,7 @@ Item*
 Create_func_elt::create_native(THD *thd, const LEX_CSTRING *name,
                                List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3574,6 +3814,7 @@ Create_func_encode Create_func_encode::s_singleton;
 Item*
 Create_func_encode::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_encode(thd, arg1, arg2);
 }
 
@@ -3584,6 +3825,7 @@ Item*
 Create_func_encrypt::create_native(THD *thd, const LEX_CSTRING *name,
                                    List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3621,6 +3863,7 @@ Create_func_exp Create_func_exp::s_singleton;
 Item*
 Create_func_exp::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_exp(thd, arg1);
 }
 
@@ -3631,6 +3874,7 @@ Item*
 Create_func_export_set::create_native(THD *thd, const LEX_CSTRING *name,
                                       List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3684,6 +3928,7 @@ Item*
 Create_func_field::create_native(THD *thd, const LEX_CSTRING *name,
                                  List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3704,6 +3949,7 @@ Create_func_find_in_set Create_func_find_in_set::s_singleton;
 Item*
 Create_func_find_in_set::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_find_in_set(thd, arg1, arg2);
 }
 
@@ -3713,6 +3959,7 @@ Create_func_floor Create_func_floor::s_singleton;
 Item*
 Create_func_floor::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_floor(thd, arg1);
 }
 
@@ -3722,6 +3969,7 @@ Create_func_format_pico_time Create_func_format_pico_time::s_singleton;
 Item*
 Create_func_format_pico_time::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_format_pico_time(thd, arg1);
 }
 
@@ -3732,6 +3980,7 @@ Item*
 Create_func_format::create_native(THD *thd, const LEX_CSTRING *name,
                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= item_list ? item_list->elements : 0;
 
@@ -3766,6 +4015,7 @@ Create_func_from_base64 Create_func_from_base64::s_singleton;
 Item *
 Create_func_from_base64::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_from_base64(thd, arg1);
 }
 
@@ -3775,6 +4025,7 @@ Create_func_found_rows Create_func_found_rows::s_singleton;
 Item*
 Create_func_found_rows::create_builder(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("Create_func_found_rows::create");
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->safe_to_cache_query= 0;
@@ -3787,6 +4038,7 @@ Create_func_from_days Create_func_from_days::s_singleton;
 Item*
 Create_func_from_days::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_from_days(thd, arg1);
 }
 
@@ -3797,6 +4049,7 @@ Item*
 Create_func_from_unixtime::create_native(THD *thd, const LEX_CSTRING *name,
                                          List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3835,6 +4088,7 @@ Create_func_get_lock Create_func_get_lock::s_singleton;
 Item*
 Create_func_get_lock::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_get_lock(thd, arg1, arg2);
@@ -3847,6 +4101,7 @@ Item*
 Create_func_greatest::create_native(THD *thd, const LEX_CSTRING *name,
                                     List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -3867,6 +4122,7 @@ Create_func_hex Create_func_hex::s_singleton;
 Item*
 Create_func_hex::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_hex(thd, arg1);
 }
 
@@ -3876,6 +4132,7 @@ Create_func_ifnull Create_func_ifnull::s_singleton;
 Item*
 Create_func_ifnull::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ifnull(thd, arg1, arg2);
 }
 
@@ -3885,6 +4142,7 @@ Create_func_instr Create_func_instr::s_singleton;
 Item*
 Create_func_instr::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_locate(thd, arg1, arg2);
 }
 
@@ -3894,6 +4152,7 @@ Create_func_is_free_lock Create_func_is_free_lock::s_singleton;
 Item*
 Create_func_is_free_lock::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_is_free_lock(thd, arg1);
@@ -3905,6 +4164,7 @@ Create_func_is_used_lock Create_func_is_used_lock::s_singleton;
 Item*
 Create_func_is_used_lock::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_is_used_lock(thd, arg1);
@@ -3916,6 +4176,7 @@ Create_func_isnull Create_func_isnull::s_singleton;
 Item*
 Create_func_isnull::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_isnull(thd, arg1);
 }
 
@@ -3924,6 +4185,7 @@ Create_func_json_normalize Create_func_json_normalize::s_singleton;
 Item*
 Create_func_json_normalize::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_normalize(thd, arg1);
 }
@@ -3933,6 +4195,7 @@ Create_func_json_object_to_array Create_func_json_object_to_array::s_singleton;
 Item*
 Create_func_json_object_to_array::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_object_to_array(thd, arg1);
 }
@@ -3943,6 +4206,7 @@ Create_func_json_equals Create_func_json_equals::s_singleton;
 Item*
 Create_func_json_equals::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_equals(thd, arg1, arg2);
 }
@@ -3953,6 +4217,7 @@ Create_func_json_exists Create_func_json_exists::s_singleton;
 Item*
 Create_func_json_exists::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_exists(thd, arg1, arg2);
 }
@@ -3964,6 +4229,7 @@ Item*
 Create_func_json_detailed::create_native(THD *thd, const LEX_CSTRING *name,
                                          List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -3989,6 +4255,7 @@ Create_func_json_loose Create_func_json_loose::s_singleton;
 Item*
 Create_func_json_loose::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_format(thd, arg1,
                Item_func_json_format::LOOSE);
@@ -4000,6 +4267,7 @@ Create_func_json_compact Create_func_json_compact::s_singleton;
 Item*
 Create_func_json_compact::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_format(thd, arg1,
                Item_func_json_format::COMPACT);
@@ -4011,6 +4279,7 @@ Create_func_json_valid Create_func_json_valid::s_singleton;
 Item*
 Create_func_json_valid::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_valid(thd, arg1);
 }
@@ -4021,6 +4290,7 @@ Create_func_json_type Create_func_json_type::s_singleton;
 Item*
 Create_func_json_type::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_type(thd, arg1);
 }
@@ -4031,6 +4301,7 @@ Create_func_json_depth Create_func_json_depth::s_singleton;
 Item*
 Create_func_json_depth::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_depth(thd, arg1);
 }
@@ -4041,6 +4312,7 @@ Create_func_json_value Create_func_json_value::s_singleton;
 Item*
 Create_func_json_value::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_value(thd, arg1, arg2);
 }
@@ -4051,6 +4323,7 @@ Create_func_json_query Create_func_json_query::s_singleton;
 Item*
 Create_func_json_query::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_query(thd, arg1, arg2);
 }
@@ -4061,6 +4334,7 @@ Create_func_json_quote Create_func_json_quote::s_singleton;
 Item*
 Create_func_json_quote::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_quote(thd, arg1);
 }
@@ -4071,6 +4345,7 @@ Create_func_json_unquote Create_func_json_unquote::s_singleton;
 Item*
 Create_func_json_unquote::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_unquote(thd, arg1);
 }
@@ -4081,6 +4356,7 @@ Create_func_last_day Create_func_last_day::s_singleton;
 Item*
 Create_func_last_day::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_last_day(thd, arg1);
 }
 
@@ -4091,6 +4367,7 @@ Item*
 Create_func_json_array::create_native(THD *thd, const LEX_CSTRING *name,
                                       List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func;
 
   if (item_list != NULL)
@@ -4113,6 +4390,7 @@ Item*
 Create_func_json_array_append::create_native(THD *thd, const LEX_CSTRING *name,
                                              List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4139,6 +4417,7 @@ Item*
 Create_func_json_array_insert::create_native(THD *thd, const LEX_CSTRING *name,
                                              List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4165,6 +4444,7 @@ Item*
 Create_func_json_insert::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4192,6 +4472,7 @@ Item*
 Create_func_json_set::create_native(THD *thd, const LEX_CSTRING *name,
                                     List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4219,6 +4500,7 @@ Item*
 Create_func_json_replace::create_native(THD *thd, const LEX_CSTRING *name,
                                         List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4246,6 +4528,7 @@ Item*
 Create_func_json_remove::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4272,6 +4555,7 @@ Item*
 Create_func_json_object::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func;
   int arg_count;
 
@@ -4305,6 +4589,7 @@ Item*
 Create_func_json_length::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func;
   int arg_count;
 
@@ -4327,6 +4612,7 @@ Create_func_json_array_intersect Create_func_json_array_intersect::s_singleton;
 Item*
 Create_func_json_array_intersect::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   if (unlikely( ( !arg1 || !arg2 ) )) // json, json
   {
     my_error(ER_WRONG_PARAMCOUNT_TO_NATIVE_FCT, MYF(0));
@@ -4340,6 +4626,7 @@ Create_func_json_object_filter_keys Create_func_json_object_filter_keys::s_singl
 Item*
 Create_func_json_object_filter_keys::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_object_filter_keys(thd, arg1, arg2);
 }
@@ -4351,6 +4638,7 @@ Item*
 Create_func_json_merge::create_native(THD *thd, const LEX_CSTRING *name,
                                       List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func;
   int arg_count;
 
@@ -4376,6 +4664,7 @@ Item*
 Create_func_json_merge_patch::create_native(THD *thd, const LEX_CSTRING *name,
                                             List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func;
   int arg_count;
 
@@ -4400,6 +4689,7 @@ Item*
 Create_func_json_contains::create_native(THD *thd, const LEX_CSTRING *name,
                                          List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4426,6 +4716,7 @@ Item*
 Create_func_json_keys::create_native(THD *thd, const LEX_CSTRING *name,
                                      List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4452,6 +4743,7 @@ Item*
 Create_func_json_contains_path::create_native(THD *thd, const LEX_CSTRING *name,
                                               List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4478,6 +4770,7 @@ Item*
 Create_func_json_extract::create_native(THD *thd, const LEX_CSTRING *name,
                                         List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4504,6 +4797,7 @@ Item*
 Create_func_json_search::create_native(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4529,6 +4823,7 @@ Create_func_json_overlaps Create_func_json_overlaps::s_singleton;
 Item*
 Create_func_json_overlaps::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_overlaps(thd, arg1, arg2);
 }
@@ -4540,6 +4835,7 @@ Item*
 Create_func_last_insert_id::create_native(THD *thd, const LEX_CSTRING *name,
                                           List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4575,6 +4871,7 @@ Create_func_json_schema_valid Create_func_json_schema_valid::s_singleton;
 Item*
 Create_func_json_schema_valid::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_schema_valid(thd, arg1, arg2);
 }
@@ -4584,6 +4881,7 @@ Create_func_json_key_value Create_func_json_key_value::s_singleton;
 Item*
 Create_func_json_key_value::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   status_var_increment(thd->status_var.feature_json);
   return new (thd->mem_root) Item_func_json_key_value(thd, arg1, arg2);
 }
@@ -4594,6 +4892,7 @@ Create_func_lcase Create_func_lcase::s_singleton;
 Item*
 Create_func_lcase::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_lcase(thd, arg1);
 }
 
@@ -4604,6 +4903,7 @@ Item*
 Create_func_least::create_native(THD *thd, const LEX_CSTRING *name,
                                  List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -4624,6 +4924,7 @@ Create_func_length Create_func_length::s_singleton;
 Item*
 Create_func_length::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_octet_length(thd, arg1);
 }
 
@@ -4632,6 +4933,7 @@ Create_func_octet_length Create_func_octet_length::s_singleton;
 Item*
 Create_func_octet_length::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_octet_length(thd, arg1);
 }
 
@@ -4642,6 +4944,7 @@ Create_func_like_range_min Create_func_like_range_min::s_singleton;
 Item*
 Create_func_like_range_min::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_like_range_min(thd, arg1, arg2);
 }
 
@@ -4651,6 +4954,7 @@ Create_func_like_range_max Create_func_like_range_max::s_singleton;
 Item*
 Create_func_like_range_max::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_like_range_max(thd, arg1, arg2);
 }
 #endif
@@ -4661,6 +4965,7 @@ Create_func_ln Create_func_ln::s_singleton;
 Item*
 Create_func_ln::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ln(thd, arg1);
 }
 
@@ -4670,6 +4975,7 @@ Create_func_load_file Create_func_load_file::s_singleton;
 Item*
 Create_func_load_file::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   DBUG_ENTER("Create_func_load_file::create");
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
@@ -4683,6 +4989,7 @@ Item*
 Create_func_locate::create_native(THD *thd, const LEX_CSTRING *name,
                                   List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4724,6 +5031,7 @@ Item*
 Create_func_log::create_native(THD *thd, const LEX_CSTRING *name,
                                List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4760,6 +5068,7 @@ Create_func_log10 Create_func_log10::s_singleton;
 Item*
 Create_func_log10::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_log10(thd, arg1);
 }
 
@@ -4769,6 +5078,7 @@ Create_func_log2 Create_func_log2::s_singleton;
 Item*
 Create_func_log2::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_log2(thd, arg1);
 }
 
@@ -4781,6 +5091,7 @@ Item*
 Create_func_lpad::create_native_std(THD *thd, const LEX_CSTRING *name,
                                     List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= item_list ? item_list->elements : 0;
 
@@ -4813,6 +5124,7 @@ Item*
 Create_func_lpad::create_native_oracle(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= item_list ? item_list->elements : 0;
   switch (arg_count) {
   case 2:
@@ -4842,6 +5154,7 @@ Create_func_ltrim Create_func_ltrim::s_singleton;
 Item*
 Create_func_ltrim::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return Lex_trim(TRIM_LEADING, arg1).make_item_func_trim_std(thd);
 }
 
@@ -4851,6 +5164,7 @@ Create_func_ltrim_oracle Create_func_ltrim_oracle::s_singleton;
 Item*
 Create_func_ltrim_oracle::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ltrim_oracle(thd, arg1);
 }
 
@@ -4860,6 +5174,7 @@ Create_func_makedate Create_func_makedate::s_singleton;
 Item*
 Create_func_makedate::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_makedate(thd, arg1, arg2);
 }
 
@@ -4869,6 +5184,7 @@ Create_func_maketime Create_func_maketime::s_singleton;
 Item*
 Create_func_maketime::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_maketime(thd, arg1, arg2, arg3);
 }
 
@@ -4879,6 +5195,7 @@ Item*
 Create_func_make_set::create_native(THD *thd, const LEX_CSTRING *name,
                                     List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -4901,6 +5218,7 @@ Create_func_master_pos_wait::create_native(THD *thd, const LEX_CSTRING *name,
                                            List<Item> *item_list)
 
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4951,6 +5269,7 @@ Item*
 Create_func_master_gtid_wait::create_native(THD *thd, const LEX_CSTRING *name,
                                             List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -4991,6 +5310,7 @@ Create_func_md5 Create_func_md5::s_singleton;
 Item*
 Create_func_md5::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_md5(thd, arg1);
 }
 
@@ -4998,6 +5318,7 @@ Create_func_natural_sort_key Create_func_natural_sort_key::s_singleton;
 
 Item *Create_func_natural_sort_key::create_1_arg(THD *thd, Item* arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_natural_sort_key(thd, arg1);
 }
 
@@ -5006,6 +5327,7 @@ Create_func_monthname Create_func_monthname::s_singleton;
 Item*
 Create_func_monthname::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_monthname(thd, arg1);
 }
 
@@ -5015,6 +5337,7 @@ Create_func_name_const Create_func_name_const::s_singleton;
 Item*
 Create_func_name_const::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   if (!arg1->basic_const_item())
     goto err;
 
@@ -5043,6 +5366,7 @@ Create_func_nullif Create_func_nullif::s_singleton;
 Item*
 Create_func_nullif::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_nullif(thd, arg1, arg2);
 }
 
@@ -5052,6 +5376,7 @@ Create_func_oct Create_func_oct::s_singleton;
 Item*
 Create_func_oct::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   Item *i10= new (thd->mem_root) Item_int(thd, (int32) 10,2);
   Item *i8= new (thd->mem_root) Item_int(thd, (int32) 8,1);
   return new (thd->mem_root) Item_func_conv(thd, arg1, i10, i8);
@@ -5063,6 +5388,7 @@ Create_func_ord Create_func_ord::s_singleton;
 Item*
 Create_func_ord::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ord(thd, arg1);
 }
 
@@ -5072,6 +5398,7 @@ Create_func_period_add Create_func_period_add::s_singleton;
 Item*
 Create_func_period_add::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_period_add(thd, arg1, arg2);
 }
 
@@ -5081,6 +5408,7 @@ Create_func_period_diff Create_func_period_diff::s_singleton;
 Item*
 Create_func_period_diff::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_period_diff(thd, arg1, arg2);
 }
 
@@ -5090,6 +5418,7 @@ Create_func_pi Create_func_pi::s_singleton;
 Item*
 Create_func_pi::create_builder(THD *thd)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_static_float_func(thd, "pi()", M_PI, 6, 8);
 }
 
@@ -5099,6 +5428,7 @@ Create_func_pow Create_func_pow::s_singleton;
 Item*
 Create_func_pow::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_pow(thd, arg1, arg2);
 }
 
@@ -5108,6 +5438,7 @@ Create_func_quote Create_func_quote::s_singleton;
 Item*
 Create_func_quote::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_quote(thd, arg1);
 }
 
@@ -5117,6 +5448,7 @@ Create_func_regexp_instr Create_func_regexp_instr::s_singleton;
 Item*
 Create_func_regexp_instr::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_regexp_instr(thd, arg1, arg2);
 }
 
@@ -5126,6 +5458,7 @@ Create_func_regexp_replace Create_func_regexp_replace::s_singleton;
 Item*
 Create_func_regexp_replace::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_regexp_replace(thd, arg1, arg2, arg3);
 }
 
@@ -5135,6 +5468,7 @@ Create_func_regexp_substr Create_func_regexp_substr::s_singleton;
 Item*
 Create_func_regexp_substr::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_regexp_substr(thd, arg1, arg2);
 }
 
@@ -5144,6 +5478,7 @@ Create_func_radians Create_func_radians::s_singleton;
 Item*
 Create_func_radians::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_units(thd, (char*) "radians", arg1,
                                              M_PI/180, 0.0);
 }
@@ -5155,6 +5490,7 @@ Item*
 Create_func_rand::create_native(THD *thd, const LEX_CSTRING *name,
                                 List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -5203,6 +5539,7 @@ Create_func_random_bytes Create_func_random_bytes::s_singleton;
 
 Item *Create_func_random_bytes::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_RAND);
   return new (thd->mem_root) Item_func_random_bytes(thd, arg1);
@@ -5214,6 +5551,7 @@ Create_func_release_all_locks Create_func_release_all_locks::s_singleton;
 Item*
 Create_func_release_all_locks::create_builder(THD *thd)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_release_all_locks(thd);
@@ -5225,6 +5563,7 @@ Create_func_release_lock Create_func_release_lock::s_singleton;
 Item*
 Create_func_release_lock::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_release_lock(thd, arg1);
@@ -5237,6 +5576,7 @@ Item*
 Create_func_replace_oracle::create_3_arg(THD *thd, Item *arg1, Item *arg2,
                                         Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_replace_oracle(thd, arg1, arg2, arg3);
 }
 
@@ -5246,6 +5586,7 @@ Create_func_reverse Create_func_reverse::s_singleton;
 Item*
 Create_func_reverse::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_reverse(thd, arg1);
 }
 
@@ -5256,6 +5597,7 @@ Item*
 Create_func_round::create_native(THD *thd, const LEX_CSTRING *name,
                                  List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -5296,6 +5638,7 @@ Item*
 Create_func_rpad::create_native_std(THD *thd, const LEX_CSTRING *name,
                                     List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= item_list ? item_list->elements : 0;
 
@@ -5328,6 +5671,7 @@ Item*
 Create_func_rpad::create_native_oracle(THD *thd, const LEX_CSTRING *name,
                                        List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= item_list ? item_list->elements : 0;
   switch (arg_count) {
   case 2:
@@ -5357,6 +5701,7 @@ Create_func_rtrim Create_func_rtrim::s_singleton;
 Item*
 Create_func_rtrim::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return Lex_trim(TRIM_TRAILING, arg1).make_item_func_trim_std(thd);
 }
 
@@ -5366,6 +5711,7 @@ Create_func_rtrim_oracle Create_func_rtrim_oracle::s_singleton;
 Item*
 Create_func_rtrim_oracle::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_rtrim_oracle(thd, arg1);
 }
 
@@ -5375,6 +5721,7 @@ Create_func_sec_to_time Create_func_sec_to_time::s_singleton;
 Item*
 Create_func_sec_to_time::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sec_to_time(thd, arg1);
 }
 
@@ -5384,6 +5731,7 @@ Item*
 Create_func_sformat::create_native(THD *thd, const LEX_CSTRING *name,
                                    List<Item> *item_list)
 {
+  APPENDFUNC;
   int arg_count= 0;
 
   if (item_list != NULL)
@@ -5404,6 +5752,7 @@ Create_func_sha Create_func_sha::s_singleton;
 Item*
 Create_func_sha::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sha(thd, arg1);
 }
 
@@ -5413,6 +5762,7 @@ Create_func_sha2 Create_func_sha2::s_singleton;
 Item*
 Create_func_sha2::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sha2(thd, arg1, arg2);
 }
 
@@ -5422,6 +5772,7 @@ Create_func_sign Create_func_sign::s_singleton;
 Item*
 Create_func_sign::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sign(thd, arg1);
 }
 
@@ -5431,6 +5782,7 @@ Create_func_sin Create_func_sin::s_singleton;
 Item*
 Create_func_sin::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sin(thd, arg1);
 }
 
@@ -5440,6 +5792,7 @@ Create_func_sleep Create_func_sleep::s_singleton;
 Item*
 Create_func_sleep::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->uncacheable(UNCACHEABLE_SIDEEFFECT);
   return new (thd->mem_root) Item_func_sleep(thd, arg1);
@@ -5451,6 +5804,7 @@ Create_func_soundex Create_func_soundex::s_singleton;
 Item*
 Create_func_soundex::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_soundex(thd, arg1);
 }
 
@@ -5460,6 +5814,7 @@ Create_func_space Create_func_space::s_singleton;
 Item*
 Create_func_space::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_space(thd, arg1);
 }
 
@@ -5469,6 +5824,7 @@ Create_func_sqrt Create_func_sqrt::s_singleton;
 Item*
 Create_func_sqrt::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_sqrt(thd, arg1);
 }
 
@@ -5478,6 +5834,7 @@ Create_func_str_to_date Create_func_str_to_date::s_singleton;
 Item*
 Create_func_str_to_date::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_str_to_date(thd, arg1, arg2);
 }
 
@@ -5487,6 +5844,7 @@ Create_func_strcmp Create_func_strcmp::s_singleton;
 Item*
 Create_func_strcmp::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_strcmp(thd, arg1, arg2);
 }
 
@@ -5496,6 +5854,7 @@ Create_func_substr_index Create_func_substr_index::s_singleton;
 Item*
 Create_func_substr_index::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_substr_index(thd, arg1, arg2, arg3);
 }
 
@@ -5506,6 +5865,7 @@ Item*
 Create_func_substr_oracle::create_native(THD *thd, const LEX_CSTRING *name,
                                          List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= item_list ? item_list->elements : 0;
 
@@ -5539,6 +5899,7 @@ Create_func_subtime Create_func_subtime::s_singleton;
 Item*
 Create_func_subtime::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_add_time(thd, arg1, arg2, true);
 }
 
@@ -5548,6 +5909,7 @@ Create_func_tan Create_func_tan::s_singleton;
 Item*
 Create_func_tan::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_tan(thd, arg1);
 }
 
@@ -5557,6 +5919,7 @@ Create_func_time_format Create_func_time_format::s_singleton;
 Item*
 Create_func_time_format::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_time_format(thd, arg1, arg2);
 }
 
@@ -5566,6 +5929,7 @@ Create_func_time_to_sec Create_func_time_to_sec::s_singleton;
 Item*
 Create_func_time_to_sec::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_time_to_sec(thd, arg1);
 }
 
@@ -5575,6 +5939,7 @@ Create_func_timediff Create_func_timediff::s_singleton;
 Item*
 Create_func_timediff::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_timediff(thd, arg1, arg2);
 }
 
@@ -5584,6 +5949,7 @@ Create_func_to_base64 Create_func_to_base64::s_singleton;
 Item*
 Create_func_to_base64::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_to_base64(thd, arg1);
 }
 
@@ -5594,6 +5960,7 @@ Item*
 Create_func_to_char::create_native(THD *thd, const LEX_CSTRING *name,
 				   List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -5631,6 +5998,7 @@ Create_func_to_days Create_func_to_days::s_singleton;
 Item*
 Create_func_to_days::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_to_days(thd, arg1);
 }
 
@@ -5640,6 +6008,7 @@ Create_func_to_seconds Create_func_to_seconds::s_singleton;
 Item*
 Create_func_to_seconds::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_to_seconds(thd, arg1);
 }
 
@@ -5649,6 +6018,7 @@ Create_func_ucase Create_func_ucase::s_singleton;
 Item*
 Create_func_ucase::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_ucase(thd, arg1);
 }
 
@@ -5658,6 +6028,7 @@ Create_func_uncompress Create_func_uncompress::s_singleton;
 Item*
 Create_func_uncompress::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_uncompress(thd, arg1);
 }
 
@@ -5667,6 +6038,7 @@ Create_func_uncompressed_length Create_func_uncompressed_length::s_singleton;
 Item*
 Create_func_uncompressed_length::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_uncompressed_length(thd, arg1);
 }
 
@@ -5676,6 +6048,7 @@ Create_func_unhex Create_func_unhex::s_singleton;
 Item*
 Create_func_unhex::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_unhex(thd, arg1);
 }
 
@@ -5686,6 +6059,7 @@ Item*
 Create_func_unix_timestamp::create_native(THD *thd, const LEX_CSTRING *name,
                                           List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -5721,6 +6095,7 @@ Create_func_uuid_short Create_func_uuid_short::s_singleton;
 Item*
 Create_func_uuid_short::create_builder(THD *thd)
 {
+  APPENDFUNC;
   DBUG_ENTER("Create_func_uuid_short::create");
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   thd->lex->safe_to_cache_query= 0;
@@ -5733,6 +6108,7 @@ Create_func_version Create_func_version::s_singleton;
 Item*
 Create_func_version::create_builder(THD *thd)
 {
+  APPENDFUNC;
   thd->lex->set_stmt_unsafe(LEX::BINLOG_STMT_UNSAFE_SYSTEM_FUNCTION);
   static Lex_cstring name(STRING_WITH_LEN("version()"));
   return new (thd->mem_root) Item_static_string_func(thd, name,
@@ -5747,6 +6123,7 @@ Create_func_weekday Create_func_weekday::s_singleton;
 Item*
 Create_func_weekday::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_weekday(thd, arg1, 0);
 }
 
@@ -5756,6 +6133,7 @@ Create_func_weekofyear Create_func_weekofyear::s_singleton;
 Item*
 Create_func_weekofyear::create_1_arg(THD *thd, Item *arg1)
 {
+  APPENDFUNC;
   Item *i1= new (thd->mem_root) Item_int(thd, (char*) "3", 3, 1);
   return new (thd->mem_root) Item_func_week(thd, arg1, i1);
 }
@@ -5768,6 +6146,7 @@ Create_func_wsrep_last_written_gtid::s_singleton;
 Item*
 Create_func_wsrep_last_written_gtid::create_builder(THD *thd)
 {
+  APPENDFUNC;
   thd->lex->safe_to_cache_query= 0;
   return new (thd->mem_root) Item_func_wsrep_last_written_gtid(thd);
 }
@@ -5779,6 +6158,7 @@ Create_func_wsrep_last_seen_gtid::s_singleton;
 Item*
 Create_func_wsrep_last_seen_gtid::create_builder(THD *thd)
 {
+  APPENDFUNC;
   thd->lex->safe_to_cache_query= 0;
   return new (thd->mem_root) Item_func_wsrep_last_seen_gtid(thd);
 }
@@ -5792,6 +6172,7 @@ Create_func_wsrep_sync_wait_upto::create_native(THD *thd,
                                                 const LEX_CSTRING *name,
                                                 List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
   Item *param_1, *param_2;
@@ -5824,6 +6205,7 @@ Create_func_xml_extractvalue Create_func_xml_extractvalue::s_singleton;
 Item*
 Create_func_xml_extractvalue::create_2_arg(THD *thd, Item *arg1, Item *arg2)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_xml_extractvalue(thd, arg1, arg2);
 }
 
@@ -5833,6 +6215,7 @@ Create_func_xml_update Create_func_xml_update::s_singleton;
 Item*
 Create_func_xml_update::create_3_arg(THD *thd, Item *arg1, Item *arg2, Item *arg3)
 {
+  APPENDFUNC;
   return new (thd->mem_root) Item_func_xml_update(thd, arg1, arg2, arg3);
 }
 
@@ -5843,6 +6226,7 @@ Item*
 Create_func_year_week::create_native(THD *thd, const LEX_CSTRING *name,
                                      List<Item> *item_list)
 {
+  APPENDFUNC;
   Item *func= NULL;
   int arg_count= 0;
 
@@ -6129,6 +6513,7 @@ Native_functions_hash native_functions_hash_oracle;
 
 bool Native_functions_hash::init(size_t count)
 {
+  APPENDFUNC;
   DBUG_ENTER("Native_functions_hash::init");
 
   if (my_hash_init(key_memory_native_functions, this,
@@ -6143,6 +6528,7 @@ bool Native_functions_hash::init(size_t count)
 bool Native_functions_hash::append(const Native_func_registry array[],
                                    size_t count)
 {
+  APPENDFUNC;
   DBUG_ENTER("Native_functions_hash::append");
 
   for (size_t i= 0; i < count; i++)
@@ -6167,6 +6553,7 @@ bool Native_functions_hash::append(const Native_func_registry array[],
 bool Native_functions_hash::remove(const Native_func_registry array[],
                                    size_t count)
 {
+  APPENDFUNC;
   DBUG_ENTER("Native_functions_hash::remove");
 
   for (size_t i= 0; i < count; i++)
@@ -6187,6 +6574,7 @@ bool Native_functions_hash::remove(const Native_func_registry array[],
 
 void Native_functions_hash::cleanup()
 {
+  APPENDFUNC;
   DBUG_ENTER("Native_functions_hash::cleanup");
   my_hash_free(this);
   DBUG_VOID_RETURN;
@@ -6196,6 +6584,7 @@ void Native_functions_hash::cleanup()
 static Create_func *
 function_plugin_find_native_function_builder(THD *thd, const LEX_CSTRING &name)
 {
+  APPENDFUNC;
   plugin_ref plugin;
   if ((plugin= my_plugin_lock_by_name(thd, &name, MariaDB_FUNCTION_PLUGIN)))
   {
@@ -6213,6 +6602,7 @@ function_plugin_find_native_function_builder(THD *thd, const LEX_CSTRING &name)
 Create_func *
 Native_functions_hash::find(THD *thd, const LEX_CSTRING &name) const
 {
+  APPENDFUNC;
   Native_func_registry *func;
   Create_func *builder= NULL;
 
@@ -6233,6 +6623,7 @@ Native_functions_hash::find(THD *thd, const LEX_CSTRING &name) const
 
 int item_create_init()
 {
+  APPENDFUNC;
   size_t count= native_func_registry_array.count();
 #ifdef HAVE_SPATIAL
   count+= native_func_registry_array_geom.count();
@@ -6270,6 +6661,7 @@ int item_create_init()
 
 void item_create_cleanup()
 {
+  APPENDFUNC;
   native_functions_hash.cleanup();
   native_functions_hash_oracle.cleanup();
 }
@@ -6278,6 +6670,7 @@ void item_create_cleanup()
 Create_qfunc *
 find_qualified_function_builder(THD *thd)
 {
+  APPENDFUNC;
   return & Create_sp_func::s_singleton;
 }
 
@@ -6286,6 +6679,7 @@ static List<Item> *create_func_dyncol_prepare(THD *thd,
                                               DYNCALL_CREATE_DEF **dfs,
                                               List<DYNCALL_CREATE_DEF> &list)
 {
+  APPENDFUNC;
   DYNCALL_CREATE_DEF *def;
   List_iterator_fast<DYNCALL_CREATE_DEF> li(list);
   List<Item> *args= new (thd->mem_root) List<Item>;
@@ -6308,6 +6702,7 @@ static List<Item> *create_func_dyncol_prepare(THD *thd,
 
 Item *create_func_dyncol_create(THD *thd, List<DYNCALL_CREATE_DEF> &list)
 {
+  APPENDFUNC;
   List<Item> *args;
   DYNCALL_CREATE_DEF *dfs;
   if (!(args= create_func_dyncol_prepare(thd, &dfs, list)))
@@ -6319,6 +6714,7 @@ Item *create_func_dyncol_create(THD *thd, List<DYNCALL_CREATE_DEF> &list)
 Item *create_func_dyncol_add(THD *thd, Item *str,
                              List<DYNCALL_CREATE_DEF> &list)
 {
+  APPENDFUNC;
   List<Item> *args;
   DYNCALL_CREATE_DEF *dfs;
 
@@ -6334,6 +6730,7 @@ Item *create_func_dyncol_add(THD *thd, Item *str,
 
 Item *create_func_dyncol_delete(THD *thd, Item *str, List<Item> &nums)
 {
+  APPENDFUNC;
   DYNCALL_CREATE_DEF *dfs;
   Item *key;
   List_iterator_fast<Item> it(nums);
@@ -6365,6 +6762,7 @@ Item *create_func_dyncol_get(THD *thd,  Item *str, Item *num,
                              const Lex_length_and_dec_st &length_dec,
                              CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   Item *res;
 
   if (likely(!(res= new (thd->mem_root) Item_dyncol_get(thd, str, num))))

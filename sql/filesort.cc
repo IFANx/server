@@ -65,6 +65,7 @@ static Addon_fields *get_addon_fields(TABLE *table, uint sortlength,
 
 static void store_key_part_length(uint32 num, uchar *to, uint bytes)
 {
+  APPENDFUNC;
   switch(bytes) {
   case 1: *to= (uchar)num;    break;
   case 2: int2store(to, num); break;
@@ -77,6 +78,7 @@ static void store_key_part_length(uint32 num, uchar *to, uint bytes)
 
 static uint32 read_keypart_length(const uchar *from, uint bytes)
 {
+  APPENDFUNC;
   switch(bytes) {
   case 1: return from[0];
   case 2: return uint2korr(from);
@@ -99,6 +101,7 @@ static uint32 read_keypart_length(const uchar *from, uint bytes)
 void Sort_param::init_for_filesort(TABLE *table, Filesort *filesort,
                                    uint sortlen, ha_rows limit_rows_arg)
 {
+  APPENDFUNC;
   DBUG_ASSERT(addon_fields == NULL);
 
   if (!(table->file->ha_table_flags() & HA_FAST_KEY_READ) &&
@@ -123,6 +126,7 @@ void Sort_param::setup_lengths_and_limit(TABLE *table,
                                          uint addon_length_arg,
                                          ha_rows limit_rows_arg)
 {
+  APPENDFUNC;
   sort_form= table;
   sort_length= sort_len_arg;
   limit_rows= limit_rows_arg;
@@ -148,6 +152,7 @@ void Sort_param::setup_lengths_and_limit(TABLE *table,
 
 void Sort_param::try_to_pack_addons(ulong max_length_for_sort_data)
 {
+  APPENDFUNC;
   if (!using_addon_fields() ||                  // no addons, or
       using_packed_addons())                    // already packed
     return;
@@ -210,6 +215,7 @@ SORT_INFO *filesort(THD *thd, TABLE *table, Filesort *filesort,
                     Filesort_tracker* tracker, JOIN *join,
                     table_map first_table_bit)
 {
+  APPENDFUNC;
   int error;
   DBUG_ASSERT(thd->variables.sortbuff_size <= SIZE_T_MAX);
   size_t memory_available= (size_t)thd->variables.sortbuff_size;
@@ -571,6 +577,7 @@ SORT_INFO *filesort(THD *thd, TABLE *table, Filesort *filesort,
 
 void Filesort::cleanup()
 {
+  APPENDFUNC;
   if (select && own_select)
   {
     select->cleanup();
@@ -589,6 +596,7 @@ void Filesort::cleanup()
 Sort_keys*
 Filesort::make_sortorder(THD *thd, JOIN *join, table_map first_table_bit)
 {
+  APPENDFUNC;
   uint count;
   SORT_FIELD *sort,*pos;
   ORDER *ord;
@@ -671,6 +679,7 @@ Filesort::make_sortorder(THD *thd, JOIN *join, table_map first_table_bit)
 static uchar *read_buffpek_from_file(IO_CACHE *buffpek_pointers, uint count,
                                      uchar *buf)
 {
+  APPENDFUNC;
   size_t length= sizeof(Merge_chunk)*count;
   uchar *tmp= buf;
   DBUG_ENTER("read_buffpek_from_file");
@@ -713,6 +722,7 @@ char dbug_print_row_buff_tmp[512];
 
 const char* dbug_print_table_row(TABLE *table)
 {
+  APPENDFUNC;
   Field **pfield;
   String tmp(dbug_print_row_buff_tmp,
              sizeof(dbug_print_row_buff_tmp),&my_charset_bin);
@@ -774,6 +784,7 @@ const char* dbug_print_table_row(TABLE *table)
 
 const char* dbug_print_row(TABLE *table, uchar *rec)
 {
+  APPENDFUNC;
   table->move_fields(table->field, rec, table->record[0]);
   const char* ret= dbug_print_table_row(table);
   table->move_fields(table->field, table->record[0], rec);
@@ -790,6 +801,7 @@ const char* dbug_print_row(TABLE *table, uchar *rec)
 */
 static void dbug_print_record(TABLE *table, bool print_rowid)
 {
+  APPENDFUNC;
   char buff[1024];
   Field **pfield;
   String tmp(buff,sizeof(buff),&my_charset_bin);
@@ -887,6 +899,7 @@ static ha_rows find_all_keys(THD *thd, Sort_param *param, SQL_SELECT *select,
                              Bounded_queue<uchar, uchar> *pq,
                              ha_rows *found_rows)
 {
+  APPENDFUNC;
   int error, quick_select;
   uint num_elements_in_buffer, indexpos;
   uchar *ref_pos, *next_pos, ref_buff[MAX_REFLENGTH];
@@ -1113,6 +1126,7 @@ static bool
 write_keys(Sort_param *param,  SORT_INFO *fs_info, uint count,
            IO_CACHE *buffpek_pointers, IO_CACHE *tempfile)
 {
+  APPENDFUNC;
   Merge_chunk buffpek;
   DBUG_ENTER("write_keys");
 
@@ -1151,6 +1165,7 @@ write_keys(Sort_param *param,  SORT_INFO *fs_info, uint count,
 */
 void store_length(uchar *to, uint length, uint pack_length)
 {
+  APPENDFUNC;
   switch (pack_length) {
   case 1:
     *to= (uchar) length;
@@ -1173,6 +1188,7 @@ Type_handler_string_result::make_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp_buffer) const
 {
+  APPENDFUNC;
   CHARSET_INFO *cs= item->collation.collation;
   bool maybe_null= item->maybe_null();
 
@@ -1243,6 +1259,7 @@ Type_handler_int_result::make_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp_buffer) const
 {
+  APPENDFUNC;
   longlong value= item->val_int_result();
   make_sort_key_longlong(to, item->maybe_null(), item->null_value,
                          item->unsigned_flag, value);
@@ -1254,6 +1271,7 @@ Type_handler_temporal_result::make_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp_buffer) const
 {
+  APPENDFUNC;
   MYSQL_TIME buf;
   // This is a temporal type. No nanoseconds. Rounding mode is not important.
   DBUG_ASSERT(item->cmp_type() == TIME_RESULT);
@@ -1276,6 +1294,7 @@ Type_handler_timestamp_common::make_sort_key_part(uchar *to, Item *item,
                                              const SORT_FIELD_ATTR *sort_field,
                                              String *tmp_buffer) const
 {
+  APPENDFUNC;
   THD *thd= current_thd;
   uint binlen= my_timestamp_binary_length(item->decimals);
   Timestamp_or_zero_datetime_native_null native(thd, item);
@@ -1308,6 +1327,7 @@ void
 Type_handler::store_sort_key_longlong(uchar *to, bool unsigned_flag,
                                       longlong value) const
 {
+  APPENDFUNC;
   to[7]= (uchar) value;
   to[6]= (uchar) (value >> 8);
   to[5]= (uchar) (value >> 16);
@@ -1330,6 +1350,7 @@ Type_handler::make_sort_key_longlong(uchar *to,
                                      longlong value) const
 
 {
+  APPENDFUNC;
   if (maybe_null)
   {
     if (null_value)
@@ -1349,6 +1370,7 @@ Type_handler::make_packed_sort_key_longlong(uchar *to, bool maybe_null,
                                       longlong value,
                                       const SORT_FIELD_ATTR *sort_field) const
 {
+  APPENDFUNC;
   if (maybe_null)
   {
     if (null_value)
@@ -1369,6 +1391,7 @@ Type_handler_decimal_result::make_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp_buffer) const
 {
+  APPENDFUNC;
   my_decimal dec_buf, *dec_val= item->val_decimal_result(&dec_buf);
   if (item->maybe_null())
   {
@@ -1389,6 +1412,7 @@ Type_handler_real_result::make_sort_key_part(uchar *to, Item *item,
                                              const SORT_FIELD_ATTR *sort_field,
                                              String *tmp_buffer) const
 {
+  APPENDFUNC;
   double value= item->val_result();
   if (item->maybe_null())
   {
@@ -1408,6 +1432,7 @@ Type_handler_real_result::make_sort_key_part(uchar *to, Item *item,
 static uint make_sortkey(Sort_param *param, uchar *to, uchar *ref_pos,
                          bool using_packed_sortkeys)
 {
+  APPENDFUNC;
   uchar *orig_to= to;
 
   to+= using_packed_sortkeys ?
@@ -1474,6 +1499,7 @@ static uint make_sortkey(Sort_param *param, uchar *to, uchar *ref_pos,
 
 static void register_used_fields(Sort_param *param)
 {
+  APPENDFUNC;
   SORT_FIELD *sort_field;
   TABLE *table=param->sort_form;
 
@@ -1513,6 +1539,7 @@ static void register_used_fields(Sort_param *param)
 static bool save_index(Sort_param *param, uint count,
                        SORT_INFO *table_sort)
 {
+  APPENDFUNC;
   uint offset,res_length, length;
   uchar *to;
   DBUG_ENTER("save_index");
@@ -1553,6 +1580,7 @@ static bool save_index(Sort_param *param, uint count,
 int merge_many_buff(Sort_param *param, Sort_buffer sort_buffer,
                     Merge_chunk *buffpek, uint *maxbuffer, IO_CACHE *t_file)
 {
+  APPENDFUNC;
   uint i;
   IO_CACHE t_file2,*from_file,*to_file,*temp;
   Merge_chunk *lastbuff;
@@ -1608,6 +1636,7 @@ cleanup:
 ulong read_to_buffer(IO_CACHE *fromfile, Merge_chunk *buffpek,
                      Sort_param *param, bool packed_format)
 {
+  APPENDFUNC;
   ha_rows count;
   uint rec_length= param->rec_length;
 
@@ -1700,6 +1729,7 @@ ulong read_to_buffer(IO_CACHE *fromfile, Merge_chunk *buffpek,
 
 void reuse_freed_buff(QUEUE *queue, Merge_chunk *reuse, uint key_length)
 {
+  APPENDFUNC;
   for (uint i= queue_first_element(queue);
        i <= queue_last_element(queue);
        i++)
@@ -1738,6 +1768,7 @@ bool merge_buffers(Sort_param *param, IO_CACHE *from_file,
                    Merge_chunk *lastbuff, Merge_chunk *Fb, Merge_chunk *Tb,
                    int flag)
 {
+  APPENDFUNC;
   bool error= 0;
   uint rec_length,res_length,offset;
   size_t sort_length;
@@ -2018,6 +2049,7 @@ int merge_index(Sort_param *param, Sort_buffer sort_buffer,
                 Merge_chunk *buffpek, uint maxbuffer,
                 IO_CACHE *tempfile, IO_CACHE *outfile)
 {
+  APPENDFUNC;
   DBUG_ENTER("merge_index");
   if (merge_buffers(param, tempfile, outfile, sort_buffer, buffpek, buffpek,
                     buffpek + maxbuffer, 1))
@@ -2028,6 +2060,7 @@ int merge_index(Sort_param *param, Sort_buffer sort_buffer,
 
 static uint suffix_length(ulong string_length)
 {
+  APPENDFUNC;
   if (string_length < 256)
     return 1;
   if (string_length < 256L*256L)
@@ -2043,6 +2076,7 @@ Type_handler_string_result::sort_length(THD *thd,
                                        const Type_std_attributes *item,
                                        SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   CHARSET_INFO *cs;
   sortorder->set_length_and_original_length(thd, item->max_length);
 
@@ -2069,6 +2103,7 @@ Type_handler_temporal_result::sort_length(THD *thd,
                                           const Type_std_attributes *item,
                                           SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   sortorder->original_length= sortorder->length= 8; // Sizof intern longlong
 }
 
@@ -2078,6 +2113,7 @@ Type_handler_timestamp_common::sort_length(THD *thd,
                                            const Type_std_attributes *item,
                                            SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   sortorder->length= my_timestamp_binary_length(item->decimals);
   sortorder->original_length= sortorder->length;
 }
@@ -2088,6 +2124,7 @@ Type_handler_int_result::sort_length(THD *thd,
                                      const Type_std_attributes *item,
                                      SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   sortorder->original_length= sortorder->length= 8; // Sizof intern longlong
 }
 
@@ -2097,6 +2134,7 @@ Type_handler_real_result::sort_length(THD *thd,
                                       const Type_std_attributes *item,
                                       SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   sortorder->original_length= sortorder->length= sizeof(double);
 }
 
@@ -2106,6 +2144,7 @@ Type_handler_decimal_result::sort_length(THD *thd,
                                          const Type_std_attributes *item,
                                          SORT_FIELD_ATTR *sortorder) const
 {
+  APPENDFUNC;
   sortorder->length=
     my_decimal_get_binary_size(item->max_length - (item->decimals ? 1 : 0),
                                item->decimals);  
@@ -2134,6 +2173,7 @@ Type_handler_decimal_result::sort_length(THD *thd,
 static uint
 sortlength(THD *thd, Sort_keys *sort_keys, bool *allow_packing_for_sortkeys)
 {
+  APPENDFUNC;
   uint length;
   *allow_packing_for_sortkeys= true;
   bool allow_packing_for_keys= true;
@@ -2238,6 +2278,7 @@ bool filesort_use_addons(TABLE *table, uint sortlength,
                          uint *length, uint *fields, uint *null_fields,
                          uint *packable_length)
 {
+  APPENDFUNC;
   Field **pfield, *field;
   *length= *fields= *null_fields= *packable_length= 0;
   uint field_length=0;
@@ -2306,6 +2347,7 @@ static Addon_fields*
 get_addon_fields(TABLE *table, uint sortlength,
                  uint *addon_length, uint *m_packable_length)
 {
+  APPENDFUNC;
   Field **pfield;
   Field *field;
   uint length, fields, null_fields, packable_length;
@@ -2386,6 +2428,7 @@ get_addon_fields(TABLE *table, uint sortlength,
 
 void change_double_for_sort(double nr,uchar *to)
 {
+  APPENDFUNC;
   uchar *tmp=(uchar*) to;
   if (nr == 0.0)
   {						/* Change to zero string */
@@ -2427,11 +2470,13 @@ void change_double_for_sort(double nr,uchar *to)
 
 bool SORT_INFO::using_packed_addons()
 {
+  APPENDFUNC;
   return addon_fields != NULL && addon_fields->using_packed_addons();
 }
 
 void SORT_INFO::free_addon_buff()
 {
+  APPENDFUNC;
   if (addon_fields)
     addon_fields->free_addon_buff();
 }
@@ -2441,6 +2486,7 @@ void SORT_INFO::free_addon_buff()
 */
 bool SORT_INFO::using_packed_sortkeys()
 {
+  APPENDFUNC;
   return sort_keys != NULL && sort_keys->using_packed_sortkeys();
 }
 
@@ -2450,6 +2496,7 @@ bool SORT_INFO::using_packed_sortkeys()
 
 SORT_INFO::~SORT_INFO()
 {
+  APPENDFUNC;
   DBUG_ENTER("~SORT_INFO::SORT_INFO()");
   free_data();
   DBUG_VOID_RETURN;
@@ -2458,6 +2505,7 @@ SORT_INFO::~SORT_INFO()
 
 void Sort_param::try_to_pack_sortkeys()
 {
+  APPENDFUNC;
   #ifdef WITHOUT_PACKED_SORT_KEYS
     return;
   #endif
@@ -2497,6 +2545,7 @@ Type_handler_string_result::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
   CHARSET_INFO *cs= item->collation.collation;
   bool maybe_null= item->maybe_null();
 
@@ -2536,6 +2585,7 @@ Type_handler_int_result::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
   longlong value= item->val_int_result();
   return make_packed_sort_key_longlong(to, item->maybe_null(),
                                        item->null_value, item->unsigned_flag,
@@ -2548,6 +2598,7 @@ Type_handler_decimal_result::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
   my_decimal dec_buf, *dec_val= item->val_decimal_result(&dec_buf);
   if (item->maybe_null())
   {
@@ -2570,6 +2621,7 @@ Type_handler_real_result::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
   double value= item->val_result();
   if (item->maybe_null())
   {
@@ -2591,6 +2643,7 @@ Type_handler_temporal_result::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
   MYSQL_TIME buf;
   // This is a temporal type. No nanoseconds. Rounding mode is not important.
   DBUG_ASSERT(item->cmp_type() == TIME_RESULT);
@@ -2613,6 +2666,7 @@ Type_handler_timestamp_common::make_packed_sort_key_part(uchar *to, Item *item,
                                             const SORT_FIELD_ATTR *sort_field,
                                             String *tmp) const
 {
+  APPENDFUNC;
  THD *thd= current_thd;
   uint binlen= my_timestamp_binary_length(item->decimals);
   Timestamp_or_zero_datetime_native_null native(thd, item);
@@ -2663,6 +2717,7 @@ Type_handler_timestamp_common::make_packed_sort_key_part(uchar *to, Item *item,
 
 void reverse_key(uchar *to, const SORT_FIELD_ATTR *sort_field)
 {
+  APPENDFUNC;
   uint length;
   if (sort_field->maybe_null && (to[-1]= !to[-1]))
   {
@@ -2688,6 +2743,7 @@ void reverse_key(uchar *to, const SORT_FIELD_ATTR *sort_field)
 */
 bool SORT_FIELD_ATTR::check_if_packing_possible(THD *thd) const
 {
+  APPENDFUNC;
   /*
     Packing not allowed when original length is greater than max_sort_length
     and we have a complex collation because cutting a prefix is not safe in
@@ -2702,6 +2758,7 @@ bool SORT_FIELD_ATTR::check_if_packing_possible(THD *thd) const
 
 void SORT_FIELD_ATTR::set_length_and_original_length(THD *thd, uint length_arg)
 {
+  APPENDFUNC;
   length= length_arg;
   if (is_variable_sized())
     set_if_smaller(length, thd->variables.max_sort_length);
@@ -2715,6 +2772,7 @@ void SORT_FIELD_ATTR::set_length_and_original_length(THD *thd, uint length_arg)
 
 qsort2_cmp get_packed_keys_compare_ptr()
 {
+  APPENDFUNC;
   return (qsort2_cmp) compare_packed_sort_keys;
 }
 
@@ -2732,6 +2790,7 @@ qsort2_cmp get_packed_keys_compare_ptr()
 int SORT_FIELD_ATTR::compare_packed_varstrings(uchar *a, size_t *a_len,
                                                uchar *b, size_t *b_len)
 {
+  APPENDFUNC;
   int retval;
   size_t a_length, b_length;
   if (maybe_null)
@@ -2792,6 +2851,7 @@ int SORT_FIELD_ATTR::compare_packed_varstrings(uchar *a, size_t *a_len,
 int SORT_FIELD_ATTR::compare_packed_fixed_size_vals(uchar *a, size_t *a_len,
                                                     uchar *b, size_t *b_len)
 {
+  APPENDFUNC;
   if (maybe_null)
   {
     *a_len=1;
@@ -2838,6 +2898,7 @@ int SORT_FIELD_ATTR::compare_packed_fixed_size_vals(uchar *a, size_t *a_len,
 int compare_packed_sort_keys(void *sort_param,
                              unsigned char **a_ptr, unsigned char **b_ptr)
 {
+  APPENDFUNC;
   int retval= 0;
   size_t a_len, b_len;
   Sort_param *param= (Sort_param*)sort_param;
@@ -2895,6 +2956,7 @@ uint
 SORT_FIELD_ATTR::pack_sort_string(uchar *to, const Binary_string *str,
                                   CHARSET_INFO *cs) const
 {
+  APPENDFUNC;
   uchar *orig_to= to;
   uint32 length, data_length;
   DBUG_ASSERT(str->length() <= UINT32_MAX);
@@ -2935,6 +2997,7 @@ SORT_FIELD_ATTR::pack_sort_string(uchar *to, const Binary_string *str,
 
 static uint make_sortkey(Sort_param *param, uchar *to)
 {
+  APPENDFUNC;
   Field *field;
   SORT_FIELD *sort_field;
   uchar *orig_to= to;
@@ -2985,6 +3048,7 @@ static uint make_sortkey(Sort_param *param, uchar *to)
 
 static uint make_packed_sortkey(Sort_param *param, uchar *to)
 {
+  APPENDFUNC;
   Field *field;
   SORT_FIELD *sort_field;
   uint length;

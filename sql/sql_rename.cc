@@ -54,6 +54,7 @@ static bool rename_tables(THD *thd, TABLE_LIST *table_list,
 bool mysql_rename_tables(THD *thd, TABLE_LIST *table_list, bool silent,
                           bool if_exists)
 {
+  APPENDFUNC;
   bool error= 1;
   bool binlog_error= 0, force_if_exists;
   TABLE_LIST *ren_table= 0;
@@ -211,6 +212,7 @@ err:
 static bool
 do_rename_temporary(THD *thd, TABLE_LIST *ren_table, TABLE_LIST *new_table)
 {
+  APPENDFUNC;
   LEX_CSTRING *new_alias;
   DBUG_ENTER("do_rename_temporary");
 
@@ -266,6 +268,7 @@ check_rename(THD *thd, rename_param *param,
              const LEX_CSTRING *new_table_alias,
              bool if_exists)
 {
+  APPENDFUNC;
   DBUG_ENTER("check_rename");
   DBUG_PRINT("enter", ("if_exists: %d", (int) if_exists));
 
@@ -339,6 +342,7 @@ do_rename(THD *thd, rename_param *param, DDL_LOG_STATE *ddl_log_state,
           TABLE_LIST *ren_table, const LEX_CSTRING *new_db,
           bool skip_error, bool *force_if_exists)
 {
+  APPENDFUNC;
   int rc= 1;
   handlerton *hton;
   LEX_CSTRING *old_alias, *new_alias;
@@ -492,6 +496,7 @@ static bool
 rename_tables(THD *thd, TABLE_LIST *table_list, DDL_LOG_STATE *ddl_log_state,
               bool skip_error, bool if_exists, bool *force_if_exists)
 {
+  APPENDFUNC;
   TABLE_LIST *ren_table, *new_table;
   List<TABLE_PAIR> tmp_tables;
   DBUG_ENTER("rename_tables");

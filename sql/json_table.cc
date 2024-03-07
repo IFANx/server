@@ -99,6 +99,7 @@ int get_disallowed_table_deps_for_list(MEM_ROOT *mem_root,
                                        List<TABLE_LIST> *join_list,
                                        List<TABLE_LIST> *disallowed_tables)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   NESTED_JOIN *nested_join;
   List_iterator<TABLE_LIST> li(*join_list);
@@ -158,6 +159,7 @@ List<TABLE_LIST>* get_disallowed_table_deps(MEM_ROOT *mem_root,
                                             SELECT_LEX *select,
                                             TABLE_LIST *table_func)
 {
+  APPENDFUNC;
   List<TABLE_LIST> *disallowed_tables;
 
   if (!(disallowed_tables = new (mem_root) List<TABLE_LIST>))
@@ -293,6 +295,7 @@ public:
 void Json_table_nested_path::scan_start(CHARSET_INFO *i_cs,
                                         const uchar *str, const uchar *end)
 {
+  APPENDFUNC;
   json_get_path_start(&m_engine, i_cs, str, end, &m_cur_path);
   m_cur_nested= NULL;
   m_null= false;
@@ -307,6 +310,7 @@ void Json_table_nested_path::scan_start(CHARSET_INFO *i_cs,
 
 int Json_table_nested_path::scan_next()
 {
+  APPENDFUNC;
   bool no_records_found= false;
   if (m_cur_nested)
   {
@@ -349,6 +353,7 @@ handle_new_nested:
 
 int ha_json_table::rnd_init(bool scan)
 {
+  APPENDFUNC;
   Json_table_nested_path &p= m_jt->m_nested_path;
   DBUG_ENTER("ha_json_table::rnd_init");
 
@@ -370,6 +375,7 @@ int ha_json_table::rnd_init(bool scan)
 
 static void store_json_in_field(Field *f, const json_engine_t *je)
 {
+  APPENDFUNC;
   switch (je->value_type)
   {
   case JSON_VALUE_NULL:
@@ -396,6 +402,7 @@ static void store_json_in_field(Field *f, const json_engine_t *je)
 
 static int store_json_in_json(Field *f, json_engine_t *je)
 {
+  APPENDFUNC;
   const uchar *from= je->value_begin;
   const uchar *to;
 
@@ -415,6 +422,7 @@ static int store_json_in_json(Field *f, json_engine_t *je)
 
 bool Json_table_nested_path::check_error(const char *str)
 {
+  APPENDFUNC;
   if (m_engine.s.error)
   {
     report_json_error_ex(str, &m_engine, "JSON_TABLE", 0,
@@ -427,6 +435,7 @@ bool Json_table_nested_path::check_error(const char *str)
 
 int ha_json_table::rnd_next(uchar *buf)
 {
+  APPENDFUNC;
   if (!m_js)
     return HA_ERR_END_OF_FILE;
 
@@ -469,6 +478,7 @@ int ha_json_table::rnd_next(uchar *buf)
 
 int ha_json_table::fill_column_values(THD *thd, uchar * buf, uchar *pos)
 {
+  APPENDFUNC;
   MY_BITMAP *orig_map= dbug_tmp_use_all_columns(table, &table->write_set);
   int error= 0;
   Counting_error_handler er_handler;
@@ -634,6 +644,7 @@ cont_loop:
 
 int ha_json_table::rnd_pos(uchar * buf, uchar *pos)
 {
+  APPENDFUNC;
   return fill_column_values(table->in_use, buf, pos) ? HA_ERR_JSON_TABLE : 0;
 }
 
@@ -646,6 +657,7 @@ int ha_json_table::rnd_pos(uchar * buf, uchar *pos)
 */
 void ha_json_table::position(const uchar *record)
 {
+  APPENDFUNC;
   uchar *c_ref= ref;
   Json_table_column *jc;
   List_iterator_fast<Json_table_column> jc_i(m_jt->m_columns);
@@ -680,6 +692,7 @@ void ha_json_table::position(const uchar *record)
 
 int ha_json_table::info(uint)
 {
+  APPENDFUNC;
   /*
     We don't want 0 or 1 in stats.records.
     Though this value shouldn't matter as the optimizer
@@ -705,6 +718,7 @@ TABLE *Create_json_table::start(THD *thd,
                                Table_function_json_table *jt,
                                const LEX_CSTRING *table_alias)
 {
+  APPENDFUNC;
   TABLE *table;
   TABLE_SHARE *share;
   DBUG_ENTER("Create_json_table::start");
@@ -726,6 +740,7 @@ bool Create_json_table::finalize(THD *thd, TABLE *table,
                                  TMP_TABLE_PARAM *param,
                                  Table_function_json_table *jt)
 {
+  APPENDFUNC;
   DBUG_ENTER("Create_json_table::finalize");
   DBUG_ASSERT(table);
 
@@ -753,6 +768,7 @@ bool Create_json_table::finalize(THD *thd, TABLE *table,
 bool Create_json_table::add_json_table_fields(THD *thd, TABLE *table,
                                               Table_function_json_table *jt)
 {
+  APPENDFUNC;
   TABLE_SHARE *share= table->s;
   Json_table_column *jc;
   uint fieldnr= 0;
@@ -850,6 +866,7 @@ err_exit:
 
 TABLE *create_table_for_function(THD *thd, TABLE_LIST *sql_table)
 {
+  APPENDFUNC;
   TMP_TABLE_PARAM tp;
   TABLE *table;
   uint field_count= sql_table->table_function->m_columns.elements+1;
@@ -894,6 +911,7 @@ TABLE *create_table_for_function(THD *thd, TABLE_LIST *sql_table)
 int Json_table_column::set(THD *thd, enum_type ctype, const LEX_CSTRING &path,
                            CHARSET_INFO *cs)
 {
+  APPENDFUNC;
   set(ctype);
   m_explicit_cs= cs;
   if (json_path_setup(&m_path, thd->variables.collation_connection,
@@ -921,6 +939,7 @@ int Json_table_column::set(THD *thd, enum_type ctype, const LEX_CSTRING &path,
 int Json_table_column::set(THD *thd, enum_type ctype, const LEX_CSTRING &path,
                            const Lex_column_charset_collation_attrs_st &cl)
 {
+  APPENDFUNC;
   if (cl.is_empty() || cl.is_contextually_typed_collate_default())
     return set(thd, ctype, path, nullptr);
 
@@ -936,6 +955,7 @@ int Json_table_column::set(THD *thd, enum_type ctype, const LEX_CSTRING &path,
 
 static int print_path(String *str, const json_path_t *p)
 {
+  APPENDFUNC;
   return str->append('\'') ||
          str->append_for_single_quote((const char *) p->s.c_str,
                                       p->s.str_end - p->s.c_str) ||
@@ -953,6 +973,7 @@ static int print_path(String *str, const json_path_t *p)
 */
 int Json_table_column::print(THD *thd, Field **f, String *str)
 {
+  APPENDFUNC;
   StringBuffer<MAX_FIELD_WIDTH> column_type(str->charset());
 
   if (append_identifier(thd, str, &m_field->field_name) ||
@@ -997,6 +1018,7 @@ int Json_table_column::print(THD *thd, Field **f, String *str)
 
 int Json_table_nested_path::set_path(THD *thd, const LEX_CSTRING &path)
 {
+  APPENDFUNC;
   if (json_path_setup(&m_path, thd->variables.collation_connection,
         (const uchar *) path.str, (const uchar *)(path.str + path.length)))
   {
@@ -1026,6 +1048,7 @@ int Json_table_nested_path::set_path(THD *thd, const LEX_CSTRING &path)
 int Json_table_column::On_response::respond(Json_table_column *jc, Field *f,
                                             uint error_num)
 {
+  APPENDFUNC;
   switch (m_response)
   {
     case Json_table_column::RESPONSE_NOT_SPECIFIED:
@@ -1048,6 +1071,7 @@ int Json_table_column::On_response::respond(Json_table_column *jc, Field *f,
 
 int Json_table_column::On_response::print(const char *name, String *str) const
 {
+  APPENDFUNC;
   LEX_CSTRING resp;
   const LEX_CSTRING *ds= NULL;
   if (m_response == Json_table_column::RESPONSE_NOT_SPECIFIED)
@@ -1083,6 +1107,7 @@ int Json_table_column::On_response::print(const char *name, String *str) const
 
 void Table_function_json_table::start_nested_path(Json_table_nested_path *np)
 {
+  APPENDFUNC;
   np->m_parent= cur_parent;
   *last_sibling_hook= np;
 
@@ -1094,6 +1119,7 @@ void Table_function_json_table::start_nested_path(Json_table_nested_path *np)
 
 void Table_function_json_table::end_nested_path()
 {
+  APPENDFUNC;
   last_sibling_hook= &cur_parent->m_next_nested;
   cur_parent= cur_parent->m_parent;
 }
@@ -1109,6 +1135,7 @@ void Table_function_json_table::end_nested_path()
 
 bool push_table_function_arg_context(LEX *lex, MEM_ROOT *alloc)
 {
+  APPENDFUNC;
   // Walk the context stack until we find a context that is used for resolving
   // the SELECT's WHERE clause.
   List_iterator<Name_resolution_context> it(lex->context_stack);
@@ -1154,6 +1181,7 @@ bool push_table_function_arg_context(LEX *lex, MEM_ROOT *alloc)
 bool Table_function_json_table::setup(THD *thd, TABLE_LIST *sql_table,
                                      SELECT_LEX *s_lex)
 {
+  APPENDFUNC;
   thd->where= "JSON_TABLE argument";
 
   if (!m_context_setup_done)
@@ -1193,6 +1221,7 @@ bool Table_function_json_table::setup(THD *thd, TABLE_LIST *sql_table,
 int Table_function_json_table::walk_items(Item_processor processor,
                                           bool walk_subquery, void *argument)
 {
+  APPENDFUNC;
   return m_json->walk(processor, walk_subquery, argument);
 }
 
@@ -1200,6 +1229,7 @@ void Table_function_json_table::get_estimates(ha_rows *out_rows,
                                               double *scan_time,
                                               double *startup_cost)
 {
+  APPENDFUNC;
   *out_rows= 40;
   *scan_time= 0.0;
   *startup_cost= 0.0;
@@ -1216,6 +1246,7 @@ void Table_function_json_table::get_estimates(ha_rows *out_rows,
 bool Json_table_nested_path::column_in_this_or_nested(
     const Json_table_nested_path *p, const Json_table_column *jc)
 {
+  APPENDFUNC;
   for (; p; p= p->m_nested)
   {
     if (jc->m_nest == p)
@@ -1243,6 +1274,7 @@ int Json_table_nested_path::print(THD *thd, Field ***f, String *str,
                                   List_iterator_fast<Json_table_column> &it,
                                   Json_table_column **last_column)
 {
+  APPENDFUNC;
   Json_table_nested_path *c_path= this;
   Json_table_nested_path *c_nested= m_nested;
   Json_table_column *jc= *last_column;
@@ -1299,6 +1331,7 @@ int Json_table_nested_path::print(THD *thd, Field ***f, String *str,
 int Table_function_json_table::print(THD *thd, TABLE_LIST *sql_table,
                                      String *str, enum_query_type query_type)
 {
+  APPENDFUNC;
   List_iterator_fast<Json_table_column> jc_i(m_columns);
   Json_table_column *jc= jc_i++;
   Field **f_list= sql_table->table->field;
@@ -1324,6 +1357,7 @@ int Table_function_json_table::print(THD *thd, TABLE_LIST *sql_table,
 void Table_function_json_table::fix_after_pullout(TABLE_LIST *sql_table,
        st_select_lex *new_parent, bool merge)
 {
+  APPENDFUNC;
   m_json->fix_after_pullout(new_parent, &m_json, merge);
   sql_table->dep_tables= used_tables();
 }
@@ -1336,6 +1370,7 @@ void Table_function_json_table::fix_after_pullout(TABLE_LIST *sql_table,
 
 static void add_extra_deps(List<TABLE_LIST> *join_list, table_map deps)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   List_iterator<TABLE_LIST> li(*join_list);
 
@@ -1431,6 +1466,7 @@ static void add_extra_deps(List<TABLE_LIST> *join_list, table_map deps)
 table_map add_table_function_dependencies(List<TABLE_LIST> *join_list,
                                           table_map nest_tables)
 {
+  APPENDFUNC;
   TABLE_LIST *table;
   table_map res= 0;
   List_iterator<TABLE_LIST> li(*join_list);

@@ -67,6 +67,7 @@ static void save_or_restore_used_tabs(JOIN_TAB *join_tab, bool save);
 static
 uint add_flag_field_to_join_cache(uchar *str, uint length, CACHE_FIELD **field)
 {
+  APPENDFUNC;
   CACHE_FIELD *copy= *field;
   copy->str= str;
   copy->length= length;
@@ -113,6 +114,7 @@ uint add_table_data_fields_to_join_cache(JOIN_TAB *tab,
                                          uint *field_ptr_cnt,
                                          CACHE_FIELD ***descr_ptr)
 {
+  APPENDFUNC;
   Field **fld_ptr;
   uint len= 0;
   CACHE_FIELD *copy= *descr;
@@ -160,6 +162,7 @@ uint add_table_data_fields_to_join_cache(JOIN_TAB *tab,
 
 void JOIN_CACHE::calc_record_fields()
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
 
   if (prev_cache)
@@ -260,6 +263,7 @@ void JOIN_CACHE::calc_record_fields()
 
 void JOIN_CACHE::collect_info_on_key_args()
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
   JOIN_CACHE *cache;
   local_key_arg_fields= 0;
@@ -326,6 +330,7 @@ void JOIN_CACHE::collect_info_on_key_args()
 
 int JOIN_CACHE::alloc_fields()
 {
+  APPENDFUNC;
   uint ptr_cnt= external_key_arg_fields+blobs+1;
   uint fields_size= sizeof(CACHE_FIELD)*fields;
   field_descr= (CACHE_FIELD*) join->thd->alloc(fields_size +
@@ -374,6 +379,7 @@ int JOIN_CACHE::alloc_fields()
 
 void JOIN_CACHE::create_flag_fields()
 {
+  APPENDFUNC;
   CACHE_FIELD *copy;
   JOIN_TAB *tab;
 
@@ -459,6 +465,7 @@ void JOIN_CACHE::create_flag_fields()
 */
 void JOIN_CACHE::create_key_arg_fields()
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
   JOIN_CACHE *cache;
 
@@ -579,6 +586,7 @@ void JOIN_CACHE::create_key_arg_fields()
 
 void JOIN_CACHE::create_remaining_fields()
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
   bool all_read_fields= !is_key_access();
   CACHE_FIELD *copy= field_descr+flag_fields+data_field_count;
@@ -656,6 +664,7 @@ void JOIN_CACHE::create_remaining_fields()
 
 void JOIN_CACHE::set_constants()
 { 
+  APPENDFUNC;
   /* 
     Any record from a BKA cache is prepended with the record length.
     We use the record length when reading the buffer and building key values
@@ -741,6 +750,7 @@ void JOIN_CACHE::set_constants()
      
 uint JOIN_CACHE::get_record_max_affix_length()
 {
+  APPENDFUNC;
   uint len= get_prefix_length() +
             MY_TEST(with_match_flag) +
             size_of_fld_ofs * data_field_count;
@@ -773,6 +783,7 @@ uint JOIN_CACHE::get_record_max_affix_length()
 
 size_t JOIN_CACHE::get_min_join_buffer_size()
 {
+  APPENDFUNC;
   if (min_buff_size)
     return min_buff_size;                       // use cached value
 
@@ -802,6 +813,7 @@ size_t JOIN_CACHE::get_min_join_buffer_size()
 
 size_t JOIN_CACHE::calc_avg_record_length()
 {
+  APPENDFUNC;
   size_t len= 0;
   for (JOIN_TAB *tab= start_tab; tab != join_tab;
        tab= next_linear_tab(join, tab, WITHOUT_BUSH_ROOTS))
@@ -842,6 +854,7 @@ size_t JOIN_CACHE::calc_avg_record_length()
 size_t JOIN_CACHE::get_max_join_buffer_size(bool optimize_buff_size,
                                             size_t min_sz)
 {
+  APPENDFUNC;
   if (max_buff_size)
     return max_buff_size;                       // use cached value
 
@@ -908,6 +921,7 @@ size_t JOIN_CACHE::get_max_join_buffer_size(bool optimize_buff_size,
 
 int JOIN_CACHE::alloc_buffer()
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
   JOIN_CACHE *cache;
   ulonglong curr_buff_space_sz= 0;
@@ -1012,6 +1026,7 @@ fail:
 
 bool JOIN_CACHE::shrink_join_buffer_in_ratio(ulonglong n, ulonglong d)
 {
+  APPENDFUNC;
   size_t next_buff_size;
   if (n < d)
     return FALSE;
@@ -1043,6 +1058,7 @@ bool JOIN_CACHE::shrink_join_buffer_in_ratio(ulonglong n, ulonglong d)
 
 int JOIN_CACHE::realloc_buffer()
 {
+  APPENDFUNC;
   free();
   buff= (uchar*) my_malloc(key_memory_JOIN_CACHE, buff_size,
                                          MYF(MY_THREAD_SPECIFIC));
@@ -1080,6 +1096,7 @@ int JOIN_CACHE::realloc_buffer()
 
 int JOIN_CACHE::init(bool for_explain)
 {
+  APPENDFUNC;
   DBUG_ENTER("JOIN_CACHE::init");
 
   for_explain_only= for_explain; 
@@ -1148,6 +1165,7 @@ int JOIN_CACHE::init(bool for_explain)
 
 bool JOIN_CACHE::check_emb_key_usage()
 {
+  APPENDFUNC;
 
   if (!is_key_access())
     return FALSE;
@@ -1299,6 +1317,7 @@ bool JOIN_CACHE::check_emb_key_usage()
 
 uint JOIN_CACHE::write_record_data(uchar * link, bool *is_full)
 {
+  APPENDFUNC;
   uint len;
   bool last_record;
   CACHE_FIELD *copy;
@@ -1558,6 +1577,7 @@ uint JOIN_CACHE::write_record_data(uchar * link, bool *is_full)
 */
 void JOIN_CACHE::reset(bool for_writing)
 {
+  APPENDFUNC;
   pos= buff;
   curr_rec_link= 0;
   if (for_writing)
@@ -1593,6 +1613,7 @@ void JOIN_CACHE::reset(bool for_writing)
 
 bool JOIN_CACHE::put_record()
 {
+  APPENDFUNC;
   bool is_full;
   uchar *link= 0;
   if (prev_cache)
@@ -1629,6 +1650,7 @@ bool JOIN_CACHE::put_record()
 
 bool JOIN_CACHE::get_record()
 { 
+  APPENDFUNC;
   bool res;
   uchar *prev_rec_ptr= 0;
   if (with_length)
@@ -1669,6 +1691,7 @@ bool JOIN_CACHE::get_record()
 
 void JOIN_CACHE::get_record_by_pos(uchar *rec_ptr)
 {
+  APPENDFUNC;
   uchar *save_pos= pos;
   pos= rec_ptr;
   read_all_record_fields();
@@ -1701,6 +1724,7 @@ void JOIN_CACHE::get_record_by_pos(uchar *rec_ptr)
 
 enum JOIN_CACHE::Match_flag JOIN_CACHE::get_match_flag_by_pos(uchar *rec_ptr)
 {
+  APPENDFUNC;
   Match_flag match_fl= MATCH_NOT_FOUND;
   if (with_match_flag)
   {
@@ -1739,6 +1763,7 @@ enum JOIN_CACHE::Match_flag
 JOIN_CACHE::get_match_flag_by_pos_from_join_buffer(uchar *rec_ptr,
                                                    JOIN_TAB *tab)
 {
+  APPENDFUNC;
   DBUG_ASSERT(tab->cache && tab->cache->with_match_flag);
   for (JOIN_CACHE *cache= this; ; )
   {
@@ -1769,6 +1794,7 @@ JOIN_CACHE::get_match_flag_by_pos_from_join_buffer(uchar *rec_ptr,
 
 uint JOIN_CACHE::aux_buffer_incr(size_t recno)
 { 
+  APPENDFUNC;
   return join_tab_scan->aux_buffer_incr(recno);
 }
 
@@ -1793,6 +1819,7 @@ uint JOIN_CACHE::aux_buffer_incr(size_t recno)
 
 uint JOIN_CACHE::read_all_record_fields()
 {
+  APPENDFUNC;
   uchar *init_pos= pos;
   
   if (pos > last_rec_pos || !records)
@@ -1831,6 +1858,7 @@ uint JOIN_CACHE::read_all_record_fields()
 
 uint JOIN_CACHE::read_flag_fields()
 {
+  APPENDFUNC;
   uchar *init_pos= pos;
   CACHE_FIELD *copy= field_descr;
   CACHE_FIELD *copy_end= copy+flag_fields;
@@ -1872,6 +1900,7 @@ uint JOIN_CACHE::read_flag_fields()
 
 uint JOIN_CACHE::read_record_field(CACHE_FIELD *copy, bool blob_in_rec_buff)
 {
+  APPENDFUNC;
   uint len;
   /* Do not copy the field if its value is null */
   if (copy->field && copy->field->maybe_null() && copy->field->is_null())
@@ -1966,6 +1995,7 @@ bool JOIN_CACHE::read_referenced_field(CACHE_FIELD *copy,
                                        uchar *rec_ptr, 
                                        uint *len)
 {
+  APPENDFUNC;
   uchar *ptr;
   uint offset;
   if (copy < field_descr || copy >= field_descr+fields)
@@ -2031,6 +2061,7 @@ bool JOIN_CACHE::read_referenced_field(CACHE_FIELD *copy,
 
 bool JOIN_CACHE::skip_if_matched()
 {
+  APPENDFUNC;
   DBUG_ASSERT(with_length);
   uint offset= size_of_rec_len;
   if (prev_cache)
@@ -2080,6 +2111,7 @@ bool JOIN_CACHE::skip_if_matched()
 
 bool JOIN_CACHE::skip_if_not_needed_match()
 {
+  APPENDFUNC;
   DBUG_ASSERT(with_length);
   enum Match_flag match_fl;
   uint offset= size_of_rec_len;
@@ -2123,6 +2155,7 @@ bool JOIN_CACHE::skip_if_not_needed_match()
 
 void JOIN_CACHE::restore_last_record()
 {
+  APPENDFUNC;
   if (records)
     get_record_by_pos(last_rec_pos);
 }
@@ -2165,6 +2198,7 @@ void JOIN_CACHE::restore_last_record()
 
 enum_nested_loop_state JOIN_CACHE::join_records(bool skip_last)
 {
+  APPENDFUNC;
   JOIN_TAB *tab;
   enum_nested_loop_state rc= NESTED_LOOP_OK;
   bool outer_join_first_inner= join_tab->is_first_inner_for_outer_join();
@@ -2321,6 +2355,7 @@ finish:
 
 enum_nested_loop_state JOIN_CACHE::join_matching_records(bool skip_last)
 {
+  APPENDFUNC;
   int error;
   enum_nested_loop_state rc= NESTED_LOOP_OK;
   join_tab->table->null_row= 0;
@@ -2472,6 +2507,7 @@ finish2:
 bool JOIN_CACHE::set_match_flag_if_none(JOIN_TAB *first_inner,
                                         uchar *rec_ptr)
 {
+  APPENDFUNC;
   if (!first_inner->cache)
   {
     /* 
@@ -2522,6 +2558,7 @@ bool JOIN_CACHE::set_match_flag_if_none(JOIN_TAB *first_inner,
 
 enum_nested_loop_state JOIN_CACHE::generate_full_extensions(uchar *rec_ptr)
 {
+  APPENDFUNC;
   enum_nested_loop_state rc= NESTED_LOOP_OK;
   DBUG_ENTER("JOIN_CACHE::generate_full_extensions");
   
@@ -2583,6 +2620,7 @@ enum_nested_loop_state JOIN_CACHE::generate_full_extensions(uchar *rec_ptr)
 
 inline bool JOIN_CACHE::check_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   /* Check whether pushdown conditions are satisfied */
   DBUG_ENTER("JOIN_CACHE:check_match");
 
@@ -2656,6 +2694,7 @@ inline bool JOIN_CACHE::check_match(uchar *rec_ptr)
 
 enum_nested_loop_state JOIN_CACHE::join_null_complements(bool skip_last)
 {
+  APPENDFUNC;
   ulonglong cnt; 
   enum_nested_loop_state rc= NESTED_LOOP_OK;
   bool is_first_inner= join_tab == join_tab->first_unmatched;
@@ -2715,6 +2754,7 @@ finish:
 
 bool JOIN_CACHE::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 {
+  APPENDFUNC;
   explain->incremental= MY_TEST(prev_cache);
 
   explain->join_buffer_size= get_join_buffer_size();
@@ -2744,12 +2784,14 @@ bool JOIN_CACHE::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 
 THD *JOIN_CACHE::thd()
 {
+  APPENDFUNC;
   return join->thd;
 }
 
 
 static bool add_mrr_explain_info(String *str, uint mrr_mode, handler *file)
 {
+  APPENDFUNC;
   char mrr_str_buf[128]={0};
   int len;
   len= file->multi_range_read_explain_info(mrr_mode, mrr_str_buf,
@@ -2770,6 +2812,7 @@ static bool add_mrr_explain_info(String *str, uint mrr_mode, handler *file)
 
 bool JOIN_CACHE_BKA::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 {
+  APPENDFUNC;
   if (JOIN_CACHE::save_explain_data(explain))
     return 1;
   return add_mrr_explain_info(&explain->mrr_type, mrr_mode, join_tab->table->file);
@@ -2778,6 +2821,7 @@ bool JOIN_CACHE_BKA::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 
 bool JOIN_CACHE_BKAH::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 {
+  APPENDFUNC;
   if (JOIN_CACHE::save_explain_data(explain))
     return 1;
   return add_mrr_explain_info(&explain->mrr_type, mrr_mode, join_tab->table->file);
@@ -2811,6 +2855,7 @@ bool JOIN_CACHE_BKAH::save_explain_data(EXPLAIN_BKA_TYPE *explain)
 
 int JOIN_CACHE_HASHED::init(bool for_explain)
 {
+  APPENDFUNC;
   TABLE_REF *ref= &join_tab->ref;
   DBUG_ENTER("JOIN_CACHE_HASHED::init");
 
@@ -2895,6 +2940,7 @@ int JOIN_CACHE_HASHED::init(bool for_explain)
 
 int JOIN_CACHE_HASHED::init_hash_table()
 {
+  APPENDFUNC;
   hash_table= 0;
   key_entries= 0;
 
@@ -2961,6 +3007,7 @@ int JOIN_CACHE_HASHED::init_hash_table()
 
 int JOIN_CACHE_HASHED::realloc_buffer()
 {
+  APPENDFUNC;
   free();
   buff= (uchar*) my_malloc(key_memory_JOIN_CACHE, buff_size,
                                          MYF(MY_THREAD_SPECIFIC));
@@ -2987,6 +3034,7 @@ int JOIN_CACHE_HASHED::realloc_buffer()
 
 uint JOIN_CACHE_HASHED::get_max_key_addon_space_per_record()
 {
+  APPENDFUNC;
   ulong len;
   TABLE_REF *ref= &join_tab->ref;
   /* 
@@ -3021,6 +3069,7 @@ uint JOIN_CACHE_HASHED::get_max_key_addon_space_per_record()
  
 void JOIN_CACHE_HASHED::reset(bool for_writing)
 {
+  APPENDFUNC;
   this->JOIN_CACHE::reset(for_writing);
   if (for_writing && hash_table)
     cleanup_hash_table();
@@ -3058,6 +3107,7 @@ void JOIN_CACHE_HASHED::reset(bool for_writing)
 
 bool JOIN_CACHE_HASHED::put_record()
 {
+  APPENDFUNC;
   bool is_full;
   uchar *key;
   uint key_len= key_length;
@@ -3154,6 +3204,7 @@ bool JOIN_CACHE_HASHED::put_record()
 
 bool JOIN_CACHE_HASHED::get_record()
 { 
+  APPENDFUNC;
   pos+= get_size_of_rec_offset();
   return this->JOIN_CACHE::get_record();
 }
@@ -3177,6 +3228,7 @@ bool JOIN_CACHE_HASHED::get_record()
 
 bool JOIN_CACHE_HASHED::skip_if_matched()
 {
+  APPENDFUNC;
   uchar *save_pos= pos;
   pos+= get_size_of_rec_offset();
   if (!this->JOIN_CACHE::skip_if_matched())
@@ -3206,6 +3258,7 @@ bool JOIN_CACHE_HASHED::skip_if_matched()
 
 bool JOIN_CACHE_HASHED::skip_if_not_needed_match()
 {
+  APPENDFUNC;
   uchar *save_pos= pos;
   pos+= get_size_of_rec_offset();
   if (!this->JOIN_CACHE::skip_if_not_needed_match())
@@ -3245,6 +3298,7 @@ bool JOIN_CACHE_HASHED::skip_if_not_needed_match()
 bool JOIN_CACHE_HASHED::key_search(uchar *key, uint key_len,
                                    uchar **key_ref_ptr) 
 {
+  APPENDFUNC;
   bool is_found= FALSE;
   uint idx= (this->*hash_func)(key, key_length);
   uchar *ref_ptr= hash_table+size_of_key_ofs*idx;
@@ -3286,6 +3340,7 @@ bool JOIN_CACHE_HASHED::key_search(uchar *key, uint key_len,
 inline
 uint JOIN_CACHE_HASHED::get_hash_idx_simple(uchar* key, uint key_len)
 {
+  APPENDFUNC;
   ulong nr= 1;
   ulong nr2= 4;
   uchar *pos= key;
@@ -3325,6 +3380,7 @@ uint JOIN_CACHE_HASHED::get_hash_idx_simple(uchar* key, uint key_len)
 inline
 uint JOIN_CACHE_HASHED::get_hash_idx_complex(uchar *key, uint key_len)
 {
+  APPENDFUNC;
   return 
     (uint) (key_hashnr(ref_key_info, ref_used_key_parts, key) % hash_entries);
 }
@@ -3352,6 +3408,7 @@ inline
 bool JOIN_CACHE_HASHED::equal_keys_simple(uchar *key1, uchar *key2,
                                           uint key_len)
 {
+  APPENDFUNC;
   return memcmp(key1, key2, key_len) == 0;
 }
 
@@ -3382,6 +3439,7 @@ inline
 bool JOIN_CACHE_HASHED::equal_keys_complex(uchar *key1, uchar *key2,
                                           uint key_len)
 {
+  APPENDFUNC;
   return key_buf_cmp(ref_key_info, ref_used_key_parts, key1, key2) == 0;
 }
 
@@ -3404,6 +3462,7 @@ bool JOIN_CACHE_HASHED::equal_keys_complex(uchar *key1, uchar *key2,
 
 void JOIN_CACHE_HASHED:: cleanup_hash_table()
 {
+  APPENDFUNC;
   last_key_entry= hash_table;
   bzero(hash_table, (buff+buff_size)-hash_table);
   key_entries= 0;
@@ -3430,6 +3489,7 @@ void JOIN_CACHE_HASHED:: cleanup_hash_table()
 
 bool JOIN_CACHE_HASHED::check_all_match_flags_for_key(uchar *key_chain_ptr)
 {
+  APPENDFUNC;
   uchar *last_rec_ref_ptr= get_next_rec_ref(key_chain_ptr);
   uchar *next_rec_ref_ptr= last_rec_ref_ptr;
   do
@@ -3465,6 +3525,7 @@ bool JOIN_CACHE_HASHED::check_all_match_flags_for_key(uchar *key_chain_ptr)
 
 uint JOIN_CACHE_HASHED::get_next_key(uchar ** key)
 {  
+  APPENDFUNC;
   if (curr_key_entry == last_key_entry)
     return 0;
 
@@ -3495,6 +3556,7 @@ uint JOIN_CACHE_HASHED::get_next_key(uchar ** key)
 
 int JOIN_TAB_SCAN::open()
 {
+  APPENDFUNC;
   save_or_restore_used_tabs(join_tab, FALSE);
   is_first_record= TRUE;
   join_tab->tracker->r_scans++;
@@ -3525,6 +3587,7 @@ int JOIN_TAB_SCAN::open()
 
 int JOIN_TAB_SCAN::next()
 {
+  APPENDFUNC;
   int err= 0;
   int skip_rc;
   READ_RECORD *info= &join_tab->read_record;
@@ -3572,6 +3635,7 @@ int JOIN_TAB_SCAN::next()
 
 static void save_or_restore_used_tabs(JOIN_TAB *join_tab, bool save)
 {
+  APPENDFUNC;
   JOIN_TAB *first= join_tab->bush_root_tab?
                      join_tab->bush_root_tab->bush_children->start :
                      join_tab->join->join_tab + join_tab->join->const_tables;
@@ -3621,6 +3685,7 @@ static void save_or_restore_used_tabs(JOIN_TAB *join_tab, bool save)
 
 void JOIN_TAB_SCAN::close()
 {
+  APPENDFUNC;
   save_or_restore_used_tabs(join_tab, TRUE);
 }
 
@@ -3649,6 +3714,7 @@ void JOIN_TAB_SCAN::close()
     
 bool JOIN_CACHE_BNL::prepare_look_for_matches(bool skip_last)
 {
+  APPENDFUNC;
   if (!records)
     return TRUE;
   reset(FALSE);
@@ -3683,6 +3749,7 @@ bool JOIN_CACHE_BNL::prepare_look_for_matches(bool skip_last)
 
 uchar *JOIN_CACHE_BNL::get_next_candidate_for_match()
 {
+  APPENDFUNC;
   if (!rem_records)
     return 0;
   rem_records--;
@@ -3714,6 +3781,7 @@ uchar *JOIN_CACHE_BNL::get_next_candidate_for_match()
 
 bool JOIN_CACHE_BNL::skip_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   pos= rec_ptr-base_prefix_length; 
   return skip_if_not_needed_match();
 }
@@ -3742,6 +3810,7 @@ bool JOIN_CACHE_BNL::skip_next_candidate_for_match(uchar *rec_ptr)
 
 void JOIN_CACHE_BNL::read_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   pos= rec_ptr-base_prefix_length;
   get_record();
 } 
@@ -3769,6 +3838,7 @@ void JOIN_CACHE_BNL::read_next_candidate_for_match(uchar *rec_ptr)
 
 int JOIN_CACHE_BNL::init(bool for_explain)
 {
+  APPENDFUNC;
   DBUG_ENTER("JOIN_CACHE_BNL::init");
 
   if (!(join_tab_scan= new JOIN_TAB_SCAN(join, join_tab)))
@@ -3799,6 +3869,7 @@ int JOIN_CACHE_BNL::init(bool for_explain)
 
 uchar *JOIN_CACHE_BNLH::get_matching_chain_by_join_key()
 {
+  APPENDFUNC;
   uchar *key_ref_ptr;
   TABLE *table= join_tab->table;
   TABLE_REF *ref= &join_tab->ref;
@@ -3839,6 +3910,7 @@ uchar *JOIN_CACHE_BNLH::get_matching_chain_by_join_key()
     
 bool JOIN_CACHE_BNLH::prepare_look_for_matches(bool skip_last)
 {
+  APPENDFUNC;
   uchar *curr_matching_chain;
   last_matching_rec_ref_ptr= next_matching_rec_ref_ptr= 0;
   if (!(curr_matching_chain= get_matching_chain_by_join_key()))
@@ -3872,6 +3944,7 @@ bool JOIN_CACHE_BNLH::prepare_look_for_matches(bool skip_last)
 
 uchar *JOIN_CACHE_BNLH::get_next_candidate_for_match()
 {
+  APPENDFUNC;
   if (next_matching_rec_ref_ptr == last_matching_rec_ref_ptr)
     return 0;
   next_matching_rec_ref_ptr= get_next_rec_ref(next_matching_rec_ref_ptr ?
@@ -3902,6 +3975,7 @@ uchar *JOIN_CACHE_BNLH::get_next_candidate_for_match()
 
 bool JOIN_CACHE_BNLH::skip_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
  return  join_tab->check_only_first_match() &&
           (get_match_flag_by_pos(rec_ptr) == MATCH_FOUND);
 }
@@ -3930,6 +4004,7 @@ bool JOIN_CACHE_BNLH::skip_next_candidate_for_match(uchar *rec_ptr)
 
 void JOIN_CACHE_BNLH::read_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   get_record_by_pos(rec_ptr);
 } 
 
@@ -3956,6 +4031,7 @@ void JOIN_CACHE_BNLH::read_next_candidate_for_match(uchar *rec_ptr)
 
 int JOIN_CACHE_BNLH::init(bool for_explain)
 {
+  APPENDFUNC;
   DBUG_ENTER("JOIN_CACHE_BNLH::init");
 
   if (!(join_tab_scan= new JOIN_TAB_SCAN(join, join_tab)))
@@ -3982,6 +4058,7 @@ int JOIN_CACHE_BNLH::init(bool for_explain)
 
 uint JOIN_TAB_SCAN_MRR::aux_buffer_incr(size_t recno)
 {
+  APPENDFUNC;
   uint incr= 0;
   TABLE_REF *ref= &join_tab->ref;
   TABLE *tab= join_tab->table;
@@ -4016,6 +4093,7 @@ uint JOIN_TAB_SCAN_MRR::aux_buffer_incr(size_t recno)
 
 int JOIN_TAB_SCAN_MRR::open()
 {
+  APPENDFUNC;
   handler *file= join_tab->table->file;
 
   join_tab->table->null_row= 0;
@@ -4062,6 +4140,7 @@ int JOIN_TAB_SCAN_MRR::open()
 
 int JOIN_TAB_SCAN_MRR::next()
 {
+  APPENDFUNC;
   char **ptr= (char **) cache->get_curr_association_ptr();
 
   DBUG_ASSERT(sizeof(range_id_t) == sizeof(*ptr));
@@ -4088,6 +4167,7 @@ static
 void bka_range_seq_key_info(void *init_params, uint *length, 
                           key_part_map *map)
 {
+  APPENDFUNC;
   TABLE_REF *ref= &(((JOIN_CACHE*)init_params)->join_tab->ref);
   *length= ref->key_length;
   *map= (key_part_map(1) << ref->key_parts) - 1;
@@ -4118,6 +4198,7 @@ RETURN VALUE
 static 
 range_seq_t bka_range_seq_init(void *init_param, uint n_ranges, uint flags)
 {
+  APPENDFUNC;
   DBUG_ENTER("bka_range_seq_init");
   JOIN_CACHE_BKA *cache= (JOIN_CACHE_BKA *) init_param;
   cache->reset(0);
@@ -4149,6 +4230,7 @@ RETURN VALUE
 static 
 bool bka_range_seq_next(range_seq_t rseq, KEY_MULTI_RANGE *range)
 {
+  APPENDFUNC;
   DBUG_ENTER("bka_range_seq_next");
   JOIN_CACHE_BKA *cache= (JOIN_CACHE_BKA *) rseq;
   TABLE_REF *ref= &cache->join_tab->ref;
@@ -4195,6 +4277,7 @@ RETURN VALUE
 static 
 bool bka_range_seq_skip_record(range_seq_t rseq, range_id_t range_info, uchar *rowid)
 {
+  APPENDFUNC;
   DBUG_ENTER("bka_range_seq_skip_record");
   JOIN_CACHE_BKA *cache= (JOIN_CACHE_BKA *) rseq;
   bool res= cache->get_match_flag_by_pos((uchar *) range_info) ==
@@ -4226,6 +4309,7 @@ RETURN VALUE
 static 
 bool bka_skip_index_tuple(range_seq_t rseq, range_id_t range_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("bka_skip_index_tuple");
   JOIN_CACHE_BKA *cache= (JOIN_CACHE_BKA *) rseq;
   THD *thd= cache->thd();
@@ -4262,6 +4346,7 @@ RETURN VALUE
   
 bool JOIN_CACHE_BKA::prepare_look_for_matches(bool skip_last)
 {
+  APPENDFUNC;
   if (!records)
     return TRUE;
   rem_records= 1;
@@ -4294,6 +4379,7 @@ RETURN VALUE
 
 uchar *JOIN_CACHE_BKA::get_next_candidate_for_match()
 {
+  APPENDFUNC;
   if (!rem_records)
     return 0;
   rem_records--;
@@ -4322,6 +4408,7 @@ RETURN VALUE
 
 bool JOIN_CACHE_BKA::skip_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   return join_tab->check_only_first_match() &&
     (get_match_flag_by_pos(rec_ptr) == MATCH_FOUND);
 }
@@ -4350,6 +4437,7 @@ RETURN VALUE
 
 void JOIN_CACHE_BKA::read_next_candidate_for_match(uchar *rec_ptr)
 {
+  APPENDFUNC;
   get_record_by_pos(rec_ptr);
 }
 
@@ -4377,6 +4465,7 @@ RETURN VALUE
 
 int JOIN_CACHE_BKA::init(bool for_explain)
 {
+  APPENDFUNC;
   int res;
   bool check_only_first_match= join_tab->check_only_first_match();
 
@@ -4438,6 +4527,7 @@ RETURN VALUE
 
 uint JOIN_CACHE_BKA::get_next_key(uchar ** key)
 {
+  APPENDFUNC;
   uint len;
   uint32 rec_len;
   uchar *init_pos;
@@ -4567,6 +4657,7 @@ RETURN VALUE
 
 bool JOIN_CACHE_BKA::skip_index_tuple(range_id_t range_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("JOIN_CACHE_BKA::skip_index_tuple");
   get_record_by_pos((uchar*)range_info);
   DBUG_RETURN(!join_tab->cache_idx_cond->val_int());
@@ -4599,6 +4690,7 @@ RETURN VALUE
 static 
 range_seq_t bkah_range_seq_init(void *init_param, uint n_ranges, uint flags)
 {
+  APPENDFUNC;
   DBUG_ENTER("bkah_range_seq_init");
   JOIN_CACHE_BKAH *cache= (JOIN_CACHE_BKAH *) init_param;
   cache->reset(0);
@@ -4630,6 +4722,7 @@ RETURN VALUE
 static
 bool bkah_range_seq_next(range_seq_t rseq, KEY_MULTI_RANGE *range)
 {
+  APPENDFUNC;
   DBUG_ENTER("bkah_range_seq_next");
   JOIN_CACHE_BKAH *cache= (JOIN_CACHE_BKAH *) rseq;
   TABLE_REF *ref= &cache->join_tab->ref;
@@ -4675,6 +4768,7 @@ RETURN VALUE
 static
 bool bkah_range_seq_skip_record(range_seq_t rseq, range_id_t range_info, uchar *rowid)
 {
+  APPENDFUNC;
   DBUG_ENTER("bkah_range_seq_skip_record");
   JOIN_CACHE_BKAH *cache= (JOIN_CACHE_BKAH *) rseq;
   bool res= cache->check_all_match_flags_for_key((uchar *) range_info);
@@ -4705,6 +4799,7 @@ RETURN VALUE
 static 
 bool bkah_skip_index_tuple(range_seq_t rseq, range_id_t range_info)
 {
+  APPENDFUNC;
   DBUG_ENTER("bka_unique_skip_index_tuple");
   JOIN_CACHE_BKAH *cache= (JOIN_CACHE_BKAH *) rseq;
   THD *thd= cache->thd();
@@ -4740,6 +4835,7 @@ RETURN VALUE
   
 bool JOIN_CACHE_BKAH::prepare_look_for_matches(bool skip_last)
 {
+  APPENDFUNC;
   last_matching_rec_ref_ptr= next_matching_rec_ref_ptr= 0;
   if (no_association &&
       !(curr_matching_chain= get_matching_chain_by_join_key())) //psergey: added '!'
@@ -4770,6 +4866,7 @@ bool JOIN_CACHE_BKAH::prepare_look_for_matches(bool skip_last)
 
 int JOIN_CACHE_BKAH::init(bool for_explain)
 {
+  APPENDFUNC;
   bool check_only_first_match= join_tab->check_only_first_match();
 
   no_association= MY_TEST(mrr_mode & HA_MRR_NO_ASSOCIATION);
@@ -4825,6 +4922,7 @@ int JOIN_CACHE_BKAH::init(bool for_explain)
 
 bool JOIN_CACHE_BKAH::skip_index_tuple(range_id_t range_info)
 {
+  APPENDFUNC;
   uchar *last_rec_ref_ptr= get_next_rec_ref((uchar*) range_info);
   uchar *next_rec_ref_ptr= last_rec_ref_ptr;
   DBUG_ENTER("JOIN_CACHE_BKAH::skip_index_tuple");

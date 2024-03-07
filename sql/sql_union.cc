@@ -38,6 +38,7 @@ select_handler *find_partial_select_handler(THD *thd, SELECT_LEX *select_lex,
 bool mysql_union(THD *thd, LEX *lex, select_result *result,
                  SELECT_LEX_UNIT *unit, ulonglong setup_tables_done_option)
 {
+  APPENDFUNC;
   DBUG_ENTER("mysql_union");
   bool res;
   if (!(res= unit->prepare(unit->derived, result, SELECT_NO_UNLOCK |
@@ -54,6 +55,7 @@ bool mysql_union(THD *thd, LEX *lex, select_result *result,
 
 int select_unit::prepare(List<Item> &list, SELECT_LEX_UNIT *u)
 {
+  APPENDFUNC;
   unit= u;
   return 0;
 }
@@ -64,6 +66,7 @@ int select_unit::prepare(List<Item> &list, SELECT_LEX_UNIT *u)
 
 void select_unit::change_select()
 {
+  APPENDFUNC;
   uint current_select_number= thd->lex->current_select->select_number;
   DBUG_ENTER("select_unit::change_select");
   DBUG_PRINT("enter", ("select in unit change: %u -> %u",
@@ -113,6 +116,7 @@ INTERSECT:
 */
 int select_unit::send_data(List<Item> &values)
 {
+  APPENDFUNC;
   int rc= 0;
   int not_reported_error= 0;
 
@@ -205,6 +209,7 @@ int select_unit::send_data(List<Item> &values)
 
 bool select_unit::send_eof()
 {
+  APPENDFUNC;
   if (step != INTERSECT_TYPE ||
       (thd->lex->current_select->next_select() &&
        thd->lex->current_select->next_select()->get_linkage() == INTERSECT_TYPE))
@@ -254,6 +259,7 @@ bool select_unit::send_eof()
 
 int select_union_recursive::send_data(List<Item> &values)
 {
+  APPENDFUNC;
 
   int rc;
   bool save_abort_on_warning= thd->abort_on_warning;
@@ -299,6 +305,7 @@ int select_union_recursive::send_data(List<Item> &values)
 
 bool select_unit::flush()
 {
+  APPENDFUNC;
   int error;
   if (unlikely((error=table->file->extra(HA_EXTRA_NO_CACHE))))
   {
@@ -344,6 +351,7 @@ select_unit::create_result_table(THD *thd_arg, List<Item> *column_types,
                                   bool keep_row_order,
                                   uint hidden)
 {
+  APPENDFUNC;
   DBUG_ASSERT(table == 0);
   tmp_table_param.init();
   tmp_table_param.field_count= column_types->elements;
@@ -378,6 +386,7 @@ select_union_recursive::create_result_table(THD *thd_arg,
                                             bool keep_row_order,
                                             uint hidden)
 {
+  APPENDFUNC;
   if (select_unit::create_result_table(thd_arg, column_types,
                                        is_union_distinct, options,
                                        &empty_clex_str, bit_fields_as_long,
@@ -413,6 +422,7 @@ select_union_recursive::create_result_table(THD *thd_arg,
 
 int select_unit::write_record()
 {
+  APPENDFUNC;
   if (unlikely((write_err= table->file->ha_write_tmp_row(table->record[0]))))
   {
     if (write_err == HA_ERR_FOUND_DUPP_KEY)
@@ -459,6 +469,7 @@ int select_unit::write_record()
 
 int select_unit::update_counter(Field* counter, longlong value)
 {
+  APPENDFUNC;
   store_record(table, record[1]);
   counter->store(value, 0);
   int error= table->file->ha_update_tmp_row(table->record[1],
@@ -478,6 +489,7 @@ int select_unit::update_counter(Field* counter, longlong value)
 
 bool select_unit_ext::disable_index_if_needed(SELECT_LEX *curr_sl)
 { 
+  APPENDFUNC;
   if (is_index_enabled && 
       (curr_sl == curr_sl->master_unit()->union_distinct || 
         !curr_sl->next_select()) )
@@ -502,6 +514,7 @@ bool select_unit_ext::disable_index_if_needed(SELECT_LEX *curr_sl)
 
 int select_unit_ext::unfold_record(ha_rows cnt)
 {
+  APPENDFUNC;
 
   DBUG_ASSERT(cnt > 0);
   int error= 0;
@@ -531,6 +544,7 @@ int select_unit_ext::unfold_record(ha_rows cnt)
 
 int select_unit::delete_record()
 {
+  APPENDFUNC;
   DBUG_ASSERT(!table->triggers);
   table->status|= STATUS_DELETED;
   int not_reported_error= table->file->ha_delete_tmp_row(table->record[0]);
@@ -547,6 +561,7 @@ int select_unit::delete_record()
 
 void select_unit::cleanup()
 {
+  APPENDFUNC;
   table->file->extra(HA_EXTRA_RESET_STATE);
   table->file->ha_delete_all_rows();
 }
@@ -566,6 +581,7 @@ void select_unit::cleanup()
 
 void select_unit_ext::change_select()
 {
+  APPENDFUNC;
   select_unit::change_select();
   switch(step){
   case UNION_TYPE:
@@ -610,6 +626,7 @@ void select_unit_ext::change_select()
 
 int select_unit_ext::send_data(List<Item> &values)
 {
+  APPENDFUNC;
   int rc= 0;
   int not_reported_error= 0;
   int find_res;
@@ -762,6 +779,7 @@ int select_unit_ext::send_data(List<Item> &values)
 
 bool select_unit_ext::send_eof()
 {
+  APPENDFUNC;
   int error= 0;
   SELECT_LEX *curr_sl= thd->lex->current_select;
   SELECT_LEX *next_sl= curr_sl->next_select();
@@ -902,6 +920,7 @@ bool select_unit_ext::send_eof()
 
 void select_union_recursive::cleanup()
 {
+  APPENDFUNC;
   if (table)
   {
     select_unit::cleanup();
@@ -953,6 +972,7 @@ void select_union_recursive::cleanup()
 
 bool select_union_direct::change_result(select_result *new_result)
 {
+  APPENDFUNC;
   result= new_result;
   return (result->prepare(unit->types, unit) || result->prepare2(NULL));
 }
@@ -960,6 +980,7 @@ bool select_union_direct::change_result(select_result *new_result)
 
 bool select_union_direct::postponed_prepare(List<Item> &types)
 {
+  APPENDFUNC;
   if (result != NULL)
     return (result->prepare(types, unit) || result->prepare2(NULL));
   else
@@ -969,6 +990,7 @@ bool select_union_direct::postponed_prepare(List<Item> &types)
 
 bool select_union_direct::send_result_set_metadata(List<Item> &list, uint flags)
 {
+  APPENDFUNC;
   if (done_send_result_set_metadata)
     return false;
   done_send_result_set_metadata= true;
@@ -991,6 +1013,7 @@ bool select_union_direct::send_result_set_metadata(List<Item> &list, uint flags)
 
 int select_union_direct::send_data(List<Item> &items)
 {
+  APPENDFUNC;
   if (!limit)
     return false;
   limit--;
@@ -1011,6 +1034,7 @@ int select_union_direct::send_data(List<Item> &items)
 
 bool select_union_direct::initialize_tables (JOIN *join)
 {
+  APPENDFUNC;
   if (done_initialize_tables)
     return false;
   done_initialize_tables= true;
@@ -1021,6 +1045,7 @@ bool select_union_direct::initialize_tables (JOIN *join)
 
 bool select_union_direct::send_eof()
 {
+  APPENDFUNC;
   // Reset for each SELECT_LEX, so accumulate here
   limit_found_rows+= thd->limit_found_rows;
 
@@ -1055,6 +1080,7 @@ void
 st_select_lex_unit::init_prepare_fake_select_lex(THD *thd_arg,
                                                   bool first_execution) 
 {
+  APPENDFUNC;
   thd_arg->lex->current_select= fake_select_lex;
   fake_select_lex->table_list.link_in_list(&result_table_list,
                                            &result_table_list.next_local);
@@ -1083,6 +1109,7 @@ bool st_select_lex_unit::prepare_join(THD *thd_arg, SELECT_LEX *sl,
                                       ulonglong additional_options,
                                       bool is_union_select)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::prepare_join");
   TABLE_LIST *derived= sl->master_unit()->derived;
   bool can_skip_order_by;
@@ -1140,6 +1167,7 @@ bool st_select_lex_unit::join_union_type_handlers(THD *thd_arg,
                                                   Type_holder *holders,
                                                   uint count)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::join_union_type_handlers");
   SELECT_LEX *first_sl= first_select(), *sl= first_sl;
   for (uint i= 0; i < count ; sl= sl->next_select(), i++)
@@ -1176,6 +1204,7 @@ bool st_select_lex_unit::join_union_type_attributes(THD *thd_arg,
                                                     Type_holder *holders,
                                                     uint count)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::join_union_type_attributes");
   SELECT_LEX *sl, *first_sl= first_select();
   uint item_pos;
@@ -1224,6 +1253,7 @@ bool st_select_lex_unit::join_union_item_types(THD *thd_arg,
                                                List<Item> &types,
                                                uint count)
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::join_union_select_list_types");
   SELECT_LEX *first_sl= first_select();
   Type_holder *holders;
@@ -1265,6 +1295,7 @@ bool st_select_lex_unit::join_union_item_types(THD *thd_arg,
 
 bool init_item_int(THD* thd, Item_int* &item)
 {
+  APPENDFUNC;
   if (!item)
   {
     Query_arena *arena, backup_arena;
@@ -1294,6 +1325,7 @@ static select_handler *find_unit_handler_for_lex(THD *thd,
                                                  SELECT_LEX *sel_lex,
                                                  SELECT_LEX_UNIT* unit)
 {
+  APPENDFUNC;
   if (!(sel_lex->join))
     return nullptr;
   for (TABLE_LIST *tbl= sel_lex->join->tables_list; tbl; tbl= tbl->next_local)
@@ -1361,6 +1393,7 @@ static select_handler *find_unit_handler_for_lex(THD *thd,
 static select_handler *find_unit_handler(THD *thd,
                                          SELECT_LEX_UNIT *unit)
 {
+  APPENDFUNC;
   if (unit->outer_select())
     return nullptr;
 
@@ -1378,6 +1411,7 @@ bool st_select_lex_unit::prepare(TABLE_LIST *derived_arg,
                                  select_result *sel_result,
                                  ulonglong additional_options)
 {
+  APPENDFUNC;
   SELECT_LEX *lex_select_save= thd->lex->current_select;
   SELECT_LEX *sl, *first_sl= first_select();
   bool is_recursive= with_element && with_element->is_recursive;
@@ -1976,6 +2010,7 @@ err:
 bool st_select_lex_unit::prepare_pushdown(bool use_direct_union_result,
                                           select_result *sel_result)
 {
+  APPENDFUNC;
   if (unlikely(pushdown_unit->prepare()))
     return true;
 
@@ -1994,6 +2029,7 @@ bool st_select_lex_unit::prepare_pushdown(bool use_direct_union_result,
 
 bool st_select_lex_unit::set_direct_union_result(select_result *sel_result)
 {
+  APPENDFUNC;
   SELECT_LEX *last= first_select();
   while (last->next_select())
     last= last->next_select();
@@ -2028,6 +2064,7 @@ bool st_select_lex_unit::set_direct_union_result(select_result *sel_result)
 
 void st_select_lex_unit::optimize_bag_operation(bool is_outer_distinct)
 {
+  APPENDFUNC;
   /*
     skip run optimize for:
       ORACLE MODE
@@ -2171,6 +2208,7 @@ void st_select_lex_unit::optimize_bag_operation(bool is_outer_distinct)
 */
 bool st_select_lex_unit::optimize()
 {
+  APPENDFUNC;
   SELECT_LEX *lex_select_save= thd->lex->current_select;
   SELECT_LEX *select_cursor=first_select();
   DBUG_ENTER("st_select_lex_unit::optimize");
@@ -2278,6 +2316,7 @@ bool st_select_lex_unit::optimize()
 
 bool st_select_lex_unit::exec()
 {
+  APPENDFUNC;
   DBUG_ENTER("st_select_lex_unit::exec");
   if (executed && !uncacheable && !describe)
     DBUG_RETURN(FALSE);
@@ -2295,6 +2334,7 @@ bool st_select_lex_unit::exec()
 
 bool st_select_lex_unit::exec_inner()
 {
+  APPENDFUNC;
   SELECT_LEX *lex_select_save= thd->lex->current_select;
   SELECT_LEX *select_cursor=first_select();
   ulonglong add_rows=0;
@@ -2552,6 +2592,7 @@ bool st_select_lex_unit::exec_inner()
 
 bool st_select_lex_unit::exec_recursive()
 {
+  APPENDFUNC;
   st_select_lex *lex_select_save= thd->lex->current_select;
   st_select_lex *start= with_element->first_recursive;
   TABLE *incr_table= with_element->rec_result->incr_table;
@@ -2661,6 +2702,7 @@ err:
 
 bool st_select_lex_unit::cleanup()
 {
+  APPENDFUNC;
   bool error= 0;
   DBUG_ENTER("st_select_lex_unit::cleanup");
 
@@ -2754,6 +2796,7 @@ bool st_select_lex_unit::cleanup()
 
 void st_select_lex_unit::reinit_exec_mechanism()
 {
+  APPENDFUNC;
   prepared= optimized= optimized_2= executed= 0;
   optimize_started= 0;
   if (with_element && with_element->is_recursive)
@@ -2775,6 +2818,7 @@ void st_select_lex_unit::reinit_exec_mechanism()
 bool st_select_lex_unit::change_result(select_result_interceptor *new_result,
                                        select_result_interceptor *old_result)
 {
+  APPENDFUNC;
   for (SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
   {
     if (sl->join)
@@ -2809,6 +2853,7 @@ bool st_select_lex_unit::change_result(select_result_interceptor *new_result,
 
 List<Item> *st_select_lex_unit::get_column_types(bool for_cursor)
 {
+  APPENDFUNC;
   SELECT_LEX *sl= first_select();
   bool is_procedure= !sl->tvc && sl->join->procedure ;
 
@@ -2833,6 +2878,7 @@ List<Item> *st_select_lex_unit::get_column_types(bool for_cursor)
 
 static void cleanup_order(ORDER *order)
 {
+  APPENDFUNC;
   for (; order; order= order->next)
     order->counter_used= 0;
 }
@@ -2840,6 +2886,7 @@ static void cleanup_order(ORDER *order)
 
 static void cleanup_window_funcs(List<Item_window_func> &win_funcs)
 {
+  APPENDFUNC;
   List_iterator_fast<Item_window_func> it(win_funcs);
   Item_window_func *win_func;
   while ((win_func= it++))
@@ -2863,6 +2910,7 @@ static void cleanup_window_funcs(List<Item_window_func> &win_funcs)
 
 bool st_select_lex::cleanup()
 {
+  APPENDFUNC;
   bool error= FALSE;
   DBUG_ENTER("st_select_lex::cleanup()");
 
@@ -2916,6 +2964,7 @@ bool st_select_lex::cleanup()
 
 void st_select_lex::cleanup_all_joins(bool full)
 {
+  APPENDFUNC;
   SELECT_LEX_UNIT *unit;
   SELECT_LEX *sl;
   DBUG_ENTER("st_select_lex::cleanup_all_joins");
@@ -2944,6 +2993,7 @@ void st_select_lex::cleanup_all_joins(bool full)
 
 void st_select_lex_unit::set_unique_exclude()
 {
+  APPENDFUNC;
   for (SELECT_LEX *sl= first_select(); sl; sl= sl->next_select())
   {
     sl->exclude_from_table_unique_test= TRUE;
@@ -2991,6 +3041,7 @@ void st_select_lex_unit::set_unique_exclude()
 
 bool st_select_lex_unit::check_distinct_in_union()
 {
+  APPENDFUNC;
   if (union_distinct && !union_distinct->next_select())
     return true;
   return false;

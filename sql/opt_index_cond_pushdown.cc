@@ -47,6 +47,7 @@
 bool uses_index_fields_only(Item *item, TABLE *tbl, uint keyno,
                             bool other_tbls_ok)
 {
+  APPENDFUNC;
   if (item->walk(&Item::limit_index_condition_pushdown_processor, FALSE, NULL))
   {
     return FALSE;
@@ -185,6 +186,7 @@ bool uses_index_fields_only(Item *item, TABLE *tbl, uint keyno,
 static Item *make_cond_for_index(THD *thd, Item *cond, TABLE *table, uint keyno,
                                  bool other_tbls_ok)
 {
+  APPENDFUNC;
   if (!cond || cond->basic_const_item())
     return cond;
   if (cond->type() == Item::COND_ITEM)
@@ -248,6 +250,7 @@ static Item *make_cond_for_index(THD *thd, Item *cond, TABLE *table, uint keyno,
 static Item *make_cond_remainder(THD *thd, Item *cond, TABLE *table, uint keyno,
                                  bool other_tbls_ok, bool exclude_index)
 {
+  APPENDFUNC;
   if (exclude_index && 
       uses_index_fields_only(cond, table, keyno, other_tbls_ok))
     return 0;
@@ -325,6 +328,7 @@ static Item *make_cond_remainder(THD *thd, Item *cond, TABLE *table, uint keyno,
 
 void push_index_cond(JOIN_TAB *tab, uint keyno)
 {
+  APPENDFUNC;
   DBUG_ENTER("push_index_cond");
   Item *idx_cond;
   

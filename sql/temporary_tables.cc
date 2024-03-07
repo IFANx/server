@@ -40,6 +40,7 @@
 */
 bool THD::has_thd_temporary_tables()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::has_thd_temporary_tables");
   bool result= (temporary_tables && !temporary_tables->is_empty());
   DBUG_RETURN(result);
@@ -63,6 +64,7 @@ TABLE *THD::create_and_open_tmp_table(LEX_CUSTRING *frm,
                                       const char *table_name,
                                       bool open_internal_tables)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::create_and_open_tmp_table");
 
   TMP_TABLE_SHARE *share;
@@ -116,6 +118,7 @@ TABLE *THD::find_temporary_table(const char *db,
                                  const char *table_name,
                                  Temporary_table_state state)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_temporary_table");
 
   TABLE *table;
@@ -153,6 +156,7 @@ TABLE *THD::find_temporary_table(const char *db,
 TABLE *THD::find_temporary_table(const TABLE_LIST *tl,
                                  Temporary_table_state state)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_temporary_table");
   TABLE *table= find_temporary_table(tl->get_db_name(), tl->get_table_name(),
                                      state);
@@ -174,6 +178,7 @@ TABLE *THD::find_temporary_table(const TABLE_LIST *tl,
 TMP_TABLE_SHARE *THD::find_tmp_table_share_w_base_key(const char *key,
                                                       uint key_length)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_tmp_table_share_w_base_key");
 
   TMP_TABLE_SHARE *share;
@@ -218,6 +223,7 @@ TMP_TABLE_SHARE *THD::find_tmp_table_share_w_base_key(const char *key,
 TMP_TABLE_SHARE *THD::find_tmp_table_share(const char *db,
                                            const char *table_name)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_tmp_table_share");
 
   TMP_TABLE_SHARE *share;
@@ -242,6 +248,7 @@ TMP_TABLE_SHARE *THD::find_tmp_table_share(const char *db,
 */
 TMP_TABLE_SHARE *THD::find_tmp_table_share(const TABLE_LIST *tl)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_tmp_table_share");
   TMP_TABLE_SHARE *share= find_tmp_table_share(tl->get_db_name(),
                                                tl->get_table_name());
@@ -258,6 +265,7 @@ TMP_TABLE_SHARE *THD::find_tmp_table_share(const TABLE_LIST *tl)
 */
 TMP_TABLE_SHARE *THD::find_tmp_table_share(const char *key, size_t key_length)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_tmp_table_share");
 
   TMP_TABLE_SHARE *share;
@@ -320,6 +328,7 @@ TMP_TABLE_SHARE *THD::find_tmp_table_share(const char *key, size_t key_length)
 */
 bool THD::open_temporary_table(TABLE_LIST *tl)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::open_temporary_table");
   DBUG_PRINT("enter", ("table: '%s'.'%s'", tl->db.str, tl->table_name.str));
 
@@ -455,6 +464,7 @@ bool THD::open_temporary_table(TABLE_LIST *tl)
 */
 bool THD::open_temporary_tables(TABLE_LIST *tl)
 {
+  APPENDFUNC;
   TABLE_LIST *first_not_own;
   DBUG_ENTER("THD::open_temporary_tables");
 
@@ -495,6 +505,7 @@ bool THD::open_temporary_tables(TABLE_LIST *tl)
 */
 bool THD::close_temporary_tables()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::close_temporary_tables");
 
   TMP_TABLE_SHARE *share;
@@ -570,6 +581,7 @@ bool THD::rename_temporary_table(TABLE *table,
                                  const LEX_CSTRING *db,
                                  const LEX_CSTRING *table_name)
 {
+  APPENDFUNC;
   char *key;
   uint key_length;
   TABLE_SHARE *share= table->s;
@@ -615,6 +627,7 @@ bool THD::rename_temporary_table(TABLE *table,
 */
 bool THD::drop_temporary_table(TABLE *table, bool *is_trans, bool delete_table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::drop_temporary_table");
 
   TMP_TABLE_SHARE *share;
@@ -695,6 +708,7 @@ end:
 */
 bool THD::rm_temporary_table(handlerton *base, const char *path)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::rm_temporary_table");
 
   bool error= false;
@@ -726,6 +740,7 @@ bool THD::rm_temporary_table(handlerton *base, const char *path)
 */
 void THD::mark_tmp_tables_as_free_for_reuse()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::mark_tmp_tables_as_free_for_reuse");
 
   TMP_TABLE_SHARE *share;
@@ -788,6 +803,7 @@ void THD::mark_tmp_tables_as_free_for_reuse()
 */
 void THD::mark_tmp_table_as_free_for_reuse(TABLE *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::mark_tmp_table_as_free_for_reuse");
 
   DBUG_ASSERT(table->s->tmp_table);
@@ -833,6 +849,7 @@ void THD::mark_tmp_table_as_free_for_reuse(TABLE *table)
 */
 TMP_TABLE_SHARE *THD::save_tmp_table_share(TABLE *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::save_tmp_table_share");
 
   TMP_TABLE_SHARE *share;
@@ -856,6 +873,7 @@ TMP_TABLE_SHARE *THD::save_tmp_table_share(TABLE *table)
 */
 void THD::restore_tmp_table_share(TMP_TABLE_SHARE *share)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::restore_tmp_table_share");
 
   lock_temporary_tables();
@@ -877,6 +895,7 @@ void THD::restore_tmp_table_share(TMP_TABLE_SHARE *share)
 */
 bool THD::has_temporary_tables()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::has_temporary_tables");
   bool result;
 #ifdef HAVE_REPLICATION
@@ -920,6 +939,7 @@ bool THD::has_temporary_tables()
 uint THD::create_tmp_table_def_key(char *key, const char *db,
                                     const char *table_name)
 {
+  APPENDFUNC;
   uint key_length;
   DBUG_ENTER("THD::create_tmp_table_def_key");
 
@@ -948,6 +968,7 @@ TMP_TABLE_SHARE *THD::create_temporary_table(LEX_CUSTRING *frm,
                                              const char *db,
                                              const char *table_name)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::create_temporary_table");
 
   TMP_TABLE_SHARE *share;
@@ -1053,6 +1074,7 @@ TMP_TABLE_SHARE *THD::create_temporary_table(LEX_CUSTRING *frm,
 TABLE *THD::find_temporary_table(const char *key, uint key_length,
                                  Temporary_table_state state)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::find_temporary_table");
 
   TMP_TABLE_SHARE *share;
@@ -1121,6 +1143,7 @@ TABLE *THD::find_temporary_table(const char *key, uint key_length,
 TABLE *THD::open_temporary_table(TMP_TABLE_SHARE *share,
                                  const char *alias_arg)
 {
+  APPENDFUNC;
   TABLE *table;
   LEX_CSTRING alias= {alias_arg, strlen(alias_arg) };
   DBUG_ENTER("THD::open_temporary_table");
@@ -1175,6 +1198,7 @@ TABLE *THD::open_temporary_table(TMP_TABLE_SHARE *share,
 */
 bool THD::find_and_use_tmp_table(const TABLE_LIST *tl, TABLE **out_table)
 {
+  APPENDFUNC;
   char key[MAX_DBKEY_LENGTH];
   uint key_length;
   bool result;
@@ -1199,6 +1223,7 @@ bool THD::find_and_use_tmp_table(const TABLE_LIST *tl, TABLE **out_table)
 */
 bool THD::use_temporary_table(TABLE *table, TABLE **out_table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::use_temporary_table");
 
   *out_table= table;
@@ -1246,6 +1271,7 @@ bool THD::use_temporary_table(TABLE *table, TABLE **out_table)
 */
 void THD::close_temporary_table(TABLE *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::close_temporary_table");
 
   DBUG_PRINT("tmptable", ("closing table: '%s'.'%s'%p  alias: '%s'",
@@ -1276,6 +1302,7 @@ void THD::close_temporary_table(TABLE *table)
 */
 bool THD::log_events_and_free_tmp_shares()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::log_events_and_free_tmp_shares");
 
   DBUG_ASSERT(!rgi_slave);
@@ -1473,6 +1500,7 @@ bool THD::log_events_and_free_tmp_shares()
 */
 bool THD::free_tmp_table_share(TMP_TABLE_SHARE *share, bool delete_table)
 {
+  APPENDFUNC;
   bool error= false;
   DBUG_ENTER("THD::free_tmp_table_share");
 
@@ -1495,6 +1523,7 @@ bool THD::free_tmp_table_share(TMP_TABLE_SHARE *share, bool delete_table)
 */
 void THD::free_temporary_table(TABLE *table)
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::free_temporary_table");
 
   /*
@@ -1518,6 +1547,7 @@ void THD::free_temporary_table(TABLE *table)
 */
 bool THD::lock_temporary_tables()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::lock_temporary_tables");
 
   /* Do not proceed if a lock has already been taken. */
@@ -1547,6 +1577,7 @@ bool THD::lock_temporary_tables()
 */
 void THD::unlock_temporary_tables()
 {
+  APPENDFUNC;
   DBUG_ENTER("THD::unlock_temporary_tables");
 
   if (!m_tmp_tables_locked)
@@ -1580,6 +1611,7 @@ void THD::unlock_temporary_tables()
 
 void THD::close_unused_temporary_table_instances(const TABLE_LIST *tl)
 {
+  APPENDFUNC;
   TMP_TABLE_SHARE *share= find_tmp_table_share(tl);
 
   if (share)
